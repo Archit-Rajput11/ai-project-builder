@@ -1,26 +1,92 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Configure class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-border-accent: var(--border-accent);
+  --color-bg-accent: var(--bg-accent);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Roboto Mono, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Light Theme Variables */
+:root {
+  --background: #ffffff;
+  --foreground: #0f172a; /* Rich dark-slate typography */
+  --border-accent: #e2e8f0; /* Crisp cool-gray accents */
+  --bg-accent: #f8fafc; /* Subtle cool-gray card background */
+  --primary: #2563eb; /* Royal blue focus & primary indicators */
+  --primary-hover: #1d4ed8;
 }
 
-body {
-  background: var(--background);
+/* Dark Theme Variables */
+.dark {
+  --background: #090d16; /* Soft charcoal/slate background */
+  --foreground: #f8fafc; /* Clear white typography */
+  --border-accent: #1e293b; /* Muted border accents */
+  --bg-accent: #111827; /* Dark charcoal card background */
+  --primary: #38bdf8; /* Bright electric blue/cyan highlights */
+  --primary-hover: #0ea5e9;
+}
+
+/* Global resets and smooth transition effects */
+* {
+  border-color: var(--border-accent);
+}
+
+html, body {
+  min-height: 100vh;
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  transition-property: background-color, border-color, text-color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Print Media Stylesheet for PDF Generation */
+@media print {
+  /* Hide all UI elements except the printable area */
+  body * {
+    visibility: hidden;
+  }
+  
+  #printable-area, #printable-area * {
+    visibility: visible;
+  }
+  
+  #printable-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    color: #000000 !important;
+    background: #ffffff !important;
+  }
+  
+  /* Force collapsible detail contents to display fully open when printing */
+  details > *:not(summary) {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  details summary {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Ensure page breaks are formatted neatly */
+  .page-break {
+    page-break-before: always;
+  }
+  
+  /* Hide download triggers during print execution */
+  .no-print {
+    display: none !important;
+  }
 }
