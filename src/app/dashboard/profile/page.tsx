@@ -1,21 +1,42 @@
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import { User, Award, Mail, GraduationCap, Calendar, Edit3, Check, Key, ShieldCheck } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
-export default function ProfilePage() {
+function ProfileContent() {
+  const searchParams = useSearchParams();
+
   const [name, setName] = React.useState("Student User");
   const [email, setEmail] = React.useState("student@university.edu");
   const [isEditingName, setIsEditingName] = React.useState(false);
   const [editNameInput, setEditNameInput] = React.useState("");
   const [toastMessage, setToastMessage] = React.useState("");
 
+  const [isVerified, setIsVerified] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("isVerified") === "true";
+    }
+    return false;
+  });
+
   React.useEffect(() => {
     const savedName = localStorage.getItem("profile_user_name");
     const savedEmail = localStorage.getItem("profile_user_email");
     if (savedName) setName(savedName);
     if (savedEmail) setEmail(savedEmail);
-  }, []);
+
+    // Check if the URL contains the verified=true search parameter
+    const isUrlVerified = searchParams.get("verified") === "true";
+    if (isUrlVerified) {
+      setIsVerified(true);
+      localStorage.setItem("isVerified", "true");
+      // Clean up/remove the query parameter from the browser's address bar
+      const newUrl = `${window.location.origin}${window.location.pathname}`;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [searchParams]);
 
   const handleSaveName = () => {
     if (editNameInput.trim()) {
@@ -34,6 +55,13 @@ export default function ProfilePage() {
 
   const handleResetPassword = () => {
     setToastMessage(`A password reset link has been sent to ${email}.`);
+    setTimeout(() => setToastMessage(""), 4000);
+  };
+
+  const handleInstantVerify = () => {
+    setIsVerified(true);
+    localStorage.setItem("isVerified", "true");
+    setToastMessage("Account verified successfully!");
     setTimeout(() => setToastMessage(""), 4000);
   };
 
@@ -102,9 +130,26 @@ export default function ProfilePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-foreground/70">
-            <div className="flex items-center gap-2 justify-center md:justify-start">
+            <div className="flex items-center gap-2 justify-center md:justify-start flex-wrap">
               <Mail className="w-4 h-4 text-foreground/40" />
               <span>{email}</span>
+              {isVerified ? (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-extrabold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
+                  ✅ Verified Account
+                </span>
+              ) : (
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-extrabold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
+                    ⚠️ Unverified Account
+                  </span>
+                  <button
+                    onClick={handleInstantVerify}
+                    className="px-2 py-0.5 rounded-lg border border-primary/20 hover:border-primary bg-primary/5 hover:bg-primary/10 text-primary font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-all select-none"
+                  >
+                    Verify Now
+                  </button>
+                </div>
+              )}
             </div>
             <div className="flex items-center gap-2 justify-center md:justify-start">
               <GraduationCap className="w-4 h-4 text-foreground/40" />
@@ -136,7 +181,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Toast Notification for reset link */}
+      {/* Toast Notification */}
       {toastMessage && (
         <div className="no-print fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-950/90 text-emerald-400 text-xs font-bold shadow-lg shadow-emerald-950/50 animate-fade-in flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -144,5 +189,13 @@ export default function ProfilePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse text-sm text-foreground/40 p-6 border border-border-accent bg-bg-accent/20 backdrop-blur-md rounded-3xl">Loading profile data...</div>}>
+      <ProfileContent />
+    </Suspense>
   );
 }
