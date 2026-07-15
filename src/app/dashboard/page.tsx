@@ -221,7 +221,7 @@ Please provide a step-by-step explanation and code fixes to resolve this issue.`
       return;
     }
 
-    handleGenerate(true);
+    // Removed handleGenerate(true) auto-trigger on mount to avoid stuck loading animation on initial load.
   }, []);
 
   // Update Kanban state and seed chat welcome message whenever a new plan is loaded
