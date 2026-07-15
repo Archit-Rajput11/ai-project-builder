@@ -55,9 +55,9 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 min-h-[calc(100vh-140px)] w-full">
+    <div className="w-full min-h-screen flex flex-col md:flex-row bg-background text-foreground gap-0">
       {/* Mobile Top Header (Visible only on mobile) */}
-      <div className="md:hidden no-print flex items-center justify-between p-4 rounded-2xl border border-border-accent bg-bg-accent/20 backdrop-blur-md w-full">
+      <div className="md:hidden no-print flex items-center justify-between p-4 border-b border-border-accent/40 bg-bg-accent/20 backdrop-blur-md w-full">
         <span className="text-sm font-extrabold text-foreground">Dashboard Menu</span>
         <button
           onClick={() => setIsMobileOpen(true)}
@@ -69,9 +69,9 @@ export default function DashboardLayout({
 
       {/* Desktop Sidebar Container (Fixed left side, hidden on mobile) */}
       <aside 
-        className={`hidden md:flex no-print flex-col shrink-0 rounded-3xl border border-border-accent bg-bg-accent/20 backdrop-blur-md p-4 transition-all duration-300 ${
-          isExpanded ? "w-60" : "w-20"
-        } relative`}
+        className={`hidden md:flex no-print flex-col shrink-0 border-r border-border-accent/40 bg-bg-accent/10 p-5 transition-all duration-300 ${
+          isExpanded ? "w-64" : "w-20"
+        } relative min-h-screen`}
       >
         {/* Toggle Button */}
         <button
@@ -176,7 +176,7 @@ export default function DashboardLayout({
       )}
 
       {/* Main Workspace Content Pane */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 w-full overflow-y-auto px-6 md:px-8 py-6">
         {children}
       </div>
     </div>
