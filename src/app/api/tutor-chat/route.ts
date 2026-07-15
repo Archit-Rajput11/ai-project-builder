@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
 - Hosting & Tools: ${projectBlueprint.techStack?.hostingAndTools?.join(", ") || "None specified"}
 `;
 
-    const systemInstruction = `You are an elite software architect and academic project tutor. Use the provided project blueprint context to answer the student's questions. Give practical step-by-step guidance, clean code snippets, and explanations tailored to their skill level.
+    const systemInstruction = `You are an encouraging academic Project Tutor. Look at the user's current project blueprint configurations (domain, complexity, and skill level) and dynamically answer their questions. If they ask a general question (like if it is good for beginners), evaluate their current blueprint parameters and give them a direct, helpful, and personalized answer.
+Use the provided project blueprint context to answer the student's questions. Give practical step-by-step guidance, clean code snippets, and explanations tailored to their skill level.
 
 Active Project Blueprint Context:
 - Project Title: ${projectBlueprint.projectTitle || "College Project"}
@@ -89,6 +90,15 @@ Format your replies using clean markdown with proper spacing. When sharing code 
 function generateMockTutorReply(userMessage: string, blueprint: any): string {
   const query = userMessage.toLowerCase();
   const title = blueprint.projectTitle || "the project";
+
+  if (query.includes("beginner") || query.includes("easy") || query.includes("difficult") || query.includes("hard") || query.includes("good") || query.includes("suit")) {
+    const level = (blueprint.difficultyRating || "Intermediate").toLowerCase();
+    if (level.includes("basic") || level.includes("beginner") || level.includes("easy")) {
+      return `Yes, **${title}** is an excellent project choice for a beginner! Here's why:\n\n1. It focuses on core CRUD interactions and straightforward layouts.\n2. The tech stack components (like standard React/Next.js scaffolds) are highly accessible and well-documented.\n3. The scope is scoped to 6 simple weeks. Let me know if you want help starting Week 1 setup!`;
+    } else {
+      return `Since **${title}** is configured at an **${blueprint.difficultyRating || "Intermediate"}** level, it might present a slight learning curve for absolute beginners. However, it is fully doable! I suggest:\n\n1. Take Week 1 & 2 scaffolding slowly to understand state connections.\n2. Focus on getting database queries functioning before implementing complex client features.\n3. Ask me to walk you through specific code blocks if you get stuck. I'm here to help you learn!`;
+    }
+  }
 
   if (query.includes("code") || query.includes("example") || query.includes("setup")) {
     return `That's a great question! Let's write a clean entry point wrapper or client hook for your **${title}**.
