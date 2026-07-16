@@ -23,30 +23,110 @@ export default function PricingPage() {
     setIsPremium(premiumState);
   }, []);
 
-  const handleUpgradeNow = () => {
-    // Payment triggered log for Razorpay integration prep
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleUpgradeNow = async () => {
     console.log("Payment triggered for ₹99");
-    
     setLoading(true);
-    setCheckoutProgress(3);
 
-    const interval = setInterval(() => {
-      setCheckoutProgress((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
+    try {
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        alert("Failed to load payment gateway. Please check your internet connection.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
-    }, 1000);
 
-    setTimeout(() => {
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to initiate transaction order.");
+      }
+
+      const { orderId, amount, currency } = await response.json();
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_TE4CbpGSxEukJY",
+        amount: amount,
+        currency: currency,
+        name: "Academic Project Builder",
+        description: "Upgrade to Pro Plan - Unlimited Projects",
+        order_id: orderId,
+        handler: async function (res: any) {
+          try {
+            const verifyRes = await fetch("/api/verify-payment", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                razorpay_order_id: res.razorpay_order_id,
+                razorpay_payment_id: res.razorpay_payment_id,
+                razorpay_signature: res.razorpay_signature,
+              }),
+            });
+
+            const verifyData = await verifyRes.json();
+
+            if (verifyRes.ok && verifyData.success) {
+              setIsPremium(true);
+              localStorage.setItem("isPremium", "true");
+              alert("Payment successful! Upgraded to Pro Plan.");
+              router.push("/dashboard");
+            } else {
+              alert("Payment verification failed: " + (verifyData.error || "Invalid signature"));
+            }
+          } catch (verifyErr: any) {
+            console.error("Verification error:", verifyErr);
+            alert("Verification error: " + verifyErr.message);
+          } finally {
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: "Student User",
+          email: "student@example.com",
+        },
+        theme: {
+          color: "#8b5cf6",
+        },
+        modal: {
+          ondismiss: function () {
+            console.log("Payment modal closed by user.");
+            setLoading(false);
+          },
+        },
+      };
+
+      const razorpayObj = new (window as any).Razorpay(options);
+      
+      razorpayObj.on("payment.failed", function (failRes: any) {
+        console.error("Payment failed:", failRes.error);
+        alert(`Payment failed: ${failRes.error.description}`);
+        setLoading(false);
+      });
+
+      razorpayObj.open();
+
+    } catch (err: any) {
+      console.error("Order creation failed:", err);
+      alert("Error starting checkout: " + err.message);
       setLoading(false);
-      setIsPremium(true);
-      localStorage.setItem("isPremium", "true");
-      alert("Payment successful! Upgraded to Pro Plan.");
-      router.push("/dashboard");
-    }, 3000);
+    }
   };
 
   const handleDowngradeMock = () => {
@@ -235,7 +315,7 @@ export default function PricingPage() {
       {loading && (
         <div className="fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-amber-500/30 bg-amber-950/90 text-amber-400 text-xs font-bold shadow-lg shadow-amber-950/50 animate-fade-in flex items-center gap-2">
           <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
-          Verifying transaction... {checkoutProgress}s remaining
+          Verifying transaction...
         </div>
       )}
     </div>
