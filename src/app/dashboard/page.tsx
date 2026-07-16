@@ -108,6 +108,11 @@ export default function Dashboard() {
   const [selectedCopilotWeek, setSelectedCopilotWeek] = React.useState<number>(1);
   const [error, setError] = React.useState<string | null>(null);
 
+  // Premium PDF and simulated Ad states
+  const [showPremiumPdfModal, setShowPremiumPdfModal] = React.useState(false);
+  const [adWatching, setAdWatching] = React.useState(false);
+  const [adCountdown, setAdCountdown] = React.useState(3);
+
   // Kanban Board states
   const [kanbanTasks, setKanbanTasks] = React.useState<Record<string, Task[]>>({
     todo: [],
@@ -593,6 +598,28 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     }
   };
 
+  const handleWatchAd = () => {
+    setAdWatching(true);
+    setAdCountdown(3);
+    
+    const interval = setInterval(() => {
+      setAdCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    setTimeout(() => {
+      setAdWatching(false);
+      setShowPremiumPdfModal(false);
+      alert("Ad finished! Downloading PDF...");
+      handleDownloadPDF();
+    }, 3000);
+  };
+
   const handleSignOut = () => {
     // Clear mock session cookie
     document.cookie = "mock-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
@@ -677,24 +704,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           />
         </div>
 
-        {/* Generate Trigger Button */}
-        <button
-          onClick={() => handleGenerate(false)}
-          disabled={loading}
-          className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary-hover active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200 shadow-md shadow-primary/10 cursor-pointer"
-        >
-          {loading ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Generating Project Scaffolding...
-            </>
-          ) : (
-            <>
-              <Sparkles className="w-4 h-4" />
-              Build Project Plan
-            </>
+        {/* Generate Trigger Button & Premium Action */}
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => handleGenerate(false)}
+            disabled={loading}
+            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary-hover active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200 shadow-md shadow-primary/10 cursor-pointer"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Generating Project Scaffolding...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                Build Project Plan
+              </>
+            )}
+          </button>
+
+          {plan && (
+            <button
+              onClick={() => setShowPremiumPdfModal(true)}
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-sm transition-all shadow-md shadow-amber-500/5 cursor-pointer animate-pulse"
+            >
+              <Award className="w-4 h-4 text-amber-400" />
+              Download Professional PDF
+            </button>
           )}
-        </button>
+        </div>
       </section>
 
       {/* Error Card */}
@@ -784,6 +823,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 hover:border-purple-500 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 font-semibold text-xs transition-colors cursor-pointer"
               >
                 Share with Team
+              </button>
+
+              {/* Premium PDF Download */}
+              <button
+                onClick={() => setShowPremiumPdfModal(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-xs transition-colors cursor-pointer"
+              >
+                <Award className="w-3.5 h-3.5 text-amber-400" />
+                Download Professional PDF
               </button>
 
               {/* Quick print action button */}
@@ -1488,6 +1536,47 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         <div className="no-print fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-950/90 text-emerald-400 text-xs font-bold shadow-lg shadow-emerald-950/50 animate-fade-in flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           Link copied to clipboard!
+        </div>
+      )}
+
+      {/* Premium PDF Ad Modal */}
+      {showPremiumPdfModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in no-print">
+          <div className="w-full max-w-md p-6 rounded-3xl border border-border-accent bg-slate-900 shadow-2xl flex flex-col gap-5 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-2">
+                <Award className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-extrabold text-foreground">Unlock Professional PDF</h3>
+              <p className="text-xs text-foreground/60 leading-relaxed px-2">
+                Unlock professional PDF! Watch a 30-second video to generate and download your high-quality project blueprint.
+              </p>
+            </div>
+
+            {adWatching ? (
+              <div className="flex flex-col items-center justify-center py-6 gap-3">
+                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <span className="text-xs font-bold text-foreground/75">
+                  Sponsor video playing... {adCountdown}s remaining
+                </span>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 mt-2">
+                <button
+                  onClick={handleWatchAd}
+                  className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer font-extrabold"
+                >
+                  Watch Ad
+                </button>
+                <button
+                  onClick={() => setShowPremiumPdfModal(false)}
+                  className="w-full py-3 rounded-xl border border-border-accent bg-bg-accent/40 text-foreground font-semibold text-xs hover:bg-border-accent transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
