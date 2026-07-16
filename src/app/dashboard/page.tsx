@@ -108,8 +108,24 @@ export default function Dashboard() {
   const [selectedCopilotWeek, setSelectedCopilotWeek] = React.useState<number>(1);
   const [error, setError] = React.useState<string | null>(null);
 
+  // Freemium states
+  const [isPremium, setIsPremium] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("isPremium") === "true";
+    }
+    return false;
+  });
+  const [generatedCount, setGeneratedCount] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      const count = localStorage.getItem("project_generation_count");
+      return count ? parseInt(count, 10) : 0;
+    }
+    return 0;
+  });
+
   // Premium PDF and simulated Ad states
   const [showPremiumPdfModal, setShowPremiumPdfModal] = React.useState(false);
+  const [showLimitModal, setShowLimitModal] = React.useState(false);
   const [adWatching, setAdWatching] = React.useState(false);
   const [adCountdown, setAdCountdown] = React.useState(3);
 
@@ -520,6 +536,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
   };
 
   const handleGenerate = async (isInitial = false) => {
+    if (loading) return;
+
+    // Quota validation for Free Tier
+    if (!isPremium && generatedCount >= 1) {
+      setShowLimitModal(true);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -541,6 +565,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       if (!isInitial) {
         setActiveTab("overview");
       }
+      
+      // Increment generation count
+      setGeneratedCount((prev) => {
+        const next = prev + 1;
+        localStorage.setItem("project_generation_count", next.toString());
+        return next;
+      });
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Failed to generate project plan.");
@@ -598,7 +629,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     }
   };
 
-  const handleWatchAd = () => {
+  const handleUpgradePremium = () => {
     setAdWatching(true);
     setAdCountdown(3);
     
@@ -615,9 +646,22 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     setTimeout(() => {
       setAdWatching(false);
       setShowPremiumPdfModal(false);
-      alert("Ad finished! Downloading PDF...");
-      handleDownloadPDF();
+      setShowLimitModal(false);
+      setIsPremium(true);
+      localStorage.setItem("isPremium", "true");
+      alert("Payment successful! Upgraded to Premium Tier.");
+      if (plan) {
+        handleDownloadPDF();
+      }
     }, 3000);
+  };
+
+  const handlePremiumPdfClick = () => {
+    if (isPremium) {
+      handleDownloadPDF();
+    } else {
+      router.push("/dashboard/pricing");
+    }
   };
 
   const handleSignOut = () => {
@@ -631,14 +675,42 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       
       {/* Parameter Form Section (Hidden during printing via CSS no-print) */}
       <section className="no-print p-6 md:p-8 rounded-3xl border border-border-accent bg-bg-accent/30 backdrop-blur-md shadow-sm flex flex-col gap-6">
-        <div>
-          <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-            <Zap className="w-5 h-5 text-primary" />
-            Configure Your AI Blueprint
-          </h2>
-          <p className="text-sm text-foreground/60">
-            Define your preferences to generate a custom-tailored academic project plan.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
+              <Zap className="w-5 h-5 text-primary" />
+              Configure Your AI Blueprint
+            </h2>
+            <p className="text-sm text-foreground/60">
+              Define your preferences to generate a custom-tailored academic project plan.
+            </p>
+          </div>
+          
+          {/* Account Tier Status Badge */}
+          <div className="flex flex-col items-end gap-1 text-[10px] uppercase font-bold tracking-wider select-none">
+            {isPremium ? (
+              <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                ✨ Premium Tier: Unlimited Projects
+              </span>
+            ) : (
+              <div className="flex flex-col sm:flex-row items-center gap-3">
+                <div className="flex flex-col items-end gap-0.5">
+                  <span className="px-3 py-1 rounded-full bg-slate-500/10 border border-slate-500/20 text-foreground/60">
+                    Free Tier: 1 project/week ({1 - generatedCount > 0 ? 1 - generatedCount : 0} left)
+                  </span>
+                  <span className="text-[9px] text-foreground/45 font-semibold normal-case">
+                    Premium: Unlimited projects + PDF exports
+                  </span>
+                </div>
+                <button
+                  onClick={() => router.push("/dashboard/pricing")}
+                  className="px-3 py-1 rounded-xl border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-extrabold text-[10px] transition-all shadow-md shadow-amber-500/5 cursor-pointer animate-pulse"
+                >
+                  Get Premium
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Dropdowns Grid */}
@@ -726,11 +798,11 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
           {plan && (
             <button
-              onClick={() => setShowPremiumPdfModal(true)}
+              onClick={handlePremiumPdfClick}
               className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-sm transition-all shadow-md shadow-amber-500/5 cursor-pointer animate-pulse"
             >
               <Award className="w-4 h-4 text-amber-400" />
-              Download Professional PDF
+              Get Premium PDF
             </button>
           )}
         </div>
@@ -827,11 +899,11 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
               {/* Premium PDF Download */}
               <button
-                onClick={() => setShowPremiumPdfModal(true)}
+                onClick={handlePremiumPdfClick}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-xs transition-colors cursor-pointer"
               >
                 <Award className="w-3.5 h-3.5 text-amber-400" />
-                Download Professional PDF
+                Get Premium PDF
               </button>
 
               {/* Quick print action button */}
@@ -1539,43 +1611,37 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </div>
       )}
 
-      {/* Premium PDF Ad Modal */}
-      {showPremiumPdfModal && (
+      {/* Limit Reached Modal */}
+      {showLimitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in no-print">
           <div className="w-full max-w-md p-6 rounded-3xl border border-border-accent bg-slate-900 shadow-2xl flex flex-col gap-5 text-center">
             <div className="flex flex-col items-center gap-2">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-2">
-                <Award className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-2">
+                <Zap className="w-6 h-6 animate-pulse" />
               </div>
-              <h3 className="text-lg font-extrabold text-foreground">Unlock Professional PDF</h3>
+              <h3 className="text-lg font-extrabold text-foreground">Limit Reached</h3>
               <p className="text-xs text-foreground/60 leading-relaxed px-2">
-                Unlock professional PDF! Watch a 30-second video to generate and download your high-quality project blueprint.
+                You've reached your free weekly limit! Upgrade to Premium for unlimited projects and one-click PDF downloads.
               </p>
             </div>
 
-            {adWatching ? (
-              <div className="flex flex-col items-center justify-center py-6 gap-3">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                <span className="text-xs font-bold text-foreground/75">
-                  Sponsor video playing... {adCountdown}s remaining
-                </span>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2 mt-2">
-                <button
-                  onClick={handleWatchAd}
-                  className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer font-extrabold"
-                >
-                  Watch Ad
-                </button>
-                <button
-                  onClick={() => setShowPremiumPdfModal(false)}
-                  className="w-full py-3 rounded-xl border border-border-accent bg-bg-accent/40 text-foreground font-semibold text-xs hover:bg-border-accent transition-all cursor-pointer"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
+            <div className="flex flex-col gap-2 mt-2">
+              <button
+                onClick={() => {
+                  setShowLimitModal(false);
+                  router.push("/dashboard/pricing");
+                }}
+                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer font-extrabold"
+              >
+                Upgrade to Premium
+              </button>
+              <button
+                onClick={() => setShowLimitModal(false)}
+                className="w-full py-3 rounded-xl border border-border-accent bg-bg-accent/40 text-foreground font-semibold text-xs hover:bg-border-accent transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

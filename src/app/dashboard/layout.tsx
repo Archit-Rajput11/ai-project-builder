@@ -12,9 +12,9 @@ import {
   X, 
   ChevronLeft, 
   ChevronRight,
-  LogOut
+  LogOut,
+  Sparkles
 } from "lucide-react";
-import { AdBanner } from "@/components/AdBanner";
 
 export default function DashboardLayout({
   children,
@@ -46,6 +46,11 @@ export default function DashboardLayout({
       name: "Settings",
       href: "/dashboard/settings",
       icon: Settings,
+    },
+    {
+      name: "Upgrade to Pro",
+      href: "/dashboard/pricing",
+      icon: Sparkles,
     },
   ];
 
@@ -105,8 +110,7 @@ export default function DashboardLayout({
         </nav>
 
         {/* Footer Logout Button */}
-        <div className="border-t border-border-accent/40 pt-4 mt-auto flex flex-col gap-4">
-          {isExpanded && <AdBanner />}
+        <div className="border-t border-border-accent/40 pt-4 mt-auto">
           <button
             onClick={handleSignOut}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-red-500/20 hover:border-red-500 bg-red-500/5 hover:bg-red-500/10 text-red-400 text-xs font-bold transition-all cursor-pointer"
@@ -161,8 +165,7 @@ export default function DashboardLayout({
             </nav>
 
             {/* Logout */}
-            <div className="border-t border-border-accent/40 pt-4 mt-auto flex flex-col gap-4">
-              <AdBanner />
+            <div className="border-t border-border-accent/40 pt-4 mt-auto">
               <button
                 onClick={() => {
                   setIsMobileOpen(false);
