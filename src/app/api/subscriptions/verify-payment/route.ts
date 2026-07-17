@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { auth } from "../../../../../auth";
-import { supabaseAdmin } from "../../../../utils/supabase";
+import { supabaseAdmin } from "../../../../../lib/supabase";
 
 export async function POST(request: Request) {
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -54,30 +54,48 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Save/Upsert subscription record in Supabase
+    // 3. Save/Upsert premium subscription record in Supabase users table
     const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     
     const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY;
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
 
     if (isSupabaseConfigured) {
+      // Schema A fallback logic: try writing standard is_pro & expires_at fields first
       const { error: dbError } = await supabaseAdmin
-        .from("subscriptions")
+        .from("users")
         .upsert(
           {
-            user_email: userEmail,
+            email: userEmail,
             is_pro: true,
             expires_at: expiresAt,
           },
-          { onConflict: "user_email" }
+          { onConflict: "email" }
         );
 
       if (dbError) {
-        console.error("Supabase subscription storage error:", dbError.message);
+        console.warn("Supabase users table Schema A write failed, retrying with Schema B:", dbError.message);
+        
+        // Schema B fallback: try writing email, is_premium, premium_expires_at
+        const { error: retryError } = await supabaseAdmin
+          .from("users")
+          .upsert(
+            {
+              email: userEmail,
+              is_premium: true,
+              premium_expires_at: expiresAt,
+            },
+            { onConflict: "email" }
+          );
+
+        if (retryError) {
+          console.error("Supabase alternative write error:", retryError.message);
+        } else {
+          console.log(`Supabase users table persisted (Schema B) for ${userEmail}`);
+        }
       } else {
-        console.log(`Supabase subscription persisted for ${userEmail}`);
+        console.log(`Supabase users table persisted (Schema A) for ${userEmail}`);
       }
     } else {
       console.warn("Supabase is not configured yet. Subscription persisted on client only.");

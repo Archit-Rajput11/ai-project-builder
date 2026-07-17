@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { auth } from "../../../../auth";
 import jwt from "jsonwebtoken";
-import { supabaseAdmin } from "../../../utils/supabase";
+import { supabaseAdmin } from "../../../lib/supabase";
 
 export async function POST(req: NextRequest) {
   let domain = "Web Development";
@@ -33,8 +33,42 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Verify JWT token if client exceeds their free tier quota (requires upgrade to Pro)
-    if (clientGeneratedCount >= 1) {
+    // 2. Fetch logged-in user email session
+    const session = await auth();
+    const userEmail = session?.user?.email;
+
+    const isSupabaseConfigured = 
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
+
+    let isPremiumUser = false;
+
+    // 3. Handle premium validation directly through the users table database query
+    if (userEmail && isSupabaseConfigured) {
+      try {
+        const { data: dbUser, error: dbErr } = await supabaseAdmin
+          .from("users")
+          .select("is_pro, expires_at, is_premium, premium_expires_at")
+          .eq("email", userEmail)
+          .single();
+
+        if (dbUser) {
+          const isPro = dbUser.is_pro || dbUser.is_premium;
+          const expiryString = dbUser.expires_at || dbUser.premium_expires_at;
+          const expiresAt = expiryString ? new Date(expiryString).getTime() : 0;
+          
+          if (isPro && expiresAt > Date.now()) {
+            isPremiumUser = true;
+            console.log(`Database premium validation succeeded for ${userEmail}`);
+          }
+        }
+      } catch (dbErr) {
+        console.error("Database premium check failed, falling back to token validation:", dbErr);
+      }
+    }
+
+    // 4. Verify JWT token if client exceeds their free tier quota and database check didn't pass
+    if (!isPremiumUser && clientGeneratedCount >= 1) {
       const authHeader = req.headers.get("authorization");
       const jwtSecret = process.env.JWT_SECRET;
 
@@ -56,14 +90,17 @@ export async function POST(req: NextRequest) {
       const token = authHeader.substring(7); // Remove "Bearer "
       try {
         const decoded = jwt.verify(token, jwtSecret) as any;
-        if (!decoded || decoded.isPro !== true) {
-          return NextResponse.json(
-            { error: "Access limit reached. Invalid premium status." },
-            { status: 403 }
-          );
+        if (decoded && decoded.isPro === true) {
+          const currentTime = Math.floor(Date.now() / 1000);
+          if (decoded.exp && currentTime < decoded.exp) {
+            isPremiumUser = true;
+          }
         }
       } catch (err: any) {
         console.error("JWT verification failed:", err.message);
+      }
+
+      if (!isPremiumUser) {
         return NextResponse.json(
           { error: "Access limit reached. Premium token has expired or is invalid." },
           { status: 403 }
@@ -71,15 +108,10 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 3. Verify session authorization
-    const session = await auth();
-    const userEmail = session?.user?.email;
-
     const saveProjectToDb = async (planData: any) => {
       const isSupabaseConfigured = 
-        process.env.NEXT_PUBLIC_SUPABASE_URL && 
-        process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
-        process.env.SUPABASE_SERVICE_ROLE_KEY;
+        (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+        (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
 
       if (userEmail && isSupabaseConfigured) {
         try {
@@ -251,9 +283,8 @@ ${customKeywords ? `- Focus/Keywords: ${customKeywords}` : ""}`;
     const session = await auth();
     const userEmail = session?.user?.email;
     const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY;
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
 
     if (userEmail && isSupabaseConfigured) {
       try {

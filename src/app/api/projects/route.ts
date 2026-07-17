@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../../../auth";
-import { supabaseAdmin } from "../../../utils/supabase";
+import { supabaseAdmin } from "../../../lib/supabase";
 
 export async function GET() {
   try {
@@ -15,9 +15,8 @@ export async function GET() {
     }
 
     const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY;
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
 
     if (!isSupabaseConfigured) {
       // Return empty array if DB is not configured yet
@@ -83,9 +82,8 @@ export async function DELETE(request: NextRequest) {
     }
 
     const isSupabaseConfigured = 
-      process.env.NEXT_PUBLIC_SUPABASE_URL && 
-      process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY;
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
 
     if (!isSupabaseConfigured) {
       return NextResponse.json(
