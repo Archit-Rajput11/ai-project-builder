@@ -218,6 +218,24 @@ Please provide a step-by-step explanation and code fixes to resolve this issue.`
   React.useEffect(() => {
     setMounted(true);
 
+    // Intercept loaded database project history blueprint
+    const loadedPlan = localStorage.getItem("loaded_project_blueprint");
+    if (loadedPlan) {
+      try {
+        const parsed = JSON.parse(loadedPlan);
+        if (parsed) {
+          setPlan(parsed);
+          setSelectedCopilotWeek(1);
+          setActiveTab("overview");
+        }
+      } catch (e) {
+        console.error("Failed to parse loaded blueprint:", e);
+      } finally {
+        localStorage.removeItem("loaded_project_blueprint");
+      }
+      return;
+    }
+
     // Intercept shared link data parameter
     const params = new URLSearchParams(window.location.search);
     const sharedParam = params.get("shared");

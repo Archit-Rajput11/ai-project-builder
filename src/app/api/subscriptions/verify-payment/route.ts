@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { auth } from "../../../../../auth";
+import { supabaseAdmin } from "../../../../utils/supabase";
 
 export async function POST(request: Request) {
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -41,7 +43,47 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Generate a secure, signed JWT token valid for exactly 30 days
+    // 2. Fetch logged-in user email session
+    const session = await auth();
+    const userEmail = session?.user?.email;
+
+    if (!userEmail) {
+      return NextResponse.json(
+        { error: "Unauthorized. Please log in first to associate purchase." },
+        { status: 401 }
+      );
+    }
+
+    // 3. Save/Upsert subscription record in Supabase
+    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (isSupabaseConfigured) {
+      const { error: dbError } = await supabaseAdmin
+        .from("subscriptions")
+        .upsert(
+          {
+            user_email: userEmail,
+            is_pro: true,
+            expires_at: expiresAt,
+          },
+          { onConflict: "user_email" }
+        );
+
+      if (dbError) {
+        console.error("Supabase subscription storage error:", dbError.message);
+      } else {
+        console.log(`Supabase subscription persisted for ${userEmail}`);
+      }
+    } else {
+      console.warn("Supabase is not configured yet. Subscription persisted on client only.");
+    }
+
+    // 4. Generate a secure, signed JWT token valid for exactly 30 days
     const expTime = Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60; // 30 days in seconds
     const token = jwt.sign(
       {

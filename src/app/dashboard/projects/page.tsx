@@ -2,39 +2,65 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck, Lock, Sparkles } from "lucide-react";
+import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck, Lock, Sparkles, Trash2, Loader2, AlertCircle } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 
 export default function ProjectsPage() {
   const router = useRouter();
   const { isPro: isPremium, loading } = useProStatus();
+  const [projects, setProjects] = React.useState<any[]>([]);
+  const [loadingHistory, setLoadingHistory] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  const mockProjects = [
-    {
-      title: "Decentralized Health Records Ledger",
-      domain: "Blockchain Tech",
-      complexity: "Advanced",
-      weeks: 6,
-      date: "2026-07-12",
-      description: "A secure, HIPAA-compliant patient ledger system utilizing Ethereum smart contracts and decentralized storage IPFS stubs.",
-    },
-    {
-      title: "Real-time Traffic Audit Pipeline",
-      domain: "IoT / Internet of Things",
-      complexity: "Intermediate",
-      weeks: 6,
-      date: "2026-07-10",
-      description: "Edge computing broker nodes collecting simulation speeds, generating congestion models, and updating central routing engines.",
-    },
-    {
-      title: "Predictive Academic Risk Evaluator",
-      domain: "AI / Machine Learning",
-      complexity: "Intermediate",
-      weeks: 6,
-      date: "2026-07-05",
-      description: "A machine learning pipeline evaluating student study behaviors, highlighting risk percentages, and drafting tutor advice plans.",
-    },
-  ];
+  React.useEffect(() => {
+    if (loading || !isPremium) return;
+
+    const fetchProjects = async () => {
+      try {
+        setLoadingHistory(true);
+        const res = await fetch("/api/projects");
+        if (res.ok) {
+          const data = await res.json();
+          setProjects(data);
+        } else {
+          setError("Failed to load your project history.");
+        }
+      } catch (err) {
+        console.error("Fetch projects error:", err);
+        setError("Error connecting to server. Please try again.");
+      } finally {
+        setLoadingHistory(false);
+      }
+    };
+
+    fetchProjects();
+  }, [isPremium, loading]);
+
+  const handleLoadBlueprint = (project: any) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("loaded_project_blueprint", JSON.stringify(project.blueprint));
+      router.push("/dashboard");
+    }
+  };
+
+  const handleDeleteBlueprint = async (e: React.MouseEvent, projectId: string) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this blueprint from your history?")) return;
+
+    try {
+      const res = await fetch(`/api/projects?id=${projectId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setProjects((prev) => prev.filter((p) => p.id !== projectId));
+      } else {
+        alert("Failed to delete blueprint.");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Error deleting blueprint.");
+    }
+  };
 
   if (loading) {
     return (
@@ -67,7 +93,7 @@ export default function ProjectsPage() {
             onClick={() => router.push("/dashboard/pricing")}
             className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer flex items-center justify-center gap-2"
           >
-            Upgrade to Pro for ₹99/mo
+            Upgrade to Pro for ₹20/mo
           </button>
         </div>
       </div>
@@ -82,59 +108,90 @@ export default function ProjectsPage() {
           My Generated Blueprints
         </h2>
         <p className="text-sm text-foreground/60">
-          Access, manage, and share your previously compiled academic project plans.
+          Access, manage, and load your previously compiled academic project plans.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {mockProjects.map((project, idx) => (
-          <div 
-            key={idx} 
-            className="p-5 rounded-2xl border border-border-accent bg-bg-accent/20 backdrop-blur-sm flex flex-col gap-3 hover:border-primary/40 hover:scale-[1.01] transition-all duration-200 group"
-          >
-            <div className="flex items-center justify-between border-b border-border-accent/30 pb-2.5">
-              <span className="text-[10px] font-bold text-primary uppercase tracking-wide">
-                {project.domain}
-              </span>
-              <span className="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary font-bold text-[9px] uppercase tracking-wide">
-                {project.complexity}
-              </span>
-            </div>
-
-            <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
-              {project.title}
-            </h4>
-
-            <p className="text-xs text-foreground/60 leading-relaxed line-clamp-3">
-              {project.description}
+      {loadingHistory ? (
+        <div className="flex flex-col items-center justify-center py-12 gap-3 text-foreground/45 text-sm">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          Loading your projects list...
+        </div>
+      ) : error ? (
+        <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 text-sm font-medium flex items-center gap-2">
+          <AlertCircle className="w-5 h-5" />
+          {error}
+        </div>
+      ) : projects.length === 0 ? (
+        <div className="p-12 rounded-2xl border border-dashed border-border-accent/40 bg-bg-accent/5 text-center flex flex-col items-center gap-3">
+          <FolderGit2 className="w-10 h-10 text-foreground/30" />
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-bold text-foreground/80">No blueprints generated yet</span>
+            <p className="text-xs text-foreground/50 max-w-xs leading-relaxed">
+              Generate your first project plan from the dashboard to save it in your history collection.
             </p>
-
-            <div className="mt-2 pt-3 border-t border-border-accent/30 flex items-center justify-between text-[10px] text-foreground/40 font-semibold uppercase">
-              <div className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{project.weeks} Weeks</span>
-              </div>
-              <span>Saved {project.date}</span>
-            </div>
-
-            <button
-              onClick={() => alert("This saved blueprint is currently static. Real-time project database syncing will be added in the production database release!")}
-              className="mt-3 w-full py-2 rounded-xl bg-bg-accent border border-border-accent hover:border-primary text-foreground hover:text-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <span>Load Blueprint</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {projects.map((project) => (
+            <div 
+              key={project.id} 
+              className="p-5 rounded-2xl border border-border-accent bg-bg-accent/20 backdrop-blur-sm flex flex-col gap-3 hover:border-primary/40 hover:scale-[1.01] transition-all duration-200 group relative"
+            >
+              {/* Delete button */}
+              <button
+                onClick={(e) => handleDeleteBlueprint(e, project.id)}
+                className="absolute top-4 right-4 p-1.5 rounded-lg border border-transparent hover:border-red-500/20 hover:bg-red-500/5 text-foreground/35 hover:text-red-400 transition-colors cursor-pointer"
+                title="Delete blueprint"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+
+              <div className="flex items-center justify-between border-b border-border-accent/30 pb-2.5 pr-8">
+                <span className="text-[10px] font-bold text-primary uppercase tracking-wide">
+                  {project.domain}
+                </span>
+                <span className="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary font-bold text-[9px] uppercase tracking-wide">
+                  {project.complexity}
+                </span>
+              </div>
+
+              <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors pr-8">
+                {project.title}
+              </h4>
+
+              <p className="text-xs text-foreground/60 leading-relaxed line-clamp-3">
+                {project.description}
+              </p>
+
+              <div className="mt-2 pt-3 border-t border-border-accent/30 flex items-center justify-between text-[10px] text-foreground/40 font-semibold uppercase">
+                <div className="flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>{project.weeks} Weeks</span>
+                </div>
+                <span>Saved {project.date}</span>
+              </div>
+
+              <button
+                onClick={() => handleLoadBlueprint(project)}
+                className="mt-3 w-full py-2 rounded-xl bg-bg-accent border border-border-accent hover:border-primary text-foreground hover:text-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>Load Blueprint</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Persistence Note Banner */}
       <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex gap-3 items-start mt-4">
         <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
         <div className="flex flex-col gap-1">
-          <span className="text-xs font-bold text-foreground/90">Database Integration Pending</span>
+          <span className="text-xs font-bold text-foreground/90">Supabase Storage Active</span>
           <p className="text-xs text-foreground/60 leading-relaxed">
-            Saved blueprints are currently rendered as static mock previews. Real-time schema database integration is scheduled in Phase 8 of our product lifecycle.
+            Your premium project blueprints are fully synced and persisted securely inside your Supabase serverless database tables.
           </p>
         </div>
       </div>

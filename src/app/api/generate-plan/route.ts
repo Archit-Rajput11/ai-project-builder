@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { auth } from "../../../../auth";
 import jwt from "jsonwebtoken";
+import { supabaseAdmin } from "../../../utils/supabase";
 
 export async function POST(req: NextRequest) {
   let domain = "Web Development";
@@ -72,12 +73,45 @@ export async function POST(req: NextRequest) {
 
     // 3. Verify session authorization
     const session = await auth();
+    const userEmail = session?.user?.email;
 
-    // 3. Extract GEMINI_API_KEY
+    const saveProjectToDb = async (planData: any) => {
+      const isSupabaseConfigured = 
+        process.env.NEXT_PUBLIC_SUPABASE_URL && 
+        process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
+        process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+      if (userEmail && isSupabaseConfigured) {
+        try {
+          const { error: dbError } = await supabaseAdmin
+            .from("projects")
+            .insert({
+              user_email: userEmail,
+              title: planData.projectTitle || "Untitled Project",
+              domain: domain,
+              complexity: complexity,
+              skill_level: skillLevel,
+              custom_keywords: customKeywords || null,
+              blueprint: planData,
+            });
+
+          if (dbError) {
+            console.error("Supabase project history storage error:", dbError.message);
+          } else {
+            console.log(`Successfully saved blueprint history for ${userEmail}`);
+          }
+        } catch (dbErr) {
+          console.error("Database storage catch block error:", dbErr);
+        }
+      }
+    };
+
+    // 4. Extract GEMINI_API_KEY
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey || apiKey === "your_gemini_api_key_here") {
       console.warn("GEMINI_API_KEY is not configured. Returning local mock project plan for demonstration.");
       const mockPlan = generateMockPlan(domain, complexity, skillLevel, customKeywords);
+      await saveProjectToDb(mockPlan);
       return NextResponse.json(mockPlan);
     }
 
@@ -208,10 +242,36 @@ ${customKeywords ? `- Focus/Keywords: ${customKeywords}` : ""}`;
     }
 
     const result = JSON.parse(text);
+    await saveProjectToDb(result);
     return NextResponse.json(result);
   } catch (error: any) {
     console.error("Gemini API call failed, falling back to local mock data:", error);
     const mockPlan = generateMockPlan(domain, complexity, skillLevel, customKeywords);
+    // Since saveProjectToDb was defined in the outer try block, let's call it here
+    const session = await auth();
+    const userEmail = session?.user?.email;
+    const isSupabaseConfigured = 
+      process.env.NEXT_PUBLIC_SUPABASE_URL && 
+      process.env.NEXT_PUBLIC_SUPABASE_URL !== "https://your-supabase-project.supabase.co" &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (userEmail && isSupabaseConfigured) {
+      try {
+        await supabaseAdmin
+          .from("projects")
+          .insert({
+            user_email: userEmail,
+            title: mockPlan.projectTitle || "Untitled Project",
+            domain: domain,
+            complexity: complexity,
+            skill_level: skillLevel,
+            custom_keywords: customKeywords || null,
+            blueprint: mockPlan,
+          });
+      } catch (dbErr) {
+        console.error("Error saving fallback plan to Supabase:", dbErr);
+      }
+    }
     return NextResponse.json(mockPlan);
   }
 }
