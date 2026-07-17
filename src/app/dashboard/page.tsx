@@ -111,7 +111,7 @@ export default function Dashboard() {
   const [error, setError] = React.useState<string | null>(null);
 
   // Freemium states
-  const { isPro: isPremiumToken } = useProStatus();
+  const { isPro: isPremiumToken, loading: isProLoading } = useProStatus();
   const [isPremiumState, setIsPremiumState] = React.useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("isPremium") === "true";
@@ -716,6 +716,17 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       setDebugTask(task);
     }
   };
+
+  if (isProLoading) {
+    return (
+      <div className="min-h-[400px] w-full flex items-center justify-center text-foreground">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <p className="text-sm font-semibold text-foreground/70 animate-pulse">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-8 pb-16 animate-fade-in">

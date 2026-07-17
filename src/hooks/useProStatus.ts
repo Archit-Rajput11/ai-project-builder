@@ -3,43 +3,39 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
-export function useProStatus(userId?: string) {
+export function useProStatus() {
   const [isPro, setIsPro] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    let active = true;
-
-    async function checkStatus() {
-      // 1. If userId is provided, query Supabase directly on the client
-      if (userId) {
-        try {
+    async function checkUserSessionAndStatus() {
+      try {
+        // 1. Ask Supabase who is logged into this device right now
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        
+        if (!authError && user) {
+          // 2. Fetch that specific user's pro status using their unique device-synced ID
           const { data, error } = await supabase
             .from('users')
             .select('is_pro, current_period_end, expires_at, premium_expires_at')
-            .eq('id', userId)
+            .eq('id', user.id)
             .single();
 
           if (!error && data) {
             const dbUser = data as any;
             const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
             const isProUser = dbUser.is_pro || dbUser.is_premium;
-            const isActive = isProUser && expiryString && new Date(expiryString).getTime() > Date.now();
-            if (active) {
-              setIsPro(!!isActive);
-            }
-          }
-        } catch (err) {
-          console.error('Error verifying pro tier status directly:', err);
-        } finally {
-          if (active) {
+            const active = isProUser && expiryString && new Date(expiryString).getTime() > Date.now();
+            setIsPro(!!active);
             setLoading(false);
+            return;
           }
         }
-        return;
+      } catch (err) {
+        console.error('Error verifying pro tier status directly via Supabase Auth:', err);
       }
 
-      // 2. If no userId is passed, fall back to our server status check (keeps existing pages working)
+      // 3. Fallback: Ask our NextAuth session endpoint (resilient sync when using NextAuth cookie login)
       try {
         const response = await fetch("/api/subscriptions/status");
         if (response.ok) {
@@ -47,32 +43,22 @@ export function useProStatus(userId?: string) {
           if (data.isPro && data.token) {
             localStorage.setItem("pro_session", data.token);
             localStorage.setItem("isPremium", "true");
-            if (active) {
-              setIsPro(true);
-            }
+            setIsPro(true);
           } else {
             localStorage.removeItem("pro_session");
             localStorage.removeItem("isPremium");
-            if (active) {
-              setIsPro(false);
-            }
+            setIsPro(false);
           }
         }
       } catch (err) {
-        console.error("Background subscription sync error:", err);
+        console.error("Background subscription sync fallback error:", err);
       } finally {
-        if (active) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     }
 
-    checkStatus();
-
-    return () => {
-      active = false;
-    };
-  }, [userId]);
+    checkUserSessionAndStatus();
+  }, []);
 
   return { isPro, loading };
 }
