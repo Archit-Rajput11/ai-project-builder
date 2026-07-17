@@ -10,52 +10,19 @@ export async function POST(req: NextRequest) {
   let customKeywords = "";
 
   try {
-    // 1. Verify JWT pro_session token
-    const authHeader = req.headers.get("authorization");
-    const jwtSecret = process.env.JWT_SECRET;
-
-    if (!jwtSecret) {
-      console.error("JWT_SECRET is missing on the server");
-      return NextResponse.json(
-        { error: "Server authentication is not configured." },
-        { status: 500 }
-      );
-    }
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Access denied. Premium token is missing." },
-        { status: 403 }
-      );
-    }
-
-    const token = authHeader.substring(7); // Remove "Bearer "
-    try {
-      const decoded = jwt.verify(token, jwtSecret) as any;
-      if (!decoded || decoded.isPro !== true) {
-        return NextResponse.json(
-          { error: "Access denied. Invalid premium status." },
-          { status: 403 }
-        );
-      }
-    } catch (err: any) {
-      console.error("JWT verification failed:", err.message);
-      return NextResponse.json(
-        { error: "Access denied. Premium token has expired or is invalid." },
-        { status: 403 }
-      );
-    }
-
-    // 2. Verify session authorization
-    const session = await auth();
-    
-    // 2. Fetch parameter selections from request body
-    const body = await req.json();
+    // 1. Fetch selections and quota count from request body
+    const body = await req.json().catch(() => ({}));
+    let clientGeneratedCount = 0;
     if (body) {
       if (body.domain) domain = body.domain;
       if (body.complexity) complexity = body.complexity;
       if (body.skillLevel) skillLevel = body.skillLevel;
       if (body.customKeywords) customKeywords = body.customKeywords;
+      if (body.generatedCount !== undefined) {
+        clientGeneratedCount = typeof body.generatedCount === "string" 
+          ? parseInt(body.generatedCount, 10) 
+          : Number(body.generatedCount);
+      }
     }
 
     if (!domain || !complexity || !skillLevel) {
@@ -64,6 +31,47 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    // 2. Verify JWT token if client exceeds their free tier quota (requires upgrade to Pro)
+    if (clientGeneratedCount >= 1) {
+      const authHeader = req.headers.get("authorization");
+      const jwtSecret = process.env.JWT_SECRET;
+
+      if (!jwtSecret) {
+        console.error("JWT_SECRET is missing on the server");
+        return NextResponse.json(
+          { error: "Server authentication is not configured." },
+          { status: 500 }
+        );
+      }
+
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return NextResponse.json(
+          { error: "Access limit reached. Premium token is missing." },
+          { status: 403 }
+        );
+      }
+
+      const token = authHeader.substring(7); // Remove "Bearer "
+      try {
+        const decoded = jwt.verify(token, jwtSecret) as any;
+        if (!decoded || decoded.isPro !== true) {
+          return NextResponse.json(
+            { error: "Access limit reached. Invalid premium status." },
+            { status: 403 }
+          );
+        }
+      } catch (err: any) {
+        console.error("JWT verification failed:", err.message);
+        return NextResponse.json(
+          { error: "Access limit reached. Premium token has expired or is invalid." },
+          { status: 403 }
+        );
+      }
+    }
+
+    // 3. Verify session authorization
+    const session = await auth();
 
     // 3. Extract GEMINI_API_KEY
     const apiKey = process.env.GEMINI_API_KEY;

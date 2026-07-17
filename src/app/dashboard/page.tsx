@@ -559,11 +559,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ domain, complexity, skillLevel, customKeywords }),
+        body: JSON.stringify({ domain, complexity, skillLevel, customKeywords, generatedCount }),
       });
 
       if (!response.ok) {
-        throw new Error("Generation request failed. Please check key configuration.");
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || "Generation request failed. Please check key configuration.");
       }
 
       const data = await response.json();
