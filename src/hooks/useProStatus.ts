@@ -1,53 +1,56 @@
-import * as React from "react";
+'use client';
 
-export function useProStatus() {
-  const [isPro, setIsPro] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
-  React.useEffect(() => {
+export function useProStatus(userId?: string) {
+  const [isPro, setIsPro] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
     let active = true;
 
-    const checkStatus = async () => {
-      // 1. First check local token for instant client-side resolution (zero network delay)
-      const token = localStorage.getItem("pro_session");
-      let localValid = false;
-
-      if (token) {
+    async function checkStatus() {
+      // 1. If userId is provided, query Supabase directly on the client
+      if (userId) {
         try {
-          const parts = token.split(".");
-          if (parts.length === 3) {
-            const payloadBase64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-            const decodedPayload = JSON.parse(window.atob(payloadBase64));
+          const { data, error } = await supabase
+            .from('users')
+            .select('is_pro, current_period_end, expires_at, premium_expires_at')
+            .eq('id', userId)
+            .single();
 
-            if (decodedPayload && decodedPayload.isPro === true) {
-              const currentTime = Math.floor(Date.now() / 1000);
-              if (decodedPayload.exp && currentTime < decodedPayload.exp) {
-                if (active) {
-                  setIsPro(true);
-                  setLoading(false);
-                }
-                localValid = true;
-              }
+          if (!error && data) {
+            const dbUser = data as any;
+            const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
+            const isProUser = dbUser.is_pro || dbUser.is_premium;
+            const isActive = isProUser && expiryString && new Date(expiryString).getTime() > Date.now();
+            if (active) {
+              setIsPro(!!isActive);
             }
           }
         } catch (err) {
-          console.error("Local token check error:", err);
+          console.error('Error verifying pro tier status directly:', err);
+        } finally {
+          if (active) {
+            setLoading(false);
+          }
         }
+        return;
       }
 
-      // 2. Perform background sync check against database (heals cross-device logins)
+      // 2. If no userId is passed, fall back to our server status check (keeps existing pages working)
       try {
         const response = await fetch("/api/subscriptions/status");
         if (response.ok) {
           const data = await response.json();
           if (data.isPro && data.token) {
             localStorage.setItem("pro_session", data.token);
-            localStorage.setItem("isPremium", "true"); // keep backwards-compatible flag
+            localStorage.setItem("isPremium", "true");
             if (active) {
               setIsPro(true);
             }
           } else {
-            // Subscription has expired or does not exist in DB
             localStorage.removeItem("pro_session");
             localStorage.removeItem("isPremium");
             if (active) {
@@ -62,14 +65,14 @@ export function useProStatus() {
           setLoading(false);
         }
       }
-    };
+    }
 
     checkStatus();
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [userId]);
 
   return { isPro, loading };
 }

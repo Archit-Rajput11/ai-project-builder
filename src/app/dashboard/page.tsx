@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import LZString from "lz-string";
 import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, CheckCircle2, Award, Zap, Loader2 } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
+import ProBadge from "@/components/ProBadge";
 
 // Dynamically import hello-pangea/dnd to avoid SSR issues
 const DragDropContext = dynamic(
@@ -725,7 +726,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           <div>
             <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
               <Zap className="w-5 h-5 text-primary" />
-              Configure Your AI Blueprint
+              Configure Your AI Blueprint {isPremium && <ProBadge />}
             </h2>
             <p className="text-sm text-foreground/60">
               Define your preferences to generate a custom-tailored academic project plan.
@@ -808,7 +809,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </div>
 
         {/* Custom Keywords Input */}
-        <div className="flex flex-col gap-1.5">
+        <div className={`relative flex flex-col gap-1.5 p-4 rounded-xl border border-border-accent/40 bg-background/30 transition-all duration-300 ${!isPremium ? 'opacity-50 pointer-events-none select-none' : ''}`}>
+          {/* Overlay Lock Message */}
+          {!isPremium && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60 dark:bg-slate-950/60 rounded-xl backdrop-blur-[2px] pointer-events-auto z-10">
+              <span className="text-xl mb-0.5">🔒</span>
+              <span className="text-[10px] font-bold tracking-wider text-amber-500 dark:text-amber-400 uppercase">Premium Feature</span>
+            </div>
+          )}
           <label htmlFor="customKeywords" className="text-xs font-bold text-foreground/75 uppercase tracking-wide">
             Project Focus / Keywords (Optional)
           </label>
@@ -818,6 +826,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             placeholder="e.g., E-commerce, Healthcare, Fitness tracker..."
             value={customKeywords}
             onChange={(e) => setCustomKeywords(e.target.value)}
+            disabled={!isPremium}
             className="px-4 py-3 rounded-xl border border-border-accent bg-background text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-foreground/30 transition-all"
           />
         </div>
