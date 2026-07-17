@@ -370,6 +370,10 @@ Please provide a step-by-step explanation and code fixes to resolve this issue.`
 
   const handleDownloadBoilerplate = async () => {
     if (!plan) return;
+    if (!isPremium) {
+      router.push("/dashboard/pricing");
+      return;
+    }
     try {
       setLoading(true);
       // Dynamically import jszip to avoid SSR issues
@@ -678,6 +682,22 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     router.push("/auth");
   };
 
+  const handleChatOpen = () => {
+    if (!isPremium) {
+      router.push("/dashboard/pricing");
+    } else {
+      setIsChatOpen(true);
+    }
+  };
+
+  const handleDebugClick = (task: Task) => {
+    if (!isPremium) {
+      router.push("/dashboard/pricing");
+    } else {
+      setDebugTask(task);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8 pb-16 animate-fade-in">
       
@@ -807,10 +827,23 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {plan && (
             <button
               onClick={handlePremiumPdfClick}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-sm transition-all shadow-md shadow-amber-500/5 cursor-pointer animate-pulse"
+              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl border transition-all shadow-md cursor-pointer ${
+                isPremium 
+                  ? "border-emerald-500/30 hover:border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-sm shadow-emerald-500/5"
+                  : "border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-sm shadow-amber-500/5 animate-pulse"
+              }`}
             >
-              <Award className="w-4 h-4 text-amber-400" />
-              Get Premium PDF
+              {isPremium ? (
+                <>
+                  <Download className="w-4 h-4 text-emerald-400" />
+                  Download PDF
+                </>
+              ) : (
+                <>
+                  <Award className="w-4 h-4 text-amber-400" />
+                  Get Premium PDF
+                </>
+              )}
             </button>
           )}
         </div>
@@ -915,13 +948,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               </button>
 
               {/* Quick print action button */}
-              <button
-                onClick={handleDownloadPDF}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-accent hover:bg-bg-accent font-semibold text-xs transition-colors cursor-pointer"
-              >
-                <Download className="w-3.5 h-3.5" />
-                Download Plan
-              </button>
+              {isPremium && (
+                <button
+                  onClick={handleDownloadPDF}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-accent hover:bg-bg-accent font-semibold text-xs transition-colors cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Download Plan
+                </button>
+              )}
 
               {/* Sign Out Button */}
               <button
@@ -995,9 +1030,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   </h4>
                   <button
                     onClick={handleDownloadBoilerplate}
-                    className="no-print self-start flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-emerald-500/30 hover:border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs transition-all cursor-pointer"
+                    className={`no-print self-start flex items-center gap-2 px-3.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                      isPremium
+                        ? "border-emerald-500/30 hover:border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs"
+                        : "border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-xs"
+                    }`}
                   >
-                    📦 Download Starter Boilerplate
+                    {isPremium ? "📦 Download Starter Boilerplate" : "🔒 Unlock Starter Boilerplate"}
                   </button>
                 </div>
                 <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-900 shadow-md">
@@ -1106,7 +1145,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                           <button
                                             onClick={(e) => {
                                               e.stopPropagation();
-                                              setDebugTask(task);
+                                              handleDebugClick(task);
                                             }}
                                             className="px-2 py-1 rounded border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-400 font-extrabold text-[9px] transition-all cursor-pointer"
                                           >
@@ -1439,14 +1478,18 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Floating Action Button - Ask Tutor */}
       {plan && (
         <button
-          onClick={() => setIsChatOpen(true)}
-          className="no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3.5 rounded-full bg-primary hover:bg-primary-hover text-white font-bold text-sm shadow-lg shadow-primary/30 transition-all hover:scale-[1.04] active:scale-[0.98] cursor-pointer animate-fade-in"
+          onClick={handleChatOpen}
+          className={`no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3.5 rounded-full font-bold text-sm shadow-lg transition-all hover:scale-[1.04] active:scale-[0.98] cursor-pointer animate-fade-in ${
+            isPremium
+              ? "bg-primary hover:bg-primary-hover text-white shadow-primary/30"
+              : "bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-amber-500/20"
+          }`}
         >
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
           </span>
-          💬 Ask Tutor
+          {isPremium ? "💬 Ask Tutor" : "🔒 Unlock Tutor (Pro)"}
         </button>
       )}
 

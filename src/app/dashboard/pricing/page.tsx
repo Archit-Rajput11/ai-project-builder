@@ -37,7 +37,7 @@ export default function PricingPage() {
   };
 
   const handleUpgradeNow = async () => {
-    console.log("Payment triggered for ₹99");
+    console.log("Payment triggered for ₹20");
     setLoading(true);
 
     try {
@@ -243,10 +243,10 @@ export default function PricingPage() {
 
             <div className="flex items-baseline gap-2 py-2 border-b border-border-accent/30">
               <span className="text-xs text-foreground/45 line-through font-bold">
-                ₹199
+                ₹99
               </span>
               <span className="text-3xl font-extrabold text-amber-400">
-                ₹99
+                ₹20
               </span>
               <span className="text-xs text-foreground/40 font-semibold">
                 / per month
@@ -307,7 +307,7 @@ export default function PricingPage() {
                 ) : (
                   <>
                     <Award className="w-4.5 h-4.5 text-slate-950" />
-                    Get Premium for ₹99/mo
+                    Get Premium for ₹20/mo
                   </>
                 )}
               </button>

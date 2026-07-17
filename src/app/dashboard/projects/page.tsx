@@ -1,9 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck, Lock, Sparkles } from "lucide-react";
+import { useProStatus } from "@/hooks/useProStatus";
 
 export default function ProjectsPage() {
+  const router = useRouter();
+  const { isPro: isPremium, loading } = useProStatus();
+
   const mockProjects = [
     {
       title: "Decentralized Health Records Ledger",
@@ -30,6 +35,44 @@ export default function ProjectsPage() {
       description: "A machine learning pipeline evaluating student study behaviors, highlighting risk percentages, and drafting tutor advice plans.",
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="animate-pulse text-sm text-foreground/40 p-6 border border-border-accent bg-bg-accent/20 backdrop-blur-md rounded-3xl">
+        Checking premium credentials...
+      </div>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
+        <div className="max-w-md w-full p-8 rounded-3xl border border-amber-500/25 bg-slate-900/40 dark:bg-slate-950/40 backdrop-blur-md text-center flex flex-col items-center gap-6 shadow-xl shadow-amber-950/5">
+          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <Lock className="w-8 h-8" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              Pro Feature Locked
+            </span>
+            <h3 className="text-xl font-extrabold tracking-tight text-foreground">
+              Project History & Save
+            </h3>
+            <p className="text-xs text-foreground/60 leading-relaxed px-2">
+              Save your generated blueprints, track timeline milestones, and review your historical project builds anytime with the Pro Plan.
+            </p>
+          </div>
+          <button
+            onClick={() => router.push("/dashboard/pricing")}
+            className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer flex items-center justify-center gap-2"
+          >
+            Upgrade to Pro for ₹99/mo
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6 animate-fade-in pb-12">
