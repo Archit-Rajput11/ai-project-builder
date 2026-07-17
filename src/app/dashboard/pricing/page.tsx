@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Check, X, Award, ShieldCheck, Sparkles, Loader2, Calendar } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
+import { supabase } from "@/lib/supabase";
 
 export default function PricingPage() {
   const router = useRouter();
@@ -41,6 +42,14 @@ export default function PricingPage() {
     setLoading(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        alert("Please log in before initiating payment.");
+        setLoading(false);
+        return;
+      }
+
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
         alert("Failed to load payment gateway. Please check your internet connection.");
@@ -102,8 +111,12 @@ export default function PricingPage() {
           }
         },
         prefill: {
-          name: "Student User",
-          email: "student@example.com",
+          name: user.user_metadata?.full_name || "Student User",
+          email: user.email || "student@example.com",
+        },
+        notes: {
+          userId: user.id,
+          email: user.email,
         },
         theme: {
           color: "#8b5cf6",

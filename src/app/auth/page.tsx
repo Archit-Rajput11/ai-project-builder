@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Mail, Lock, User, Sparkles, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
+import { supabase } from "@/lib/supabase";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function AuthPage() {
   const [password, setPassword] = React.useState("");
   const [name, setName] = React.useState("");
   const [agreeTerms, setAgreeTerms] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   // Touch flags to prevent premature errors on initial render
   const [emailTouched, setEmailTouched] = React.useState(false);
@@ -39,7 +41,7 @@ export default function AuthPage() {
   // or if the required inputs are invalid/empty.
   const isFormInvalid = !isEmailValid || !isPasswordValid || (isSignUp && (!isNameValid || !isAgreementValid));
   const hasValidationErrors = !!(emailError || passwordError || nameError);
-  const isSubmitDisabled = isFormInvalid || hasValidationErrors;
+  const isSubmitDisabled = isFormInvalid || hasValidationErrors || loading;
 
   // Reset touched states when changing view mode
   React.useEffect(() => {
@@ -48,23 +50,75 @@ export default function AuthPage() {
     setNameTouched(false);
   }, [isSignUp]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitDisabled) return;
 
-    console.log("Form Submitted:", {
-      type: isSignUp ? "Sign Up" : "Log In",
-      name: isSignUp ? name : undefined,
-      email,
-      password,
-      agreeTerms: isSignUp ? agreeTerms : undefined,
-    });
-    
-    // Set mock session cookie to satisfy Edge proxy validations
-    document.cookie = "mock-logged-in=true; path=/";
-    
-    // Redirect straight to dashboard
-    router.push("/dashboard");
+    setLoading(true);
+
+    try {
+      if (isSignUp) {
+        // 1. Register the user in Supabase's secure Auth system
+        const { data, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+          options: {
+            data: {
+              full_name: name,
+            },
+          },
+        });
+
+        if (error) {
+          alert(`Sign up error: ${error.message}`);
+          return;
+        }
+
+        if (data?.user) {
+          // 2. Insert a corresponding row into your public 'users' table for future logic
+          const { error: dbError } = await supabase
+            .from('users')
+            .insert([
+              { 
+                id: data.user.id, // Links directly to the secure auth ID
+                email: data.user.email,
+                is_pro: false // Starts as free tier by default
+              }
+            ]);
+
+          if (dbError) {
+            console.error("Error saving user profile to table:", dbError.message);
+            alert("Account created, but database profile setup failed. Please contact support.");
+          } else {
+            alert("Registration successful! You can now log in.");
+            setIsSignUp(false);
+          }
+        }
+      } else {
+        // Log in the user via Supabase
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) {
+          alert(`Login failed: ${error.message}`);
+          return;
+        }
+
+        if (data?.user) {
+          // Set mock session cookie to satisfy Edge proxy validations
+          document.cookie = "mock-logged-in=true; path=/";
+          // Success! Redirect them to the dashboard
+          window.location.href = "/dashboard";
+        }
+      }
+    } catch (err: any) {
+      console.error("Authentication error:", err);
+      alert(`An error occurred: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -244,8 +298,17 @@ export default function AuthPage() {
                     : "bg-primary text-white hover:bg-primary-hover active:scale-[0.99] cursor-pointer shadow-primary/10"
                 }`}
               >
-                <span>{isSignUp ? "Create Free Account" : "Sign In to Account"}</span>
-                <ArrowRight className="w-4 h-4" />
+                {loading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{isSignUp ? "Create Free Account" : "Sign In to Account"}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </form>
           </div>
