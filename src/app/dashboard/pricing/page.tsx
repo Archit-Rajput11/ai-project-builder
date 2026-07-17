@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Check, X, Award, ShieldCheck, Sparkles, Loader2, Calendar } from "lucide-react";
+import { useProStatus } from "@/hooks/useProStatus";
 
 export default function PricingPage() {
   const router = useRouter();
@@ -10,17 +11,19 @@ export default function PricingPage() {
   const [loading, setLoading] = React.useState(false);
   const [checkoutProgress, setCheckoutProgress] = React.useState(3);
 
-  const [isPremium, setIsPremium] = React.useState(() => {
+  const { isPro: isPremiumToken } = useProStatus();
+  const [isPremiumState, setIsPremiumState] = React.useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("isPremium") === "true";
     }
     return false;
   });
+  const isPremium = isPremiumState || isPremiumToken;
 
   React.useEffect(() => {
     setMounted(true);
     const premiumState = localStorage.getItem("isPremium") === "true";
-    setIsPremium(premiumState);
+    setIsPremiumState(premiumState);
   }, []);
 
   const loadRazorpayScript = () => {
@@ -68,7 +71,7 @@ export default function PricingPage() {
         order_id: orderId,
         handler: async function (res: any) {
           try {
-            const verifyRes = await fetch("/api/verify-payment", {
+            const verifyRes = await fetch("/api/subscriptions/verify-payment", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -83,8 +86,9 @@ export default function PricingPage() {
             const verifyData = await verifyRes.json();
 
             if (verifyRes.ok && verifyData.success) {
-              setIsPremium(true);
+              setIsPremiumState(true);
               localStorage.setItem("isPremium", "true");
+              localStorage.setItem("pro_session", verifyData.token);
               alert("Payment successful! Upgraded to Pro Plan.");
               router.push("/dashboard");
             } else {
@@ -132,7 +136,8 @@ export default function PricingPage() {
   const handleDowngradeMock = () => {
     if (confirm("Are you sure you want to mock downgrade your account to Free? (For testing purposes)")) {
       localStorage.removeItem("isPremium");
-      setIsPremium(false);
+      localStorage.removeItem("pro_session");
+      setIsPremiumState(false);
       alert("Account downgraded to Free Tier for testing.");
       window.location.reload();
     }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import LZString from "lz-string";
 import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, CheckCircle2, Award, Zap, Loader2 } from "lucide-react";
+import { useProStatus } from "@/hooks/useProStatus";
 
 // Dynamically import hello-pangea/dnd to avoid SSR issues
 const DragDropContext = dynamic(
@@ -109,12 +110,15 @@ export default function Dashboard() {
   const [error, setError] = React.useState<string | null>(null);
 
   // Freemium states
-  const [isPremium, setIsPremium] = React.useState(() => {
+  const { isPro: isPremiumToken } = useProStatus();
+  const [isPremiumState, setIsPremiumState] = React.useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("isPremium") === "true";
     }
     return false;
   });
+  const isPremium = isPremiumState || isPremiumToken;
+
   const [generatedCount, setGeneratedCount] = React.useState(() => {
     if (typeof window !== "undefined") {
       const count = localStorage.getItem("project_generation_count");
@@ -544,6 +548,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       return;
     }
 
+    const token = typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "";
+
     setLoading(true);
     setError(null);
     try {
@@ -551,6 +557,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({ domain, complexity, skillLevel, customKeywords }),
       });
@@ -647,7 +654,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       setAdWatching(false);
       setShowPremiumPdfModal(false);
       setShowLimitModal(false);
-      setIsPremium(true);
+      setIsPremiumState(true);
       localStorage.setItem("isPremium", "true");
       alert("Payment successful! Upgraded to Premium Tier.");
       if (plan) {

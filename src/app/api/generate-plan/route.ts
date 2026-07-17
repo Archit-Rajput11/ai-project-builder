@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { auth } from "../../../../auth";
+import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
   let domain = "Web Development";
@@ -9,7 +10,43 @@ export async function POST(req: NextRequest) {
   let customKeywords = "";
 
   try {
-    // 1. Verify session authorization
+    // 1. Verify JWT pro_session token
+    const authHeader = req.headers.get("authorization");
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (!jwtSecret) {
+      console.error("JWT_SECRET is missing on the server");
+      return NextResponse.json(
+        { error: "Server authentication is not configured." },
+        { status: 500 }
+      );
+    }
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "Access denied. Premium token is missing." },
+        { status: 403 }
+      );
+    }
+
+    const token = authHeader.substring(7); // Remove "Bearer "
+    try {
+      const decoded = jwt.verify(token, jwtSecret) as any;
+      if (!decoded || decoded.isPro !== true) {
+        return NextResponse.json(
+          { error: "Access denied. Invalid premium status." },
+          { status: 403 }
+        );
+      }
+    } catch (err: any) {
+      console.error("JWT verification failed:", err.message);
+      return NextResponse.json(
+        { error: "Access denied. Premium token has expired or is invalid." },
+        { status: 403 }
+      );
+    }
+
+    // 2. Verify session authorization
     const session = await auth();
     
     // 2. Fetch parameter selections from request body
