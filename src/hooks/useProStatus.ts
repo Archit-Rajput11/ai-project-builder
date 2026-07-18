@@ -13,45 +13,31 @@ export function useProStatus() {
         // 1. Ask Supabase who is logged into this device right now
         const { data: { user }, error: authError } = await supabase.auth.getUser();
         
-        if (!authError && user) {
-          // 2. Fetch that specific user's pro status using their unique device-synced ID
-          const { data, error } = await supabase
-            .from('users')
-            .select('is_pro, current_period_end, expires_at, premium_expires_at')
-            .eq('id', user.id)
-            .single();
+        if (authError || !user) {
+          setIsPro(false);
+          return;
+        }
 
-          if (!error && data) {
-            const dbUser = data as any;
-            const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
-            const isProUser = dbUser.is_pro || dbUser.is_premium;
-            const active = isProUser && expiryString && new Date(expiryString).getTime() > Date.now();
-            setIsPro(!!active);
-            setLoading(false);
-            return;
-          }
+        // 2. Fetch that specific user's pro status records from the DB
+        const { data, error } = await supabase
+          .from('users')
+          .select('is_pro, current_period_end')
+          .eq('id', user.id)
+          .single();
+
+        if (!error && data) {
+          // Strict Date Logic: Checks if 'is_pro' is true AND current time hasn't passed current_period_end
+          const currentTime = new Date();
+          const expiryTime = new Date(data.current_period_end);
+          
+          const active = data.is_pro && expiryTime > currentTime;
+          setIsPro(active);
+        } else {
+          setIsPro(false);
         }
       } catch (err) {
-        console.error('Error verifying pro tier status directly via Supabase Auth:', err);
-      }
-
-      // 3. Fallback: Ask our NextAuth session endpoint (resilient sync when using NextAuth cookie login)
-      try {
-        const response = await fetch("/api/subscriptions/status");
-        if (response.ok) {
-          const data = await response.json();
-          if (data.isPro && data.token) {
-            localStorage.setItem("pro_session", data.token);
-            localStorage.setItem("isPremium", "true");
-            setIsPro(true);
-          } else {
-            localStorage.removeItem("pro_session");
-            localStorage.removeItem("isPremium");
-            setIsPro(false);
-          }
-        }
-      } catch (err) {
-        console.error("Background subscription sync fallback error:", err);
+        console.error('Error verifying pro tier status:', err);
+        setIsPro(false);
       } finally {
         setLoading(false);
       }

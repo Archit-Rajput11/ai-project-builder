@@ -78,37 +78,10 @@ export default function PricingPage() {
         name: "Academic Project Builder",
         description: "Upgrade to Pro Plan - Unlimited Projects",
         order_id: orderId,
-        handler: async function (res: any) {
-          try {
-            const verifyRes = await fetch("/api/subscriptions/verify-payment", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                razorpay_order_id: res.razorpay_order_id,
-                razorpay_payment_id: res.razorpay_payment_id,
-                razorpay_signature: res.razorpay_signature,
-              }),
-            });
-
-            const verifyData = await verifyRes.json();
-
-            if (verifyRes.ok && verifyData.success) {
-              setIsPremiumState(true);
-              localStorage.setItem("isPremium", "true");
-              localStorage.setItem("pro_session", verifyData.token);
-              alert("Payment successful! Upgraded to Pro Plan.");
-              router.push("/dashboard");
-            } else {
-              alert("Payment verification failed: " + (verifyData.error || "Invalid signature"));
-            }
-          } catch (verifyErr: any) {
-            console.error("Verification error:", verifyErr);
-            alert("Verification error: " + verifyErr.message);
-          } finally {
-            setLoading(false);
-          }
+        handler: function (response: any) {
+          // Direct them to the dashboard where the hook handles checking the updated DB row
+          alert("Payment submitted successfully! Checking verification...");
+          window.location.href = '/dashboard';
         },
         prefill: {
           name: user.user_metadata?.full_name || "Student User",
