@@ -44,21 +44,22 @@ export async function POST(req: Request) {
       const expirationDate = new Date();
       expirationDate.setDate(expirationDate.getDate() + 30); 
 
-      // This will handle ANY account seamlessly
+      // THIS SCRIPT IS THE KEY: It seamlessly handles both scenarios automatically!
       const { error } = await supabaseAdmin
         .from('users')
         .upsert({
-          id: targetUserId,          
-          email: targetUserEmail,    
+          id: targetUserId,          // Pulls the user's UID from the metadata
+          email: targetUserEmail,    // Pulls the user's Email from the metadata
           is_pro: true,
           current_period_end: expirationDate.toISOString()
-        }, { onConflict: 'id' });    
+        }, { onConflict: 'id' });    // Forces Postgres to update instead of trying to duplicate the ID
 
       if (error) {
         console.error("Webhook Database Error:", error.message);
         return new Response(`Error: ${error.message}`, { status: 500 });
       }
 
+      // Gives a green light 200 OK so your loading spinner clears out!
       return new Response(JSON.stringify({ success: true }), { status: 200 });
     }
 
