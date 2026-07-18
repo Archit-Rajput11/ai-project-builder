@@ -34,30 +34,32 @@ export async function POST(req: Request) {
       const payment = eventData.payload.payment?.entity || eventData.payload.subscription?.entity;
       
       // Razorpay lets you pass data (like userId and email) inside notes when creating orders/subscriptions
-      const userId = payment.notes?.userId;
-      const email = payment.notes?.email;
-      const idToTrack = payment.order_id || payment.id;
+      const targetUserId = payment.notes?.userId;
+      const targetUserEmail = payment.notes?.email || 'no-email@provided.com';
 
-      if (!userId) {
-        return NextResponse.json({ error: 'No userId found in payment notes' }, { status: 400 });
+      if (!targetUserId) {
+        return new Response("Missing user ID note metadata", { status: 400 });
       }
 
-      // Calculate exactly 30 days out from now
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 30);
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + 30); 
 
-      // Upsert the user into Supabase to grant access (uses admin client to bypass RLS)
-      const { error } = await supabaseAdmin.from('users').upsert({
-        id: userId,
-        email: email || 'no-email@provided.com',
-        is_pro: true,
-        razorpay_subscription_id: idToTrack,
-        current_period_end: expiryDate.toISOString(),
-      });
+      // This will handle ANY account seamlessly
+      const { error } = await supabaseAdmin
+        .from('users')
+        .upsert({
+          id: targetUserId,          
+          email: targetUserEmail,    
+          is_pro: true,
+          current_period_end: expirationDate.toISOString()
+        }, { onConflict: 'id' });    
 
-      if (error) throw error;
-      
-      return NextResponse.json({ status: 'Success', message: 'User upgraded to Pro' });
+      if (error) {
+        console.error("Webhook Database Error:", error.message);
+        return new Response(`Error: ${error.message}`, { status: 500 });
+      }
+
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
     }
 
     // 5. Handle failed or canceled cycles
