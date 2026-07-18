@@ -48,13 +48,13 @@ export async function POST(req: NextRequest) {
       try {
         const { data: dbUser, error: dbErr } = await supabaseAdmin
           .from("users")
-          .select("is_pro, expires_at, is_premium, premium_expires_at")
+          .select("is_pro, expires_at, is_premium, premium_expires_at, current_period_end")
           .eq("email", userEmail)
           .single();
 
         if (dbUser) {
           const isPro = dbUser.is_pro || dbUser.is_premium;
-          const expiryString = dbUser.expires_at || dbUser.premium_expires_at;
+          const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
           const expiresAt = expiryString ? new Date(expiryString).getTime() : 0;
           
           if (isPro && expiresAt > Date.now()) {
@@ -88,16 +88,48 @@ export async function POST(req: NextRequest) {
       }
 
       const token = authHeader.substring(7); // Remove "Bearer "
-      try {
-        const decoded = jwt.verify(token, jwtSecret) as any;
-        if (decoded && decoded.isPro === true) {
-          const currentTime = Math.floor(Date.now() / 1000);
-          if (decoded.exp && currentTime < decoded.exp) {
-            isPremiumUser = true;
+
+      // Try verifying via Supabase auth first (if it's a Supabase access token)
+      if (token && isSupabaseConfigured) {
+        try {
+          const { data: { user }, error: supError } = await supabaseAdmin.auth.getUser(token);
+          if (user && !supError) {
+            // Fetch that user's premium status from the database using their ID
+            const { data: dbUser } = await supabaseAdmin
+              .from("users")
+              .select("is_pro, expires_at, is_premium, premium_expires_at, current_period_end")
+              .eq("id", user.id)
+              .single();
+
+            if (dbUser) {
+              const isPro = dbUser.is_pro || dbUser.is_premium;
+              const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
+              const expiresAt = expiryString ? new Date(expiryString).getTime() : 0;
+              
+              if (isPro && expiresAt > Date.now()) {
+                isPremiumUser = true;
+                console.log(`Supabase token premium validation succeeded for user: ${user.email}`);
+              }
+            }
           }
+        } catch (supErr) {
+          console.error("Supabase token user verification failed:", supErr);
         }
-      } catch (err: any) {
-        console.error("JWT verification failed:", err.message);
+      }
+
+      // Fallback: Verify custom JWT token (for backward compatibility / next-auth mock tokens)
+      if (!isPremiumUser && token && jwtSecret) {
+        try {
+          const decoded = jwt.verify(token, jwtSecret) as any;
+          if (decoded && decoded.isPro === true) {
+            const currentTime = Math.floor(Date.now() / 1000);
+            if (decoded.exp && currentTime < decoded.exp) {
+              isPremiumUser = true;
+            }
+          }
+        } catch (err: any) {
+          console.error("JWT verification failed:", err.message);
+        }
       }
 
       if (!isPremiumUser) {

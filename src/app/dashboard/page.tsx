@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import LZString from "lz-string";
 import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, CheckCircle2, Award, Zap, Loader2 } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
+import { supabase } from "@/lib/supabase";
 import ProBadge from "@/components/ProBadge";
 
 // Dynamically import hello-pangea/dnd to avoid SSR issues
@@ -571,7 +572,11 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       return;
     }
 
-    const token = typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "";
+    let token = typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "";
+    if (!token && typeof window !== "undefined") {
+      const { data } = await supabase.auth.getSession();
+      token = data.session?.access_token || "";
+    }
 
     setLoading(true);
     setError(null);
