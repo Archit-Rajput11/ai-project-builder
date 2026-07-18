@@ -19,7 +19,7 @@ export async function POST() {
       key_secret: keySecret,
     });
 
-    const amountInPaise = 20 * 100; // ₹20 = 2000 paise
+    const amountInPaise = 1 * 100; // ₹1 = 100 paise
 
     const order = await razorpay.orders.create({
       amount: amountInPaise,
