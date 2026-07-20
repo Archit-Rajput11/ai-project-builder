@@ -4,9 +4,9 @@ import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "./auth.config";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const authOptions = {
   ...authConfig,
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET,
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET || "archit-jwt-secret-key-123456789-987654321",
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID || "google-client-id-placeholder",
@@ -43,4 +43,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-});
+};
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);
