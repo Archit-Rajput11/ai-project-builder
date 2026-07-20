@@ -33,9 +33,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Fetch logged-in user email session
+    // 2. Fetch logged-in user session and bearer token
     const session = await auth();
-    const userEmail = session?.user?.email;
+    let userEmail = session?.user?.email;
+
+    const authHeader = req.headers.get("authorization");
+    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
 
     const isSupabaseConfigured = 
       (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
@@ -43,101 +46,81 @@ export async function POST(req: NextRequest) {
 
     let isPremiumUser = false;
 
-    // 3. Handle premium validation directly through the users table database query
-    if (userEmail && isSupabaseConfigured) {
-      try {
-        const { data: dbUser, error: dbErr } = await supabaseAdmin
-          .from("users")
-          .select("is_pro, expires_at, is_premium, premium_expires_at, current_period_end")
-          .eq("email", userEmail)
-          .single();
+    // Helper function to check if DB user object indicates active Pro status
+    const checkDbUserIsPro = (dbUser: any): boolean => {
+      if (!dbUser) return false;
+      const isPro = Boolean(dbUser.is_pro || dbUser.is_premium);
+      if (!isPro) return false;
+      const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
+      if (!expiryString) return true; // Active Pro if is_pro is true and no explicit expiry date is set
+      return new Date(expiryString).getTime() > Date.now();
+    };
 
-        if (dbUser) {
-          const isPro = dbUser.is_pro || dbUser.is_premium;
-          const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
-          const expiresAt = expiryString ? new Date(expiryString).getTime() : 0;
-          
-          if (isPro && expiresAt > Date.now()) {
+    // 3. Verify user profile status from Supabase Auth & Database
+    if (token && isSupabaseConfigured) {
+      try {
+        const { data: { user }, error: supError } = await supabaseAdmin.auth.getUser(token);
+        if (user && !supError) {
+          if (!userEmail) userEmail = user.email;
+
+          // Fetch user profile status from the Supabase users table using user ID
+          const { data: dbUser } = await supabaseAdmin
+            .from("users")
+            .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+            .eq("id", user.id)
+            .maybeSingle();
+
+          if (checkDbUserIsPro(dbUser)) {
             isPremiumUser = true;
-            console.log(`Database premium validation succeeded for ${userEmail}`);
+            console.log(`Supabase token premium validation succeeded for user ID: ${user.id}`);
           }
         }
-      } catch (dbErr) {
-        console.error("Database premium check failed, falling back to token validation:", dbErr);
+      } catch (supErr) {
+        console.error("Supabase token user verification failed:", supErr);
       }
     }
 
-    // 4. Verify JWT token if client exceeds their free tier quota and database check didn't pass
+    // Fallback: Fetch user profile status from Supabase users table using email
+    if (!isPremiumUser && userEmail && isSupabaseConfigured) {
+      try {
+        const { data: dbUser } = await supabaseAdmin
+          .from("users")
+          .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+          .eq("email", userEmail)
+          .maybeSingle();
+
+        if (checkDbUserIsPro(dbUser)) {
+          isPremiumUser = true;
+          console.log(`Database email premium validation succeeded for: ${userEmail}`);
+        }
+      } catch (dbErr) {
+        console.error("Database email premium check failed:", dbErr);
+      }
+    }
+
+    // Fallback: Verify custom JWT token if passed
+    if (!isPremiumUser && token && process.env.JWT_SECRET) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+        if (decoded && decoded.isPro === true) {
+          const currentTime = Math.floor(Date.now() / 1000);
+          if (!decoded.exp || currentTime < decoded.exp) {
+            isPremiumUser = true;
+          }
+        }
+      } catch (err: any) {
+        console.error("JWT verification failed:", err.message);
+      }
+    }
+
+    // 4. Daily Generation Limit Check:
+    // If the user is a Premium/Pro member, completely bypass the 1-project-per-day restriction.
+    // If they are a free tier user and have reached the limit (generatedCount >= 1), block generation.
     if (!isPremiumUser && clientGeneratedCount >= 1) {
-      const authHeader = req.headers.get("authorization");
-      const jwtSecret = process.env.JWT_SECRET;
-
-      if (!jwtSecret) {
-        console.error("JWT_SECRET is missing on the server");
-        return NextResponse.json(
-          { error: "Server authentication is not configured." },
-          { status: 500 }
-        );
-      }
-
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return NextResponse.json(
-          { error: "Access limit reached. Premium token is missing." },
-          { status: 403 }
-        );
-      }
-
-      const token = authHeader.substring(7); // Remove "Bearer "
-
-      // Try verifying via Supabase auth first (if it's a Supabase access token)
-      if (token && isSupabaseConfigured) {
-        try {
-          const { data: { user }, error: supError } = await supabaseAdmin.auth.getUser(token);
-          if (user && !supError) {
-            // Fetch that user's premium status from the database using their ID
-            const { data: dbUser } = await supabaseAdmin
-              .from("users")
-              .select("is_pro, expires_at, is_premium, premium_expires_at, current_period_end")
-              .eq("id", user.id)
-              .single();
-
-            if (dbUser) {
-              const isPro = dbUser.is_pro || dbUser.is_premium;
-              const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
-              const expiresAt = expiryString ? new Date(expiryString).getTime() : 0;
-              
-              if (isPro && expiresAt > Date.now()) {
-                isPremiumUser = true;
-                console.log(`Supabase token premium validation succeeded for user: ${user.email}`);
-              }
-            }
-          }
-        } catch (supErr) {
-          console.error("Supabase token user verification failed:", supErr);
-        }
-      }
-
-      // Fallback: Verify custom JWT token (for backward compatibility / next-auth mock tokens)
-      if (!isPremiumUser && token && jwtSecret) {
-        try {
-          const decoded = jwt.verify(token, jwtSecret) as any;
-          if (decoded && decoded.isPro === true) {
-            const currentTime = Math.floor(Date.now() / 1000);
-            if (decoded.exp && currentTime < decoded.exp) {
-              isPremiumUser = true;
-            }
-          }
-        } catch (err: any) {
-          console.error("JWT verification failed:", err.message);
-        }
-      }
-
-      if (!isPremiumUser) {
-        return NextResponse.json(
-          { error: "Access limit reached. Premium token has expired or is invalid." },
-          { status: 403 }
-        );
-      }
+      return NextResponse.json(
+        { error: "Daily project generation limit reached. Please upgrade to Pro for unlimited project generations." },
+        { status: 403 }
+      );
     }
 
     const saveProjectToDb = async (planData: any) => {

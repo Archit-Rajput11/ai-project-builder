@@ -21,16 +21,18 @@ export function useProStatus() {
         // 2. Fetch that specific user's pro status records from the DB
         const { data, error } = await supabase
           .from('users')
-          .select('is_pro, current_period_end')
+          .select('is_pro, is_premium, current_period_end, expires_at, premium_expires_at')
           .eq('id', user.id)
           .single();
 
         if (!error && data) {
-          // Strict Date Logic: Checks if 'is_pro' is true AND current time hasn't passed current_period_end
+          const isProUser = Boolean(data.is_pro || data.is_premium);
+          const expiryString = data.current_period_end || data.expires_at || data.premium_expires_at;
           const currentTime = new Date();
-          const expiryTime = new Date(data.current_period_end);
+          const expiryTime = expiryString ? new Date(expiryString) : null;
           
-          const active = data.is_pro && expiryTime > currentTime;
+          // Active if is_pro is true AND (either no expiry set or current time hasn't passed expiry)
+          const active = isProUser && (expiryTime ? expiryTime > currentTime : true);
           setIsPro(active);
         } else {
           setIsPro(false);
