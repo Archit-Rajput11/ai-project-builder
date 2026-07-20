@@ -6,6 +6,7 @@ import { authConfig } from "./auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID || "google-client-id-placeholder",
