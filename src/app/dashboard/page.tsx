@@ -127,28 +127,56 @@ export default function Dashboard() {
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     // Immediate localStorage check
-    if (localStorage.getItem("isPremium") === "true") {
+    const lsValue = localStorage.getItem("isPremium");
+    console.log("[ProDebug] localStorage isPremium:", lsValue);
+    if (lsValue === "true") {
       setIsPremiumState(true);
     }
     // Direct API verification using Supabase session token
     (async () => {
       try {
-        const { data } = await supabase.auth.getSession();
+        console.log("[ProDebug] Getting Supabase session...");
+        const { data, error: sessError } = await supabase.auth.getSession();
+        console.log("[ProDebug] Session result:", {
+          hasSession: !!data?.session,
+          userId: data?.session?.user?.id || "none",
+          email: data?.session?.user?.email || "none",
+          tokenLength: data?.session?.access_token?.length || 0,
+          error: sessError?.message || null,
+        });
+        
         const accessToken = data?.session?.access_token;
-        if (!accessToken) return;
+        if (!accessToken) {
+          console.log("[ProDebug] No access token found — user is not logged in via Supabase");
+          return;
+        }
+
+        // Call the status API
+        console.log("[ProDebug] Calling /api/subscriptions/status with Bearer token...");
         const res = await fetch("/api/subscriptions/status", {
           headers: { "Authorization": `Bearer ${accessToken}` },
         });
-        if (res.ok) {
-          const json = await res.json();
-          if (json.isPro === true) {
-            setIsPremiumState(true);
-            localStorage.setItem("isPremium", "true");
-            if (json.token) localStorage.setItem("pro_session", json.token);
-          }
+        const json = await res.json();
+        console.log("[ProDebug] Status API response:", json);
+
+        if (json.isPro === true) {
+          console.log("[ProDebug] ✅ User IS pro — unlocking premium");
+          setIsPremiumState(true);
+          localStorage.setItem("isPremium", "true");
+          if (json.token) localStorage.setItem("pro_session", json.token);
+        } else {
+          console.log("[ProDebug] ❌ Status API says not pro. Reason:", json.reason || "unknown");
         }
+
+        // Also call debug endpoint for full diagnostics
+        console.log("[ProDebug] Calling /api/debug-pro for full diagnostics...");
+        const debugRes = await fetch("/api/debug-pro", {
+          headers: { "Authorization": `Bearer ${accessToken}` },
+        });
+        const debugJson = await debugRes.json();
+        console.log("[ProDebug] Full diagnostics:", JSON.stringify(debugJson, null, 2));
       } catch (e) {
-        console.error("Direct pro status check failed:", e);
+        console.error("[ProDebug] Error during pro status check:", e);
       }
     })();
   }, []);
