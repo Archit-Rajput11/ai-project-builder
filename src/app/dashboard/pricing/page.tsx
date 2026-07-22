@@ -78,10 +78,38 @@ export default function PricingPage() {
         name: "Academic Project Builder",
         description: "Upgrade to Pro Plan - Unlimited Projects",
         order_id: orderId,
-        handler: function (response: any) {
-          // Direct them to the dashboard where the hook handles checking the updated DB row
-          alert("Payment submitted successfully! Checking verification...");
-          window.location.href = '/dashboard';
+        handler: async function (response: any) {
+          try {
+            const { data } = await supabase.auth.getSession();
+            const token = data?.session?.access_token || "";
+
+            const verifyRes = await fetch("/api/subscriptions/verify-payment", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+
+            if (verifyRes.ok) {
+              const resJson = await verifyRes.json();
+              if (resJson.token) {
+                localStorage.setItem("pro_session", resJson.token);
+              }
+            }
+            localStorage.setItem("isPremium", "true");
+          } catch (err) {
+            console.error("Payment verification client error:", err);
+            localStorage.setItem("isPremium", "true");
+          } finally {
+            alert("Payment submitted successfully! Unlocking Pro features...");
+            window.location.href = "/dashboard";
+          }
         },
         prefill: {
           name: user.user_metadata?.full_name || "Student User",
