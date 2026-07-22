@@ -32,21 +32,22 @@ export async function GET() {
 
     // Support both standard is_pro/expires_at and is_premium/premium_expires_at schemas
     const isPro = dbSub.is_pro || dbSub.is_premium;
-    const expiryString = dbSub.expires_at || dbSub.premium_expires_at;
+    const expiryString = dbSub.current_period_end || dbSub.expires_at || dbSub.premium_expires_at;
     
-    if (!expiryString || !isPro) {
+    if (!isPro) {
       return NextResponse.json({ isPro: false });
     }
 
-    // Check if subscription has expired
-    const expiresAt = new Date(expiryString).getTime();
+    // Check if subscription has expired (if expiry date is set)
+    const expiryTime = expiryString ? new Date(expiryString).getTime() : null;
     const currentTime = Date.now();
+    const isNotExpired = expiryTime ? currentTime < expiryTime : true;
 
-    if (isPro && currentTime < expiresAt) {
+    if (isPro && isNotExpired) {
       const jwtSecret = process.env.JWT_SECRET;
       if (jwtSecret) {
-        // Sign a fresh token valid until the database expiry timestamp
-        const expSeconds = Math.floor(expiresAt / 1000);
+        // Sign a fresh token valid until the database expiry timestamp (default to 30 days if no expiry time)
+        const expSeconds = expiryTime ? Math.floor(expiryTime / 1000) : Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
         const token = jwt.sign(
           {
             isPro: true,
@@ -57,6 +58,7 @@ export async function GET() {
 
         return NextResponse.json({ isPro: true, token });
       }
+      return NextResponse.json({ isPro: true });
     }
 
     return NextResponse.json({ isPro: false });
