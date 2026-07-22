@@ -1,69 +1,84 @@
-import { NextResponse } from "next/server";
-import { auth } from "../../../../../auth";
+import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "../../../../../lib/supabase";
 import jwt from "jsonwebtoken";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const session = await auth();
-    const userEmail = session?.user?.email;
+    // Accept Supabase Bearer token from the Authorization header
+    const authHeader = req.headers.get("authorization");
+    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
 
-    if (!userEmail) {
-      return NextResponse.json({ isPro: false });
-    }
+    let userId: string | null = null;
+    let userEmail: string | null = null;
 
-    const isSupabaseConfigured = 
-      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
-      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
-
-    if (!isSupabaseConfigured) {
-      return NextResponse.json({ isPro: false });
-    }
-
-    const { data: dbSub, error } = await supabaseAdmin
-      .from("users")
-      .select("*")
-      .eq("email", userEmail)
-      .single();
-
-    if (error || !dbSub) {
-      return NextResponse.json({ isPro: false });
-    }
-
-    // Support both standard is_pro/expires_at and is_premium/premium_expires_at schemas
-    const isPro = dbSub.is_pro || dbSub.is_premium;
-    const expiryString = dbSub.current_period_end || dbSub.expires_at || dbSub.premium_expires_at;
-    
-    if (!isPro) {
-      return NextResponse.json({ isPro: false });
-    }
-
-    // Check if subscription has expired (if expiry date is set)
-    const expiryTime = expiryString ? new Date(expiryString).getTime() : null;
-    const currentTime = Date.now();
-    const isNotExpired = expiryTime ? currentTime < expiryTime : true;
-
-    if (isPro && isNotExpired) {
-      const jwtSecret = process.env.JWT_SECRET;
-      if (jwtSecret) {
-        // Sign a fresh token valid until the database expiry timestamp (default to 30 days if no expiry time)
-        const expSeconds = expiryTime ? Math.floor(expiryTime / 1000) : Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
-        const token = jwt.sign(
-          {
-            isPro: true,
-            exp: expSeconds,
-          },
-          jwtSecret
-        );
-
-        return NextResponse.json({ isPro: true, token });
+    // 1. Verify Supabase Bearer token (primary method — works with Supabase Auth)
+    if (token) {
+      const { data: { user }, error: supaErr } = await supabaseAdmin.auth.getUser(token);
+      if (user && !supaErr) {
+        userId = user.id;
+        userEmail = user.email ?? null;
       }
-      return NextResponse.json({ isPro: true });
     }
 
-    return NextResponse.json({ isPro: false });
+    // If no user found from token, reject early
+    if (!userId && !userEmail) {
+      return NextResponse.json({ isPro: false, reason: "no_user" });
+    }
+
+    // 2. Fetch user profile from database using supabaseAdmin (bypasses RLS)
+    let dbSub: any = null;
+
+    if (userId) {
+      const { data } = await supabaseAdmin
+        .from("users")
+        .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at, email")
+        .eq("id", userId)
+        .maybeSingle();
+      if (data) dbSub = data;
+    }
+
+    // Fallback: query by email if ID lookup returned nothing
+    if (!dbSub && userEmail) {
+      const { data } = await supabaseAdmin
+        .from("users")
+        .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at, email")
+        .eq("email", userEmail)
+        .maybeSingle();
+      if (data) dbSub = data;
+    }
+
+    if (!dbSub) {
+      return NextResponse.json({ isPro: false, reason: "no_profile" });
+    }
+
+    // 3. Validate pro status
+    const isPro = dbSub.is_pro === true || dbSub.is_premium === true;
+    if (!isPro) {
+      return NextResponse.json({ isPro: false, reason: "not_pro" });
+    }
+
+    // 4. Validate expiration (if set)
+    const expiryString = dbSub.current_period_end || dbSub.expires_at || dbSub.premium_expires_at;
+    const expiryTime = expiryString ? new Date(expiryString).getTime() : null;
+    const isNotExpired = expiryTime ? Date.now() < expiryTime : true;
+
+    if (!isNotExpired) {
+      return NextResponse.json({ isPro: false, reason: "expired" });
+    }
+
+    // 5. Sign a fresh JWT token for the client
+    const jwtSecret = process.env.JWT_SECRET;
+    if (jwtSecret) {
+      const expSeconds = expiryTime
+        ? Math.floor(expiryTime / 1000)
+        : Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+      const freshToken = jwt.sign({ isPro: true, exp: expSeconds }, jwtSecret);
+      return NextResponse.json({ isPro: true, token: freshToken });
+    }
+
+    return NextResponse.json({ isPro: true });
   } catch (err: any) {
     console.error("Subscription status check error:", err);
-    return NextResponse.json({ isPro: false });
+    return NextResponse.json({ isPro: false, reason: "error" });
   }
 }

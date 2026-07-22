@@ -10,93 +10,59 @@ export function useProStatus() {
   useEffect(() => {
     async function checkUserSessionAndStatus() {
       try {
-        // 1. Get current logged in user session from Supabase
-        let user = null;
-        const { data: userData, error: authError } = await supabase.auth.getUser();
-        
-        if (!authError && userData?.user) {
-          user = userData.user;
-        } else {
-          const { data: sessionData } = await supabase.auth.getSession();
-          if (sessionData?.session?.user) {
-            user = sessionData.session.user;
-          }
+        // 1. Get the Supabase session and access token
+        const { data: sessionData } = await supabase.auth.getSession();
+        const session = sessionData?.session;
+
+        if (!session) {
+          // No active session — user is not logged in
+          setIsPro(false);
+          setLoading(false);
+          return;
         }
 
-        if (user) {
-          // 2. Fetch user profile from Supabase users table (try by ID first, fallback to Email)
-          let profile: any = null;
+        const accessToken = session.access_token;
+        const user = session.user;
 
-          const { data: profileById } = await supabase
-            .from('users')
-            .select('is_pro, is_premium, current_period_end, expires_at, premium_expires_at')
-            .eq('id', user.id)
-            .maybeSingle();
+        // 2. Call the server-side status API, passing the Supabase Bearer token
+        //    This uses supabaseAdmin on the backend which bypasses RLS entirely
+        const response = await fetch('/api/subscriptions/status', {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        });
 
-          if (profileById) {
-            profile = profileById;
-          } else if (user.email) {
-            const { data: profileByEmail } = await supabase
-              .from('users')
-              .select('is_pro, is_premium, current_period_end, expires_at, premium_expires_at')
-              .eq('email', user.email)
-              .maybeSingle();
-            if (profileByEmail) profile = profileByEmail;
-          }
+        if (response.ok) {
+          const statusData = await response.json();
 
-          if (profile) {
-            // Check if is_pro or is_premium flag is explicitly true
-            const isProFlag = profile.is_pro === true || profile.is_premium === true || String(profile.is_pro) === 'true';
-            const expiryString = profile.current_period_end || profile.expires_at || profile.premium_expires_at;
-            
-            const currentTime = new Date();
-            const expiryTime = expiryString ? new Date(expiryString) : null;
-            const isNotExpired = expiryTime && !isNaN(expiryTime.getTime()) ? expiryTime > currentTime : true;
-
-            const active = isProFlag && isNotExpired;
-
-            if (active) {
-              setIsPro(true);
-              if (typeof window !== 'undefined') {
-                localStorage.setItem('isPremium', 'true');
+          if (statusData.isPro === true) {
+            setIsPro(true);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('isPremium', 'true');
+              // Store JWT token if provided for generate-plan API
+              if (statusData.token) {
+                localStorage.setItem('pro_session', statusData.token);
               }
-              setLoading(false);
-              return;
             }
+            setLoading(false);
+            return;
           }
         }
-      } catch (err) {
-        console.error('Error verifying pro tier status directly via Supabase Auth:', err);
-      }
 
-      // 3. Fallback check from API / localStorage
-      try {
+        // 3. Fallback: check localStorage (in case of transient API failures)
         if (typeof window !== 'undefined') {
           const localIsPremium = localStorage.getItem('isPremium') === 'true';
-          const localProSession = !!localStorage.getItem('pro_session');
-          if (localIsPremium || localProSession) {
+          if (localIsPremium) {
             setIsPro(true);
             setLoading(false);
             return;
           }
         }
 
-        const response = await fetch('/api/subscriptions/status');
-        if (response.ok) {
-          const statusData = await response.json();
-          if (statusData.isPro) {
-            setIsPro(true);
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('isPremium', 'true');
-            }
-          } else {
-            setIsPro(false);
-          }
-        } else {
-          setIsPro(false);
-        }
-      } catch (fallbackErr) {
-        console.error('Pro status fallback check error:', fallbackErr);
+        // No pro status found
+        setIsPro(false);
+      } catch (err) {
+        console.error('Error verifying pro tier status:', err);
         setIsPro(false);
       } finally {
         setLoading(false);
