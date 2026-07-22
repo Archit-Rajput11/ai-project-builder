@@ -111,75 +111,8 @@ export default function Dashboard() {
   const [selectedCopilotWeek, setSelectedCopilotWeek] = React.useState<number>(1);
   const [error, setError] = React.useState<string | null>(null);
 
-  // Freemium states
-  const { isPro: isPremiumToken, loading: isProLoading } = useProStatus();
-  const [isPremiumState, setIsPremiumState] = React.useState(false);
-  const isPremium = isPremiumState || isPremiumToken;
-
-  // Sync pro status: whenever the hook resolves OR on mount, update local state
-  React.useEffect(() => {
-    if (isPremiumToken) {
-      setIsPremiumState(true);
-    }
-  }, [isPremiumToken]);
-
-  // On mount: read localStorage + verify directly with API using Supabase session
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    // Immediate localStorage check
-    const lsValue = localStorage.getItem("isPremium");
-    console.log("[ProDebug] localStorage isPremium:", lsValue);
-    if (lsValue === "true") {
-      setIsPremiumState(true);
-    }
-    // Direct API verification using Supabase session token
-    (async () => {
-      try {
-        console.log("[ProDebug] Getting Supabase session...");
-        const { data, error: sessError } = await supabase.auth.getSession();
-        console.log("[ProDebug] Session result:", {
-          hasSession: !!data?.session,
-          userId: data?.session?.user?.id || "none",
-          email: data?.session?.user?.email || "none",
-          tokenLength: data?.session?.access_token?.length || 0,
-          error: sessError?.message || null,
-        });
-        
-        const accessToken = data?.session?.access_token;
-        if (!accessToken) {
-          console.log("[ProDebug] No access token found — user is not logged in via Supabase");
-          return;
-        }
-
-        // Call the status API
-        console.log("[ProDebug] Calling /api/subscriptions/status with Bearer token...");
-        const res = await fetch("/api/subscriptions/status", {
-          headers: { "Authorization": `Bearer ${accessToken}` },
-        });
-        const json = await res.json();
-        console.log("[ProDebug] Status API response:", json);
-
-        if (json.isPro === true) {
-          console.log("[ProDebug] ✅ User IS pro — unlocking premium");
-          setIsPremiumState(true);
-          localStorage.setItem("isPremium", "true");
-          if (json.token) localStorage.setItem("pro_session", json.token);
-        } else {
-          console.log("[ProDebug] ❌ Status API says not pro. Reason:", json.reason || "unknown");
-        }
-
-        // Also call debug endpoint for full diagnostics
-        console.log("[ProDebug] Calling /api/debug-pro for full diagnostics...");
-        const debugRes = await fetch("/api/debug-pro", {
-          headers: { "Authorization": `Bearer ${accessToken}` },
-        });
-        const debugJson = await debugRes.json();
-        console.log("[ProDebug] Full diagnostics:", JSON.stringify(debugJson, null, 2));
-      } catch (e) {
-        console.error("[ProDebug] Error during pro status check:", e);
-      }
-    })();
-  }, []);
+  // Freemium states — checked live directly against the database via useProStatus
+  const { isPro: isPremium, loading: isProLoading } = useProStatus();
 
   const [generatedCount, setGeneratedCount] = React.useState(() => {
     if (typeof window !== "undefined") {
@@ -742,10 +675,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     setTimeout(() => {
       setAdWatching(false);
       setShowPremiumPdfModal(false);
-      setShowLimitModal(false);
-      setIsPremiumState(true);
-      localStorage.setItem("isPremium", "true");
-      alert("Payment successful! Upgraded to Premium Tier.");
+      alert("Simulated upgrade complete.");
       if (plan) {
         handleDownloadPDF();
       }

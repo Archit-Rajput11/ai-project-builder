@@ -12,19 +12,10 @@ export default function PricingPage() {
   const [loading, setLoading] = React.useState(false);
   const [checkoutProgress, setCheckoutProgress] = React.useState(3);
 
-  const { isPro: isPremiumToken } = useProStatus();
-  const [isPremiumState, setIsPremiumState] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("isPremium") === "true";
-    }
-    return false;
-  });
-  const isPremium = isPremiumState || isPremiumToken;
+  const { isPro: isPremium, loading: isProLoading } = useProStatus();
 
   React.useEffect(() => {
     setMounted(true);
-    const premiumState = localStorage.getItem("isPremium") === "true";
-    setIsPremiumState(premiumState);
   }, []);
 
   const loadRazorpayScript = () => {
@@ -102,10 +93,8 @@ export default function PricingPage() {
                 localStorage.setItem("pro_session", resJson.token);
               }
             }
-            localStorage.setItem("isPremium", "true");
           } catch (err) {
             console.error("Payment verification client error:", err);
-            localStorage.setItem("isPremium", "true");
           } finally {
             alert("Payment submitted successfully! Unlocking Pro features...");
             window.location.href = "/dashboard";
@@ -151,7 +140,6 @@ export default function PricingPage() {
     if (confirm("Are you sure you want to mock downgrade your account to Free? (For testing purposes)")) {
       localStorage.removeItem("isPremium");
       localStorage.removeItem("pro_session");
-      setIsPremiumState(false);
       alert("Account downgraded to Free Tier for testing.");
       window.location.reload();
     }
