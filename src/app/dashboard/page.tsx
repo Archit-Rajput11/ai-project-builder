@@ -113,13 +113,45 @@ export default function Dashboard() {
 
   // Freemium states
   const { isPro: isPremiumToken, loading: isProLoading } = useProStatus();
-  const [isPremiumState, setIsPremiumState] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("isPremium") === "true";
-    }
-    return false;
-  });
+  const [isPremiumState, setIsPremiumState] = React.useState(false);
   const isPremium = isPremiumState || isPremiumToken;
+
+  // Sync pro status: whenever the hook resolves OR on mount, update local state
+  React.useEffect(() => {
+    if (isPremiumToken) {
+      setIsPremiumState(true);
+    }
+  }, [isPremiumToken]);
+
+  // On mount: read localStorage + verify directly with API using Supabase session
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    // Immediate localStorage check
+    if (localStorage.getItem("isPremium") === "true") {
+      setIsPremiumState(true);
+    }
+    // Direct API verification using Supabase session token
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getSession();
+        const accessToken = data?.session?.access_token;
+        if (!accessToken) return;
+        const res = await fetch("/api/subscriptions/status", {
+          headers: { "Authorization": `Bearer ${accessToken}` },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.isPro === true) {
+            setIsPremiumState(true);
+            localStorage.setItem("isPremium", "true");
+            if (json.token) localStorage.setItem("pro_session", json.token);
+          }
+        }
+      } catch (e) {
+        console.error("Direct pro status check failed:", e);
+      }
+    })();
+  }, []);
 
   const [generatedCount, setGeneratedCount] = React.useState(() => {
     if (typeof window !== "undefined") {
