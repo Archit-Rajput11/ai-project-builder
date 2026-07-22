@@ -63,16 +63,15 @@ export async function POST(req: NextRequest) {
         if (user && !supError) {
           if (!userEmail) userEmail = user.email;
 
-          // Fetch user profile status from the Supabase users table using user ID
-          const { data: dbUser } = await supabaseAdmin
+          // Fetch user profile status from the Supabase users table using user ID or email
+          const { data: dbUsers } = await supabaseAdmin
             .from("users")
             .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
-            .eq("id", user.id)
-            .maybeSingle();
+            .or(`id.eq.${user.id},email.eq.${user.email}`);
 
-          if (checkDbUserIsPro(dbUser)) {
+          if (dbUsers && dbUsers.some(checkDbUserIsPro)) {
             isPremiumUser = true;
-            console.log(`Supabase token premium validation succeeded for user ID: ${user.id}`);
+            console.log(`Supabase token premium validation succeeded for user: ${user.email}`);
           }
         }
       } catch (supErr) {
@@ -83,13 +82,12 @@ export async function POST(req: NextRequest) {
     // Fallback: Fetch user profile status from Supabase users table using email
     if (!isPremiumUser && userEmail && isSupabaseConfigured) {
       try {
-        const { data: dbUser } = await supabaseAdmin
+        const { data: dbUsers } = await supabaseAdmin
           .from("users")
           .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
-          .eq("email", userEmail)
-          .maybeSingle();
+          .eq("email", userEmail);
 
-        if (checkDbUserIsPro(dbUser)) {
+        if (dbUsers && dbUsers.some(checkDbUserIsPro)) {
           isPremiumUser = true;
           console.log(`Database email premium validation succeeded for: ${userEmail}`);
         }
