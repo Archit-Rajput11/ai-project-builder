@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 import { GoogleGenAI } from "@google/genai";
 import { auth } from "../../../../auth";
 import jwt from "jsonwebtoken";
@@ -40,6 +41,18 @@ export async function POST(req: NextRequest) {
     const authHeader = req.headers.get("authorization");
     const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
 
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://your-supabase-project.supabase.co";
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+    const hasServiceRoleKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY && !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("your-supabase-service-role"));
+
+    const dbClient = hasServiceRoleKey
+      ? supabaseAdmin
+      : createClient(supabaseUrl, supabaseAnonKey, {
+          global: {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          },
+        });
+
     const isSupabaseConfigured = 
       (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
       (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
@@ -59,12 +72,12 @@ export async function POST(req: NextRequest) {
     // 3. Verify user profile status from Supabase Auth & Database
     if (token && isSupabaseConfigured) {
       try {
-        const { data: { user }, error: supError } = await supabaseAdmin.auth.getUser(token);
+        const { data: { user }, error: supError } = await dbClient.auth.getUser(token);
         if (user && !supError) {
           if (!userEmail) userEmail = user.email;
 
           // Fetch user profile status from the Supabase users table using user ID or email
-          const { data: dbUsers } = await supabaseAdmin
+          const { data: dbUsers } = await dbClient
             .from("users")
             .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
             .or(`id.eq.${user.id},email.eq.${user.email}`);
