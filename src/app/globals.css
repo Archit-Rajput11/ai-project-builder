@@ -8,6 +8,7 @@
   --color-foreground: var(--foreground);
   --color-border-accent: var(--border-accent);
   --color-bg-accent: var(--bg-accent);
+  --color-bg-elevated: var(--bg-elevated);
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   
@@ -17,22 +18,24 @@
 
 /* Light Theme Variables */
 :root {
-  --background: #ffffff;
+  --background: #f8fafc;
   --foreground: #0f172a; /* Rich dark-slate typography */
   --border-accent: #e2e8f0; /* Crisp cool-gray accents */
-  --bg-accent: #f8fafc; /* Subtle cool-gray card background */
-  --primary: #2563eb; /* Royal blue focus & primary indicators */
-  --primary-hover: #1d4ed8;
+  --bg-accent: #ffffff; /* Card background */
+  --bg-elevated: #f1f5f9; /* Elevated containers/inputs */
+  --primary: #0284c7; /* Sky blue focus & primary indicators */
+  --primary-hover: #0369a1;
 }
 
-/* Dark Theme Variables */
+/* Dark Theme Variables (Linear/Vercel SaaS tier palette) */
 .dark {
-  --background: #090d16; /* Soft charcoal/slate background */
-  --foreground: #f8fafc; /* Clear white typography */
-  --border-accent: #1e293b; /* Muted border accents */
-  --bg-accent: #111827; /* Dark charcoal card background */
-  --primary: #38bdf8; /* Bright electric blue/cyan highlights */
-  --primary-hover: #0ea5e9;
+  --background: #090d16; /* Deep layered neutral dark canvas */
+  --foreground: #f8fafc; /* Clear crisp typography */
+  --border-accent: rgba(255, 255, 255, 0.08); /* Crisp semi-transparent border */
+  --bg-accent: #0f172a; /* Card background */
+  --bg-elevated: #1e293b; /* Elevated container/input background */
+  --primary: #38bdf8; /* Vibrant electric sky/cyan highlight */
+  --primary-hover: #0284c7;
 }
 
 /* Global resets and smooth transition effects */
@@ -44,9 +47,28 @@ html, body {
   min-height: 100vh;
   background-color: var(--background);
   color: var(--foreground);
-  transition-property: background-color, border-color, text-color, fill, stroke;
+  transition-property: background-color, border-color, color, fill, stroke;
   transition-duration: 200ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
 }
 
 /* Print Media Stylesheet for PDF Generation */

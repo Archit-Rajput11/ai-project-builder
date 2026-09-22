@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import LZString from "lz-string";
-import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, CheckCircle2, Award, Zap, Loader2 } from "lucide-react";
+import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, ChevronDown, Lock, CheckCircle2, Award, Zap, Loader2 } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 import { supabase } from "@/lib/supabase";
 import ProBadge from "@/components/ProBadge";
@@ -727,37 +727,34 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     <div className="flex flex-col gap-8 pb-16 animate-fade-in">
       
       {/* Parameter Form Section (Hidden during printing via CSS no-print) */}
-      <section className="no-print p-6 md:p-8 rounded-3xl border border-border-accent bg-bg-accent/30 backdrop-blur-md shadow-sm flex flex-col gap-6">
+      <section className="no-print p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-[#0f172a]/80 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-cyan-950/5 flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
+            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight flex items-center gap-2.5 text-slate-900 dark:text-white">
+              <Zap className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
               Configure Your AI Blueprint {isPremium && <ProBadge />}
             </h2>
-            <p className="text-sm text-foreground/60">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Define your preferences to generate a custom-tailored academic project plan.
             </p>
           </div>
           
           {/* Account Tier Status Badge */}
-          <div className="flex flex-col items-end gap-1 text-[10px] uppercase font-bold tracking-wider select-none">
+          <div className="flex items-center select-none">
             {isPremium ? (
-              <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400">
-                ✨ Premium Tier: Unlimited Projects
-              </span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs font-semibold backdrop-blur-md shadow-sm shadow-amber-500/5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                <span>✨ Premium Tier: Unlimited Projects</span>
+              </div>
             ) : (
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                <div className="flex flex-col items-end gap-0.5">
-                  <span className="px-3 py-1 rounded-full bg-slate-500/10 border border-slate-500/20 text-foreground/60">
-                    Free Tier: 1 project/week ({1 - generatedCount > 0 ? 1 - generatedCount : 0} left)
-                  </span>
-                  <span className="text-[9px] text-foreground/45 font-semibold normal-case">
-                    Premium: Unlimited projects + PDF exports
-                  </span>
+              <div className="flex items-center gap-2.5 p-1 pl-3.5 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-md transition-all duration-200">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span>Free Tier: 1 project/week ({1 - generatedCount > 0 ? 1 - generatedCount : 0} left)</span>
                 </div>
                 <button
                   onClick={() => router.push("/dashboard/pricing")}
-                  className="px-3 py-1 rounded-xl border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-extrabold text-[10px] transition-all shadow-md shadow-amber-500/5 cursor-pointer animate-pulse"
+                  className="px-3 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 font-bold text-xs transition-all duration-200 cursor-pointer shadow-sm shadow-amber-500/10"
                 >
                   Get Premium
                 </button>
@@ -770,60 +767,77 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Domain Dropdown */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-foreground/75 uppercase tracking-wide">Domain</label>
-            <select
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-              className="px-4 py-3 rounded-xl border border-border-accent bg-background text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer transition-all"
-            >
-              <option value="Web Development">Web Development</option>
-              <option value="Mobile Apps">Mobile Apps</option>
-              <option value="AI/ML">AI / Machine Learning</option>
-              <option value="Blockchain">Blockchain Tech</option>
-              <option value="Cybersecurity">Cybersecurity</option>
-              <option value="IoT">Internet of Things (IoT)</option>
-            </select>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+              Domain
+            </label>
+            <div className="relative">
+              <select
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+                className="w-full appearance-none pl-4 pr-10 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 cursor-pointer transition-all duration-200"
+              >
+                <option value="Web Development">Web Development</option>
+                <option value="Mobile Apps">Mobile Apps</option>
+                <option value="AI/ML">AI / Machine Learning</option>
+                <option value="Blockchain">Blockchain Tech</option>
+                <option value="Cybersecurity">Cybersecurity</option>
+                <option value="IoT">Internet of Things (IoT)</option>
+              </select>
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            </div>
           </div>
 
           {/* Complexity Dropdown */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-foreground/75 uppercase tracking-wide">Complexity</label>
-            <select
-              value={complexity}
-              onChange={(e) => setComplexity(e.target.value)}
-              className="px-4 py-3 rounded-xl border border-border-accent bg-background text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer transition-all"
-            >
-              <option value="Basic">Basic (Scaffolds & Boilerplate)</option>
-              <option value="Intermediate">Intermediate (Core Full-Stack)</option>
-              <option value="Advanced">Advanced (Distributed & Scale)</option>
-            </select>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+              Complexity
+            </label>
+            <div className="relative">
+              <select
+                value={complexity}
+                onChange={(e) => setComplexity(e.target.value)}
+                className="w-full appearance-none pl-4 pr-10 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 cursor-pointer transition-all duration-200"
+              >
+                <option value="Basic">Basic (Scaffolds & Boilerplate)</option>
+                <option value="Intermediate">Intermediate (Core Full-Stack)</option>
+                <option value="Advanced">Advanced (Distributed & Scale)</option>
+              </select>
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            </div>
           </div>
 
           {/* Skill Level Dropdown */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-foreground/75 uppercase tracking-wide">Skill Level</label>
-            <select
-              value={skillLevel}
-              onChange={(e) => setSkillLevel(e.target.value)}
-              className="px-4 py-3 rounded-xl border border-border-accent bg-background text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary cursor-pointer transition-all"
-            >
-              <option value="Beginner">Beginner (1st/2nd Year)</option>
-              <option value="Competent">Competent (3rd Year)</option>
-              <option value="Expert">Expert (Final Year / Capstone)</option>
-            </select>
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+              Skill Level
+            </label>
+            <div className="relative">
+              <select
+                value={skillLevel}
+                onChange={(e) => setSkillLevel(e.target.value)}
+                className="w-full appearance-none pl-4 pr-10 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 cursor-pointer transition-all duration-200"
+              >
+                <option value="Beginner">Beginner (1st/2nd Year)</option>
+                <option value="Competent">Competent (3rd Year)</option>
+                <option value="Expert">Expert (Final Year / Capstone)</option>
+              </select>
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            </div>
           </div>
         </div>
 
         {/* Custom Keywords Input */}
-        <div className={`relative flex flex-col gap-1.5 p-4 rounded-xl border border-border-accent/40 bg-background/30 transition-all duration-300 ${!isPremium ? 'opacity-50 pointer-events-none select-none' : ''}`}>
+        <div className={`relative flex flex-col gap-1.5 p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 transition-all duration-300 ${!isPremium ? 'opacity-90 select-none' : ''}`}>
           {/* Overlay Lock Message */}
           {!isPremium && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60 dark:bg-slate-950/60 rounded-xl backdrop-blur-[2px] pointer-events-auto z-10">
-              <span className="text-xl mb-0.5">🔒</span>
-              <span className="text-[10px] font-bold tracking-wider text-amber-500 dark:text-amber-400 uppercase">Premium Feature</span>
+            <div className="absolute inset-0 flex items-center justify-center bg-slate-950/40 backdrop-blur-[2px] border border-dashed border-white/10 rounded-xl pointer-events-auto z-10 transition-all duration-200">
+              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-amber-500/30 text-amber-300 text-xs font-bold tracking-wider uppercase shadow-xl shadow-black/50">
+                <Lock className="w-3.5 h-3.5 text-amber-400" />
+                <span>Premium Feature</span>
+              </div>
             </div>
           )}
-          <label htmlFor="customKeywords" className="text-xs font-bold text-foreground/75 uppercase tracking-wide">
+          <label htmlFor="customKeywords" className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
             Project Focus / Keywords (Optional)
           </label>
           <input
@@ -833,26 +847,26 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             value={customKeywords}
             onChange={(e) => setCustomKeywords(e.target.value)}
             disabled={!isPremium}
-            className="px-4 py-3 rounded-xl border border-border-accent bg-background text-foreground text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-foreground/30 transition-all"
+            className="px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200"
           />
         </div>
 
         {/* Generate Trigger Button & Premium Action */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => handleGenerate(false)}
             disabled={loading}
-            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary-hover active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200 shadow-md shadow-primary/10 cursor-pointer"
+            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200 cursor-pointer"
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Generating Project Scaffolding...
+                <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                <span>Generating Project Scaffolding...</span>
               </>
             ) : (
               <>
                 <Sparkles className="w-4 h-4" />
-                Build Project Plan
+                <span>Build Project Plan</span>
               </>
             )}
           </button>
@@ -860,21 +874,21 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {plan && (
             <button
               onClick={handlePremiumPdfClick}
-              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl border transition-all shadow-md cursor-pointer ${
+              className={`flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border transition-all duration-200 shadow-sm cursor-pointer ${
                 isPremium 
-                  ? "border-emerald-500/30 hover:border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-sm shadow-emerald-500/5"
-                  : "border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-sm shadow-amber-500/5 animate-pulse"
+                  ? "border-emerald-500/30 hover:border-emerald-500/60 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-sm shadow-emerald-500/5"
+                  : "border-amber-500/30 hover:border-amber-500/60 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-sm shadow-amber-500/5"
               }`}
             >
               {isPremium ? (
                 <>
                   <Download className="w-4 h-4 text-emerald-400" />
-                  Download PDF
+                  <span>Download PDF</span>
                 </>
               ) : (
                 <>
                   <Award className="w-4 h-4 text-amber-400" />
-                  Get Premium PDF
+                  <span>Get Premium PDF</span>
                 </>
               )}
             </button>
@@ -884,8 +898,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Error Card */}
       {error && (
-        <div className="no-print p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 text-sm font-medium animate-fade-in">
-          {error}
+        <div className="no-print p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-medium animate-fade-in flex items-center gap-2">
+          <span>{error}</span>
         </div>
       )}
 
@@ -902,71 +916,40 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           </div>
 
           {/* Tab Switcher Controls (Hidden during printing via CSS no-print) */}
-          <div className="no-print flex items-center justify-between border-b border-border-accent gap-2 overflow-x-auto select-none">
+          <div className="no-print flex items-center justify-between border-b border-slate-200 dark:border-white/10 gap-2 overflow-x-auto select-none">
             <div className="flex gap-1 md:gap-2">
-              <button
-                onClick={() => setActiveTab("overview")}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 cursor-pointer transition-all ${
-                  activeTab === "overview"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-foreground/50 hover:text-foreground/80"
-                }`}
-              >
-                <Award className="w-4 h-4" />
-                Overview
-              </button>
-              <button
-                onClick={() => setActiveTab("tech")}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 cursor-pointer transition-all ${
-                  activeTab === "tech"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-foreground/50 hover:text-foreground/80"
-                }`}
-              >
-                <Terminal className="w-4 h-4" />
-                Tech & GitHub
-              </button>
-              <button
-                onClick={() => setActiveTab("roadmap")}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 cursor-pointer transition-all ${
-                  activeTab === "roadmap"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-foreground/50 hover:text-foreground/80"
-                }`}
-              >
-                <Calendar className="w-4 h-4" />
-                Roadmap
-              </button>
-              <button
-                onClick={() => setActiveTab("report")}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 cursor-pointer transition-all ${
-                  activeTab === "report"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-foreground/50 hover:text-foreground/80"
-                }`}
-              >
-                <FileText className="w-4 h-4" />
-                Report & Viva
-              </button>
-              <button
-                onClick={() => setActiveTab("copilot")}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-bold border-b-2 cursor-pointer transition-all ${
-                  activeTab === "copilot"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-foreground/50 hover:text-foreground/80"
-                }`}
-              >
-                <Sparkles className="w-4 h-4 animate-pulse text-purple-400" />
-                AI Copilot Guides
-              </button>
+              {[
+                { id: "overview", label: "Overview", icon: Award },
+                { id: "tech", label: "Tech & GitHub", icon: Terminal },
+                { id: "roadmap", label: "Roadmap", icon: Calendar },
+                { id: "report", label: "Report & Viva", icon: FileText },
+                { id: "copilot", label: "AI Copilot Guides", icon: Sparkles },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 cursor-pointer transition-all duration-200 ${
+                      isActive
+                        ? "border-cyan-500 text-cyan-600 dark:text-cyan-400 font-bold"
+                        : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                    }`}
+                  >
+                    <Icon className={`w-4 h-4 ${isActive && tab.id === "copilot" ? "text-purple-400 animate-pulse" : ""}`} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Quick action buttons (Hidden during print) */}
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center py-2">
               {/* Share Project Button */}
               <button
                 onClick={handleShareProject}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 hover:border-purple-500 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 font-semibold text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 hover:border-purple-500/60 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 font-medium text-xs transition-colors cursor-pointer"
               >
                 Share with Team
               </button>
@@ -974,7 +957,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Premium PDF Download */}
               <button
                 onClick={handlePremiumPdfClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/30 hover:border-amber-500/60 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-xs transition-colors cursor-pointer"
               >
                 <Award className="w-3.5 h-3.5 text-amber-400" />
                 Get Premium PDF
@@ -984,7 +967,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {isPremium && (
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-accent hover:bg-bg-accent font-semibold text-xs transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
                   Download Plan
@@ -994,7 +977,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Sign Out Button */}
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-accent hover:bg-bg-accent text-red-500 hover:text-red-600 font-semibold text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-500 dark:text-red-400 font-medium text-xs transition-colors cursor-pointer"
               >
                 Sign Out
               </button>
@@ -1007,12 +990,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 1: OVERVIEW PANEL (Always visible in prints) */}
             <div className={`${activeTab === "overview" ? "block" : "hidden print:block"} flex flex-col gap-4 animate-fade-in`}>
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-2xl font-extrabold tracking-tight">{plan.projectTitle}</h3>
-                <span className="shrink-0 px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20">
+                <h3 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{plan.projectTitle}</h3>
+                <span className="shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border border-cyan-500/20">
                   {plan.difficultyRating}
                 </span>
               </div>
-              <p className="text-base text-foreground/80 leading-relaxed border-l-4 border-primary/40 pl-4 py-1">
+              <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed border-l-2 border-cyan-500/50 pl-4 py-1">
                 {plan.description}
               </p>
             </div>
@@ -1020,35 +1003,35 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 2: TECH STACK & GITHUB PANEL (Always visible in prints) */}
             <div className={`${activeTab === "tech" ? "block" : "hidden print:block"} flex flex-col gap-6 animate-fade-in`}>
               <div>
-                <h4 className="text-base font-bold mb-3 uppercase tracking-wider text-foreground/60 print:text-black">
+                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
                   Recommended Tech Stack
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {/* Frontend Card */}
-                  <div className="p-4 rounded-xl border border-border-accent bg-bg-accent/40">
-                    <span className="text-xs font-bold text-primary uppercase">Frontend</span>
-                    <ul className="mt-2 text-sm space-y-1 list-disc list-inside text-foreground/80">
+                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
+                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Frontend</span>
+                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
                       {plan.techStack.frontend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Backend Card */}
-                  <div className="p-4 rounded-xl border border-border-accent bg-bg-accent/40">
-                    <span className="text-xs font-bold text-primary uppercase">Backend</span>
-                    <ul className="mt-2 text-sm space-y-1 list-disc list-inside text-foreground/80">
+                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
+                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Backend</span>
+                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
                       {plan.techStack.backend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Database Card */}
-                  <div className="p-4 rounded-xl border border-border-accent bg-bg-accent/40">
-                    <span className="text-xs font-bold text-primary uppercase">Database</span>
-                    <ul className="mt-2 text-sm space-y-1 list-disc list-inside text-foreground/80">
+                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
+                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Database</span>
+                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
                       {plan.techStack.database.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Hosting & Tools Card */}
-                  <div className="p-4 rounded-xl border border-border-accent bg-bg-accent/40">
-                    <span className="text-xs font-bold text-primary uppercase">Hosting & Tools</span>
-                    <ul className="mt-2 text-sm space-y-1 list-disc list-inside text-foreground/80">
+                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
+                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Hosting & Tools</span>
+                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
                       {plan.techStack.hostingAndTools.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
@@ -1058,28 +1041,28 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* GitHub Structure Terminal */}
               <div className="page-break">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-                  <h4 className="text-base font-bold uppercase tracking-wider text-foreground/60 print:text-black">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
                     Repository Directory Tree
                   </h4>
                   <button
                     onClick={handleDownloadBoilerplate}
-                    className={`no-print self-start flex items-center gap-2 px-3.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                    className={`no-print self-start flex items-center gap-2 px-3.5 py-1.5 rounded-lg border transition-all duration-200 cursor-pointer ${
                       isPremium
-                        ? "border-emerald-500/30 hover:border-emerald-500 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold text-xs"
-                        : "border-amber-500/30 hover:border-amber-500 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold text-xs"
+                        ? "border-emerald-500/30 hover:border-emerald-500/60 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-xs"
+                        : "border-amber-500/30 hover:border-amber-500/60 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-xs"
                     }`}
                   >
                     {isPremium ? "📦 Download Starter Boilerplate" : "🔒 Unlock Starter Boilerplate"}
                   </button>
                 </div>
-                <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-900 shadow-md">
-                  <div className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-950 border-b border-slate-800 no-print">
+                <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-950 shadow-xl">
+                  <div className="flex items-center gap-2 px-4 py-3 bg-slate-900/80 border-b border-white/5 no-print">
                     <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
                     <span className="text-xs text-slate-400 font-mono ml-2">repository-structure.txt</span>
                   </div>
-                  <pre className="p-5 overflow-x-auto text-xs text-cyan-400 font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200 rounded-b-2xl">
+                  <pre className="p-5 overflow-x-auto text-xs text-cyan-300 font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200 rounded-b-2xl">
                     <code>{plan.githubStructure}</code>
                   </pre>
                 </div>
@@ -1090,20 +1073,20 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <div className={`${activeTab === "roadmap" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in`}>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h4 className="text-base font-bold uppercase tracking-wider text-foreground/60">
+                  <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Interactive Roadmap Kanban Board
                   </h4>
-                  <p className="text-xs text-foreground/50 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                     Drag and drop cards between status columns to update your implementation progress.
                   </p>
                 </div>
               </div>
 
               {!mounted ? (
-                <div className="flex items-center justify-center p-12 border border-dashed border-border-accent rounded-2xl bg-bg-accent/10">
+                <div className="flex items-center justify-center p-12 border border-dashed border-slate-200 dark:border-white/10 rounded-2xl bg-white/40 dark:bg-slate-900/40">
                   <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 text-primary animate-spin" />
-                    <span className="text-sm font-semibold text-foreground/60">Loading Kanban Board...</span>
+                    <Loader2 className="w-8 h-8 text-cyan-500 dark:text-cyan-400 animate-spin" />
+                    <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">Loading Kanban Board...</span>
                   </div>
                 </div>
               ) : (
@@ -1116,19 +1099,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                         "Completed";
                       const columnTasks = kanbanTasks[columnKey] || [];
                       const colHeaderColor = 
-                        columnKey === "todo" ? "text-primary border-primary/20 bg-primary/5" :
-                        columnKey === "in_progress" ? "text-yellow-500 border-yellow-500/20 bg-yellow-500/5" :
+                        columnKey === "todo" ? "text-cyan-600 dark:text-cyan-400 border-cyan-500/20 bg-cyan-500/5" :
+                        columnKey === "in_progress" ? "text-amber-500 border-amber-500/20 bg-amber-500/5" :
                         "text-emerald-500 border-emerald-500/20 bg-emerald-500/5";
 
                       return (
-                        <div key={columnKey} className="flex flex-col rounded-2xl border border-border-accent bg-bg-accent/10 p-4 h-[600px] overflow-hidden">
+                        <div key={columnKey} className="flex flex-col rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-slate-900/50 backdrop-blur-md p-4 h-[600px] overflow-hidden">
                           {/* Column Header */}
-                          <div className="flex items-center justify-between border-b border-border-accent pb-3 mb-4">
+                          <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3 mb-4">
                             <div className="flex items-center gap-2">
                               <span className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${colHeaderColor}`}>
                                 {columnTitle}
                               </span>
-                              <span className="text-xs font-mono text-foreground/40 font-bold">
+                              <span className="text-xs font-mono text-slate-400 font-bold">
                                 {columnTasks.length}
                               </span>
                             </div>
@@ -1141,7 +1124,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
                                 className={`flex-1 flex flex-col gap-3 overflow-y-auto pr-1 pb-4 transition-colors rounded-xl ${
-                                  snapshot.isDraggingOver ? "bg-bg-accent/20" : ""
+                                  snapshot.isDraggingOver ? "bg-cyan-500/5" : ""
                                 }`}
                               >
                                 {columnTasks.map((task, index) => (
@@ -1151,14 +1134,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                         ref={draggableProvided.innerRef}
                                         {...draggableProvided.draggableProps}
                                         {...draggableProvided.dragHandleProps}
-                                        className={`p-4 rounded-xl border bg-background/50 backdrop-blur-sm cursor-grab active:cursor-grabbing hover:bg-background/80 transition-all select-none ${
+                                        className={`p-4 rounded-xl border bg-white dark:bg-slate-900/90 backdrop-blur-md cursor-grab active:cursor-grabbing hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 select-none ${
                                           draggableSnapshot.isDragging 
-                                            ? "border-primary shadow-lg shadow-primary/20 scale-[1.02]" 
-                                            : "border-border-accent hover:border-primary/50"
+                                            ? "border-cyan-400 shadow-xl shadow-cyan-950/40 scale-[1.02]" 
+                                            : "border-slate-200 dark:border-white/10 hover:border-cyan-500/40"
                                         }`}
                                       >
                                         <div className="flex items-center justify-between gap-2 mb-2">
-                                          <span className="text-[10px] font-extrabold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20 uppercase tracking-wide">
+                                          <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20 uppercase tracking-wide">
                                             Week {task.week}
                                           </span>
                                           {getToolForTask(task) && (
@@ -1167,20 +1150,20 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                             </span>
                                           )}
                                         </div>
-                                        <h5 className="text-xs font-bold text-foreground leading-tight mb-1">
+                                        <h5 className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight mb-1">
                                           {task.title}
                                         </h5>
-                                        <p className="text-[11px] text-foreground/70 leading-normal line-clamp-2">
+                                        <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-normal line-clamp-2">
                                           {task.description}
                                         </p>
-                                        <div className="mt-3 pt-2 border-t border-border-accent/30 flex items-center justify-between">
-                                          <span className="text-[9px] text-foreground/30 font-mono">ID: {task.id}</span>
+                                        <div className="mt-3 pt-2 border-t border-slate-200 dark:border-white/5 flex items-center justify-between">
+                                          <span className="text-[9px] text-slate-400 font-mono">ID: {task.id}</span>
                                           <button
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               handleDebugClick(task);
                                             }}
-                                            className="px-2 py-1 rounded border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-400 font-extrabold text-[9px] transition-all cursor-pointer"
+                                            className="px-2 py-1 rounded border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-500 dark:text-red-400 font-semibold text-[9px] transition-all cursor-pointer"
                                           >
                                             🚨 Debug / Get Help
                                           </button>
@@ -1191,8 +1174,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                 ))}
                                 {provided.placeholder}
                                 {columnTasks.length === 0 && (
-                                  <div className="flex-1 flex items-center justify-center border border-dashed border-border-accent/40 rounded-xl py-12">
-                                    <span className="text-xs text-foreground/30 font-semibold uppercase tracking-wider">Empty</span>
+                                  <div className="flex-1 flex items-center justify-center border border-dashed border-slate-200 dark:border-white/10 rounded-xl py-12">
+                                    <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">Empty</span>
                                   </div>
                                 )}
                               </div>
@@ -1210,36 +1193,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <div className={`${activeTab === "report" ? "block" : "hidden print:block"} flex flex-col gap-6 animate-fade-in page-break`}>
               {/* Thesis Outline Abstract */}
               <div>
-                <h4 className="text-base font-bold mb-3 uppercase tracking-wider text-foreground/60 print:text-black">
+                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
                   Report Abstract Skeleton
                 </h4>
-                <p className="text-sm text-foreground/75 leading-relaxed bg-bg-accent/40 p-4 rounded-xl border border-border-accent">
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-white/70 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-white/10 backdrop-blur-md">
                   {plan.reportOutline.abstract}
                 </p>
               </div>
 
               {/* Collapsible Chapter Layout (HTML Details Accordions) */}
               <div>
-                <h4 className="text-base font-bold mb-3 uppercase tracking-wider text-foreground/60 print:text-black">
+                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
                   Chapter Breakdown
                 </h4>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2.5">
                   {plan.reportOutline.chapters.map((chapter, idx) => (
                     <details
                       key={idx}
-                      className="group p-4 rounded-xl border border-border-accent bg-bg-accent/30 open:bg-bg-accent/50 transition-colors"
+                      className="group p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md open:bg-slate-50 dark:open:bg-slate-900/90 transition-all duration-200"
                     >
-                      <summary className="flex items-center justify-between text-sm font-bold text-foreground cursor-pointer select-none outline-none">
+                      <summary className="flex items-center justify-between text-sm font-bold text-slate-900 dark:text-slate-100 cursor-pointer select-none outline-none">
                         <span className="flex items-center gap-2">
-                          <span className="text-primary font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
+                          <span className="text-cyan-500 font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
                           {chapter.title}
                         </span>
-                        <ChevronRight className="w-4 h-4 text-foreground/50 group-open:rotate-90 transition-transform no-print" />
+                        <ChevronRight className="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform duration-200 no-print" />
                       </summary>
                       
-                      <div className="mt-3 pl-4 border-l border-primary/20 space-y-1">
+                      <div className="mt-3 pl-4 border-l-2 border-cyan-500/30 space-y-1.5">
                         {chapter.subsections.map((sub, sidx) => (
-                          <div key={sidx} className="text-xs text-foreground/75 py-0.5">
+                          <div key={sidx} className="text-xs text-slate-600 dark:text-slate-300 py-0.5">
                             {chapter.chapterNumber}.{sidx + 1} {sub}
                           </div>
                         ))}
@@ -1251,17 +1234,17 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
               {/* Viva Exam Questions */}
               <div className="page-break">
-                <h4 className="text-base font-bold mb-3 uppercase tracking-wider text-foreground/60 print:text-black">
+                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
                   Viva Practice Question Sheet
                 </h4>
                 <div className="grid grid-cols-1 gap-4">
                   {plan.vivaQuestions.map((q, idx) => (
-                    <div key={idx} className="p-4 rounded-xl border border-border-accent bg-bg-accent/30">
-                      <div className="flex gap-2 items-start">
-                        <span className="text-xs font-extrabold text-primary shrink-0 mt-0.5 font-mono">Q{idx + 1}.</span>
-                        <h6 className="text-sm font-bold">{q.question}</h6>
+                    <div key={idx} className="p-5 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md">
+                      <div className="flex gap-2.5 items-start">
+                        <span className="text-xs font-extrabold text-cyan-500 shrink-0 mt-0.5 font-mono">Q{idx + 1}.</span>
+                        <h6 className="text-sm font-bold text-slate-900 dark:text-slate-100">{q.question}</h6>
                       </div>
-                      <div className="mt-2 pl-6 text-xs text-foreground/70 print:text-gray-900 leading-relaxed border-t border-border-accent/40 pt-2">
+                      <div className="mt-2.5 pl-6 text-xs text-slate-600 dark:text-slate-300 print:text-gray-900 leading-relaxed border-t border-slate-200 dark:border-white/10 pt-2.5">
                         <span className="font-semibold text-emerald-500 print:text-emerald-700 uppercase mr-1 text-[10px]">Ideal Answer:</span>
                         {q.idealAnswer}
                       </div>
@@ -1271,13 +1254,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               </div>
 
               {/* Download Action Footer (Hidden when printing) */}
-              <div className="no-print flex items-center justify-end pt-4 border-t border-border-accent/40">
+              <div className="no-print flex items-center justify-end pt-4 border-t border-slate-200 dark:border-white/10">
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary-hover active:scale-[0.99] transition-all cursor-pointer shadow-md shadow-primary/10"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition-all duration-200 cursor-pointer shadow-lg shadow-cyan-500/25 active:scale-[0.99]"
                 >
                   <Download className="w-4 h-4" />
-                  Save Report Blueprint as PDF
+                  <span>Save Report Blueprint as PDF</span>
                 </button>
               </div>
 
@@ -1286,26 +1269,26 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 5: AI COPILOT GUIDES PANEL */}
             <div className={`${activeTab === "copilot" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in no-print`}>
               {/* Hero Header */}
-              <div className="p-6 rounded-3xl border border-border-accent bg-slate-900/40 backdrop-blur-sm flex flex-col gap-2 shadow-lg">
-                <h4 className="text-base font-extrabold text-foreground flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+              <div className="p-6 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md flex flex-col gap-2 shadow-lg shadow-cyan-950/5">
+                <h4 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-cyan-500 dark:text-cyan-400 animate-pulse" />
                   Select a week below to get the best AI tool recommendation and matching master development prompts.
                 </h4>
-                <p className="text-xs text-foreground/60 leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                   These guides matching your generated blueprint week objectives are custom compiled by our academic AI engine.
                 </p>
               </div>
 
               {/* Horizontal Row of Clickable Week Buttons */}
-              <div className="flex gap-2 border-b border-border-accent pb-3 overflow-x-auto select-none">
+              <div className="flex gap-2 border-b border-slate-200 dark:border-white/10 pb-3 overflow-x-auto select-none">
                 {plan.roadmapWeeks?.map((week) => (
                   <button
                     key={week.weekNumber}
                     onClick={() => setSelectedCopilotWeek(week.weekNumber)}
-                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all duration-200 cursor-pointer ${
                       selectedCopilotWeek === week.weekNumber
-                        ? "bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-[1.02]"
-                        : "border-border-accent hover:border-foreground/30 text-foreground/75"
+                        ? "bg-cyan-500 border-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-[1.02]"
+                        : "border-slate-200 dark:border-white/10 hover:border-cyan-500/40 text-slate-600 dark:text-slate-300"
                     }`}
                   >
                     Week {week.weekNumber}
@@ -1322,12 +1305,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 const prompt = currentWeekObj.aiToolGuide?.masterPrompt || "";
 
                 return (
-                  <div className="p-6 md:p-8 rounded-3xl border border-border-accent/60 bg-slate-900/50 backdrop-blur-md shadow-xl flex flex-col gap-5">
+                  <div className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#0f172a]/90 backdrop-blur-xl shadow-xl flex flex-col gap-5">
                     {/* Tool Badge & Goal */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border-accent/30 pb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-4">
                       <div>
-                        <span className="text-[10px] font-bold text-primary uppercase tracking-wide">Phase {selectedCopilotWeek} Focus</span>
-                        <h4 className="text-base font-extrabold text-foreground mt-0.5">
+                        <span className="text-[10px] font-bold text-cyan-500 uppercase tracking-wider">Phase {selectedCopilotWeek} Focus</span>
+                        <h4 className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
                           {currentWeekObj.focusGoal}
                         </h4>
                       </div>
@@ -1340,8 +1323,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
                     {/* Why this tool? */}
                     <div className="flex flex-col gap-1.5">
-                      <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-wider">Why this tool?</span>
-                      <p className="text-xs text-foreground/80 leading-relaxed bg-bg-accent/20 p-4 rounded-xl border border-border-accent/20 italic">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Why this tool?</span>
+                      <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-white/10 italic">
                         "{justification}"
                       </p>
                     </div>
@@ -1349,14 +1332,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                     {/* Master Prompt */}
                     <div className="flex flex-col gap-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-wider">AI Master Prompt</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AI Master Prompt</span>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(prompt);
                             setCopiedWeek(selectedCopilotWeek);
                             setTimeout(() => setCopiedWeek(null), 2000);
                           }}
-                          className="px-3.5 py-1.5 rounded-lg bg-bg-accent border border-border-accent hover:border-primary text-foreground/80 hover:text-primary text-[10px] font-extrabold transition-all cursor-pointer flex items-center gap-1"
+                          className="px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:border-cyan-500/40 text-slate-700 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 text-[10px] font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5"
                         >
                           {copiedWeek === selectedCopilotWeek ? "✓ Copied!" : "📋 Copy Master Prompt"}
                         </button>
@@ -1364,7 +1347,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                       <textarea
                         readOnly
                         value={prompt}
-                        className="w-full h-64 p-4 bg-slate-950 border border-border-accent/60 rounded-2xl text-xs font-mono leading-relaxed text-cyan-400 focus:outline-none resize-none shadow-inner"
+                        className="w-full h-64 p-4 bg-slate-950 border border-slate-200 dark:border-white/10 rounded-2xl text-xs font-mono leading-relaxed text-cyan-300 focus:outline-none resize-none shadow-inner"
                       />
                     </div>
                   </div>
@@ -1512,36 +1495,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {plan && (
         <button
           onClick={handleChatOpen}
-          className={`no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3.5 rounded-full font-bold text-sm shadow-lg transition-all hover:scale-[1.04] active:scale-[0.98] cursor-pointer animate-fade-in ${
+          className={`no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3.5 rounded-full font-bold text-sm shadow-xl transition-all duration-200 hover:scale-[1.04] active:scale-[0.98] cursor-pointer animate-fade-in ${
             isPremium
-              ? "bg-primary hover:bg-primary-hover text-white shadow-primary/30"
-              : "bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-amber-500/20"
+              ? "bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-500/25"
+              : "border border-amber-500/40 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 shadow-amber-500/10 backdrop-blur-md"
           }`}
         >
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
           </span>
-          {isPremium ? "💬 Ask Tutor" : "🔒 Unlock Tutor (Pro)"}
+          <span>{isPremium ? "💬 Ask Tutor" : "🔒 Unlock Tutor (Pro)"}</span>
         </button>
       )}
 
       {/* Slide-out Tutor Chat Sidebar */}
       {plan && (
         <div
-          className={`no-print fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-slate-900/95 dark:bg-slate-950/95 border-l border-border-accent/40 backdrop-blur-xl shadow-2xl flex flex-col transition-transform duration-300 ${
+          className={`no-print fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white/95 dark:bg-[#0f172a]/95 border-l border-slate-200 dark:border-white/10 backdrop-blur-2xl shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
             isChatOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between px-6 py-5 border-b border-border-accent/40 bg-slate-950/50">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/60">
             <div className="flex items-center gap-2.5">
               <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <h4 className="text-sm font-bold tracking-wide uppercase text-foreground/80">Project Tutor</h4>
+              <h4 className="text-sm font-bold tracking-wide uppercase text-slate-900 dark:text-slate-100">Project Tutor</h4>
             </div>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="p-1.5 rounded-lg border border-border-accent/40 hover:bg-bg-accent text-foreground/60 hover:text-foreground text-xs font-bold transition-all cursor-pointer"
+              className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 text-xs font-semibold transition-all cursor-pointer"
             >
               Close
             </button>
@@ -1559,15 +1542,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   <div
                     className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                       isUser
-                        ? "bg-primary text-white rounded-br-none shadow-md shadow-primary/10"
-                        : "bg-slate-800/80 text-foreground/90 border border-border-accent/40 rounded-bl-none"
+                        ? "bg-cyan-500 text-slate-950 font-medium rounded-br-none shadow-md shadow-cyan-500/15"
+                        : "bg-slate-100 dark:bg-slate-800/90 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-white/10 rounded-bl-none"
                     }`}
                   >
                     <p className="whitespace-pre-wrap font-sans leading-relaxed">
                       {msg.text}
                     </p>
                   </div>
-                  <span className="text-[9px] text-foreground/30 font-semibold uppercase mt-1 px-1 tracking-wide">
+                  <span className="text-[9px] text-slate-400 font-semibold uppercase mt-1 px-1 tracking-wide">
                     {isUser ? "You" : "Tutor"} • {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
                   </span>
                 </div>
@@ -1577,12 +1560,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* Typing Indicator Loading State */}
             {chatLoading && (
               <div className="self-start flex flex-col items-start gap-1 max-w-[85%]">
-                <div className="p-3.5 rounded-2xl rounded-bl-none bg-slate-800/80 border border-border-accent/40 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" />
+                <div className="p-3.5 rounded-2xl rounded-bl-none bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/10 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" />
                 </div>
-                <span className="text-[9px] text-foreground/30 font-semibold uppercase px-1 tracking-wide">
+                <span className="text-[9px] text-slate-400 font-semibold uppercase px-1 tracking-wide">
                   Tutor is typing...
                 </span>
               </div>
@@ -1590,19 +1573,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           </div>
 
           {/* Input Bar Form */}
-          <form onSubmit={handleSendChatMessage} className="p-4 border-t border-border-accent/40 bg-slate-950/40 flex gap-2">
+          <form onSubmit={handleSendChatMessage} className="p-4 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-950/60 flex gap-2">
             <input
               type="text"
               placeholder="Ask Tutor a question..."
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               disabled={chatLoading}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-border-accent/60 bg-background/50 text-foreground text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-foreground/30 disabled:opacity-50 transition-all"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 placeholder:text-slate-400 disabled:opacity-50 transition-all duration-200"
             />
             <button
               type="submit"
               disabled={!chatInput.trim() || chatLoading}
-              className="px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-xs hover:bg-primary-hover active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer shadow-md shadow-primary/10"
+              className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer shadow-md shadow-cyan-500/20"
             >
               Send
             </button>
@@ -1612,17 +1595,17 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Debugger Get Help Modal */}
       {debugTask && (
-        <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="w-full max-w-2xl bg-slate-900 rounded-3xl border border-border-accent shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+        <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
             {/* Modal Header */}
-            <div className="p-6 border-b border-border-accent/40 bg-slate-950/20 flex items-center justify-between">
+            <div className="p-6 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   <span className="text-red-500 font-bold">🚨</span>
                   Tutor Debugger: Task Support
                 </h3>
-                <span className="text-xs text-foreground/50 mt-1 block">
-                  Task: <span className="font-semibold text-foreground/80">"{debugTask.title}"</span>
+                <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 block">
+                  Task: <span className="font-semibold text-slate-700 dark:text-slate-200">"{debugTask.title}"</span>
                 </span>
               </div>
               <button
@@ -1631,7 +1614,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   setDebugErrorInput("");
                   setDebugResult("");
                 }}
-                className="p-1.5 rounded-lg border border-border-accent hover:border-foreground/45 text-foreground/60 hover:text-foreground text-xs font-bold transition-all cursor-pointer"
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 text-xs font-semibold transition-all cursor-pointer"
               >
                 Close
               </button>
@@ -1640,7 +1623,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* Modal Body */}
             <div className="p-6 overflow-y-auto flex flex-col gap-4 flex-1">
               <form onSubmit={handleFixCode} className="flex flex-col gap-3">
-                <label className="text-xs font-bold text-foreground/75 uppercase tracking-wide">
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Paste Broken Code or Console Error
                 </label>
                 <textarea
@@ -1649,13 +1632,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   value={debugErrorInput}
                   onChange={(e) => setDebugErrorInput(e.target.value)}
                   disabled={debugLoading}
-                  className="w-full h-32 p-3 bg-slate-950 border border-border-accent/60 rounded-xl text-xs font-mono leading-relaxed text-cyan-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-foreground/30 disabled:opacity-50 transition-all"
+                  className="w-full h-32 p-3 bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl text-xs font-mono leading-relaxed text-cyan-300 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 placeholder:text-slate-600 disabled:opacity-50 transition-all"
                 />
                 
                 <button
                   type="submit"
                   disabled={!debugErrorInput.trim() || debugLoading}
-                  className="self-end px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs hover:scale-[1.01] active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer shadow-md shadow-red-950/20"
+                  className="self-end px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer shadow-md shadow-red-950/30"
                 >
                   {debugLoading ? "Analyzing Error..." : "Fix Code"}
                 </button>
@@ -1663,19 +1646,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
               {/* Debug Result Display */}
               {(debugLoading || debugResult) && (
-                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-border-accent/40">
-                  <span className="text-xs font-bold text-foreground/75 uppercase tracking-wide">
+                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-slate-200 dark:border-white/10">
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                     Tutor Diagnostic Resolution
                   </span>
                   
                   {debugLoading ? (
-                    <div className="p-4 rounded-xl border border-border-accent bg-bg-accent/40 flex items-center gap-3">
-                      <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                      <span className="text-xs font-semibold text-foreground/60">Tutor is analyzing your stack trace...</span>
+                    <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/60 flex items-center gap-3">
+                      <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
+                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Tutor is analyzing your stack trace...</span>
                     </div>
                   ) : (
-                    <div className="p-4 rounded-xl border border-border-accent bg-slate-950 overflow-x-auto max-h-[300px]">
-                      <pre className="text-xs text-foreground/90 font-sans leading-relaxed whitespace-pre-wrap">
+                    <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-950 overflow-x-auto max-h-[300px]">
+                      <pre className="text-xs text-slate-200 font-sans leading-relaxed whitespace-pre-wrap">
                         {debugResult}
                       </pre>
                     </div>
@@ -1691,37 +1674,37 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {shareToast && (
         <div className="no-print fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-950/90 text-emerald-400 text-xs font-bold shadow-lg shadow-emerald-950/50 animate-fade-in flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          Link copied to clipboard!
+          <span>Link copied to clipboard!</span>
         </div>
       )}
 
       {/* Limit Reached Modal */}
       {showLimitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in no-print">
-          <div className="w-full max-w-md p-6 rounded-3xl border border-border-accent bg-slate-900 shadow-2xl flex flex-col gap-5 text-center">
-            <div className="flex flex-col items-center gap-2">
-              <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in no-print">
+          <div className="w-full max-w-md p-8 rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-2xl flex flex-col gap-6 text-center">
+            <div className="flex flex-col items-center gap-2.5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-1 shadow-sm">
                 <Zap className="w-6 h-6 animate-pulse" />
               </div>
-              <h3 className="text-lg font-extrabold text-foreground">Limit Reached</h3>
-              <p className="text-xs text-foreground/60 leading-relaxed px-2">
+              <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Limit Reached</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed px-2">
                 You've reached your free weekly limit! Upgrade to Premium for unlimited projects and one-click PDF downloads.
               </p>
             </div>
 
-            <div className="flex flex-col gap-2 mt-2">
+            <div className="flex flex-col gap-2.5">
               <button
                 onClick={() => {
                   setShowLimitModal(false);
                   router.push("/dashboard/pricing");
                 }}
-                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer font-extrabold"
+                className="w-full py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all duration-200 shadow-lg shadow-cyan-500/25 cursor-pointer"
               >
                 Upgrade to Premium
               </button>
               <button
                 onClick={() => setShowLimitModal(false)}
-                className="w-full py-3 rounded-xl border border-border-accent bg-bg-accent/40 text-foreground font-semibold text-xs hover:bg-border-accent transition-all cursor-pointer"
+                className="w-full py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-medium text-xs transition-all duration-200 cursor-pointer"
               >
                 Cancel
               </button>

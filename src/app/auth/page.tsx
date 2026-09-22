@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock, User, Sparkles, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { supabase } from "@/lib/supabase";
 
@@ -107,20 +107,17 @@ export default function AuthPage() {
   return (
     <div className="flex flex-col min-h-screen py-4 bg-background">
       <Header />
-      <main className="flex-1 flex flex-col w-full max-w-5xl mx-auto px-4 mt-6">
-        <div className="flex flex-1 items-center justify-center py-8 md:py-16">
-          <div className="w-full max-w-md p-8 rounded-3xl border border-border-accent bg-bg-accent/30 backdrop-blur-lg shadow-xl flex flex-col gap-6 animate-fade-in">
+      <main className="flex-1 flex items-center justify-center w-full max-w-5xl mx-auto px-4 py-8 md:py-12">
+        {/* Subtle Outer Glow & Gradient Border Wrapper */}
+        <div className="relative w-full max-w-md p-[1px] rounded-3xl bg-gradient-to-b from-cyan-400/30 via-white/10 to-transparent shadow-2xl shadow-cyan-950/30 dark:shadow-black/50">
+          <div className="w-full p-8 sm:p-10 rounded-[23px] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border border-white/5 flex flex-col gap-6">
             
-            {/* Top Header Card */}
+            {/* Top Heading */}
             <div className="text-center flex flex-col items-center gap-2">
-              <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/15 mb-2">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                <span>AI College Project Builder</span>
-              </div>
-              <h2 className="text-2xl font-extrabold tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 {isSignUp ? "Create your account" : "Welcome back"}
               </h2>
-              <p className="text-sm text-foreground/60">
+              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                 {isSignUp 
                   ? "Start building your academic portfolio today" 
                   : "Sign in to access your dashboard and projects"
@@ -133,24 +130,26 @@ export default function AuthPage() {
               {/* Name Field (Only visible in signup mode) */}
               {isSignUp && (
                 <div className="flex flex-col gap-1.5 animate-slide-down">
-                  <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Full Name</label>
+                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    Full Name
+                  </label>
                   <div className="flex items-center relative">
-                    <User className="absolute left-4 w-4 h-4 text-foreground/35" />
+                    <User className="absolute left-4 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
                     <input
                       type="text"
                       placeholder="Jane Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       onBlur={() => setNameTouched(true)}
-                      className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
+                      className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200 ${
                         nameError 
-                          ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/10" 
-                          : "border-border-accent focus:border-primary"
+                          ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" 
+                          : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700"
                       }`}
                     />
                   </div>
                   {nameError && (
-                    <span className="text-[10px] text-red-500 font-semibold pl-1">
+                    <span className="text-[11px] text-red-400 font-medium pl-1">
                       {nameError}
                     </span>
                   )}
@@ -159,24 +158,26 @@ export default function AuthPage() {
 
               {/* Email Field */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Email Address</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                  Email Address
+                </label>
                 <div className="flex items-center relative">
-                  <Mail className="absolute left-4 w-4 h-4 text-foreground/35" />
+                  <Mail className="absolute left-4 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
                   <input
                     type="email"
                     placeholder="student@university.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onBlur={() => setEmailTouched(true)}
-                    className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
+                    className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200 ${
                       emailError 
-                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/10" 
-                        : "border-border-accent focus:border-primary"
+                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" 
+                        : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700"
                     }`}
                   />
                 </div>
                 {emailError && (
-                  <span className="text-[10px] text-red-500 font-semibold pl-1">
+                  <span className="text-[11px] text-red-400 font-medium pl-1">
                     {emailError}
                   </span>
                 )}
@@ -185,7 +186,9 @@ export default function AuthPage() {
               {/* Password Field */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-foreground/70 uppercase tracking-wider">Password</label>
+                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                    Password
+                  </label>
                   {!isSignUp && (
                     <a
                       href="#"
@@ -193,36 +196,37 @@ export default function AuthPage() {
                         e.preventDefault();
                         alert("Password recovery link has been sent to your email!");
                       }}
-                      className="text-[10px] font-bold text-primary hover:underline uppercase tracking-wider"
+                      className="text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors"
                     >
                       Forgot?
                     </a>
                   )}
                 </div>
                 <div className="flex items-center relative">
-                  <Lock className="absolute left-4 w-4 h-4 text-foreground/35" />
+                  <Lock className="absolute left-4 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onBlur={() => setPasswordTouched(true)}
-                    className={`w-full pl-11 pr-12 py-3 rounded-xl border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all pr-12 ${
+                    className={`w-full pl-11 pr-12 py-3 rounded-xl border bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200 ${
                       passwordError 
-                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/10" 
-                        : "border-border-accent focus:border-primary"
+                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" 
+                        : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 text-foreground/35 hover:text-foreground/70 transition-colors cursor-pointer select-none"
+                    className="absolute right-4 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer select-none"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {passwordError && (
-                  <span className="text-[10px] text-red-500 font-semibold pl-1">
+                  <span className="text-[11px] text-red-400 font-medium pl-1">
                     {passwordError}
                   </span>
                 )}
@@ -230,40 +234,40 @@ export default function AuthPage() {
 
               {/* Toggle Form / Terms Switcher */}
               {isSignUp ? (
-                <div className="flex flex-col gap-4 mt-2">
-                  <label className="flex items-start gap-2.5 text-xs text-foreground/60 leading-relaxed cursor-pointer select-none">
+                <div className="flex flex-col gap-4 mt-1">
+                  <label className="flex items-start gap-2.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={agreeTerms}
                       onChange={(e) => setAgreeTerms(e.target.checked)}
-                      className="mt-1 rounded border-border-accent bg-bg-accent/40 text-primary focus:ring-primary/20 cursor-pointer accent-primary"
+                      className="mt-0.5 rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-cyan-500 focus:ring-cyan-400/30 cursor-pointer accent-cyan-500"
                     />
                     <span>
                       I agree to the{" "}
-                      <a href="#" className="text-primary hover:underline font-bold">Terms of Service</a>
+                      <a href="#" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">Terms of Service</a>
                       {" "}and{" "}
-                      <a href="#" className="text-primary hover:underline font-bold">Privacy Policy</a>.
+                      <a href="#" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">Privacy Policy</a>.
                     </span>
                   </label>
-                  <p className="text-center text-xs text-foreground/50 select-none">
+                  <p className="text-center text-xs text-slate-500 dark:text-slate-400 select-none">
                     Already have an account?{" "}
                     <button
                       type="button"
                       onClick={() => setIsSignUp(false)}
-                      className="text-primary font-bold hover:underline cursor-pointer"
+                      className="text-cyan-600 dark:text-cyan-400 font-semibold hover:text-cyan-500 dark:hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
                     >
                       Sign In
                     </button>
                   </p>
                 </div>
               ) : (
-                <div className="mt-2 select-none">
-                  <p className="text-center text-xs text-foreground/50">
+                <div className="mt-1 select-none">
+                  <p className="text-center text-xs text-slate-500 dark:text-slate-400">
                     New to AI Project Builder?{" "}
                     <button
                       type="button"
                       onClick={() => setIsSignUp(true)}
-                      className="text-primary font-bold hover:underline cursor-pointer"
+                      className="text-cyan-600 dark:text-cyan-400 font-semibold hover:text-cyan-500 dark:hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
                     >
                       Sign Up Free
                     </button>
@@ -271,19 +275,19 @@ export default function AuthPage() {
                 </div>
               )}
 
-              {/* Submit Button */}
+              {/* High-Contrast Primary CTA Button */}
               <button
                 type="submit"
                 disabled={isSubmitDisabled}
-                className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm shadow-md transition-all duration-200 mt-2 select-none ${
+                className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 mt-2 select-none ${
                   isSubmitDisabled 
-                    ? "opacity-50 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-foreground/40 shadow-none pointer-events-none" 
-                    : "bg-primary text-white hover:bg-primary-hover active:scale-[0.99] cursor-pointer shadow-primary/10"
+                    ? "opacity-50 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-500 shadow-none pointer-events-none" 
+                    : "bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 active:scale-[0.99] cursor-pointer"
                 }`}
               >
                 {loading ? (
                   <>
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
                     <span>Processing...</span>
                   </>
                 ) : (

@@ -19,13 +19,13 @@ export function Header() {
 
   return (
     <header className="sticky top-4 z-50 w-full max-w-5xl mx-auto px-4 select-none">
-      <nav className="flex items-center justify-between px-6 py-3 rounded-2xl bg-white/80 dark:bg-slate-950/80 backdrop-blur-lg border border-border-accent/50 shadow-sm transition-all duration-300">
+      <nav className="flex items-center justify-between px-6 py-3 rounded-2xl bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-xl border border-slate-200/80 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-black/20 transition-all duration-200">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-primary/10 text-primary group-hover:scale-105 transition-transform duration-200">
-            <Sparkles className="w-5 h-5" />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 group-hover:scale-105 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 transition-all duration-200 shadow-sm shadow-cyan-500/10">
+            <Sparkles className="w-4.5 h-4.5" />
           </div>
-          <span className="font-sans font-extrabold text-base tracking-tight bg-gradient-to-r from-primary to-blue-600 dark:to-cyan-400 bg-clip-text text-transparent">
+          <span className="font-sans font-extrabold text-base tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:via-slate-100 dark:to-cyan-200 bg-clip-text text-transparent">
             AI College Project Builder
           </span>
         </Link>
@@ -34,13 +34,13 @@ export function Header() {
         <button
           onClick={toggleTheme}
           aria-label="Toggle theme"
-          className="relative flex items-center justify-center w-9 h-9 rounded-xl border border-border-accent bg-bg-accent/40 text-foreground hover:bg-border-accent hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+          className="relative flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100/60 dark:bg-slate-900/60 text-foreground hover:bg-slate-200/70 dark:hover:bg-white/10 hover:border-cyan-500/30 active:scale-95 transition-all duration-200 cursor-pointer"
         >
           {mounted ? (
             resolvedTheme === "dark" ? (
-              <Sun className="w-4.5 h-4.5 text-amber-400 rotate-0 transition-transform duration-500 hover:rotate-90" />
+              <Sun className="w-4.5 h-4.5 text-amber-400 rotate-0 transition-transform duration-300 hover:rotate-90" />
             ) : (
-              <Moon className="w-4.5 h-4.5 text-blue-600 rotate-0 transition-transform duration-500 hover:-rotate-12" />
+              <Moon className="w-4.5 h-4.5 text-cyan-600 rotate-0 transition-transform duration-300 hover:-rotate-12" />
             )
           ) : (
             <div className="w-4.5 h-4.5 rounded-full bg-slate-200 dark:bg-slate-800 animate-pulse" />
