@@ -1,13 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
-import { Header } from "@/components/Header";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import { Eye, EyeOff, Sun, Moon } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function AuthPage() {
-  const router = useRouter();
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
   
@@ -22,6 +23,14 @@ export default function AuthPage() {
   const [emailTouched, setEmailTouched] = React.useState(false);
   const [passwordTouched, setPasswordTouched] = React.useState(false);
   const [nameTouched, setNameTouched] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
 
   // Strict RFC 5322 regex validation
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
@@ -58,7 +67,7 @@ export default function AuthPage() {
 
     try {
       if (isSignUp) {
-        // 1. Just sign up the user through Supabase Auth
+        // Sign up through Supabase Auth
         const { data, error } = await supabase.auth.signUp({
           email: email,
           password: password,
@@ -69,16 +78,13 @@ export default function AuthPage() {
           return;
         }
 
-        // 2. Since email verification is disabled, they are instantly logged in/created!
         if (data?.user) {
-          // Set mock session cookie to satisfy Edge proxy validations
           document.cookie = "mock-logged-in=true; path=/";
           alert("Account created successfully!");
-          // Automatically redirect them to the dashboard right away
           window.location.href = '/dashboard';
         }
       } else {
-        // Log in the user via Supabase
+        // Log in via Supabase
         const { data, error } = await supabase.auth.signInWithPassword({
           email: email,
           password: password,
@@ -90,9 +96,7 @@ export default function AuthPage() {
         }
 
         if (data?.user) {
-          // Set mock session cookie to satisfy Edge proxy validations
           document.cookie = "mock-logged-in=true; path=/";
-          // Success! Redirect them to the dashboard
           window.location.href = "/dashboard";
         }
       }
@@ -105,51 +109,89 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen py-4 bg-background bg-[linear-gradient(to_right,#1f293715_1px,transparent_1px),linear-gradient(to_bottom,#1f293715_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] overflow-hidden">
-      <Header />
-      <main className="relative flex-1 flex items-center justify-center w-full max-w-5xl mx-auto px-4 py-8 md:py-12">
-        {/* Centered Soft Ambient Blur Behind The Card */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#07090e] text-slate-100 overflow-hidden font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
+      {/* Atmospheric Background & Ambient Glow */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-40"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0)`,
+          backgroundSize: '28px 28px'
+        }}
+      />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] bg-gradient-to-tr from-cyan-500/15 via-blue-600/10 to-transparent blur-[140px] rounded-full pointer-events-none -z-0" />
 
-        {/* Tier-1 Modern SaaS Auth Card Container */}
-        <div className="relative w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] shadow-[0_0_50px_-12px_rgba(6,182,212,0.15)] rounded-2xl p-8 sm:p-10 flex flex-col gap-6">
+      {/* Top Navbar */}
+      <header className="fixed top-5 w-[90%] max-w-4xl z-20">
+        <div className="flex items-center justify-between px-5 py-3 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-xl shadow-lg shadow-black/40">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 group-hover:scale-105 group-hover:bg-cyan-500/20 transition-all duration-200">
+              {/* Logo Icon */}
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span className="font-semibold tracking-tight text-white text-sm sm:text-base">AI College Project Builder</span>
+          </Link>
+          {/* Theme Toggle Button */}
+          <button 
+            type="button" 
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.05] transition-colors border border-transparent hover:border-white/10 cursor-pointer"
+          >
+            {mounted ? (
+              resolvedTheme === "dark" ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-cyan-400" />
+              )
+            ) : (
+              <div className="w-4 h-4 rounded-full bg-slate-800 animate-pulse" />
+            )}
+          </button>
+        </div>
+      </header>
+
+      {/* Main Auth Container */}
+      <main className="relative z-10 w-full max-w-[420px] px-4 pt-16">
+        <div className="rounded-3xl bg-[#0d121d]/80 border border-white/[0.1] backdrop-blur-2xl p-8 sm:p-9 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
           
-          {/* Heading */}
-          <div className="text-center flex flex-col items-center">
-            <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-b from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+          <div className="text-center mb-7">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mb-2">
               {isSignUp ? "Create your account" : "Welcome back"}
-            </h2>
-            <p className="text-slate-400 text-sm mt-1.5 leading-relaxed">
-              {isSignUp 
-                ? "Start building your academic portfolio today" 
-                : "Sign in to access your dashboard and projects"
-              }
+            </h1>
+            <p className="text-sm text-slate-400">
+              {isSignUp ? "Start building your academic portfolio today" : "Sign in to access your dashboard and projects"}
             </p>
           </div>
 
-          {/* Main Auth Form */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Name Field (Only visible in signup mode) */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name Field (Only in Sign Up Mode) */}
             {isSignUp && (
-              <div className="flex flex-col animate-slide-down">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+              <div>
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5 ml-0.5">
                   Full Name
                 </label>
-                <div className="flex items-center relative">
-                  <User className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />
+                <div className="relative flex items-center">
+                  <span className="absolute left-3.5 text-slate-500 pointer-events-none">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </span>
                   <input
                     type="text"
-                    placeholder="Jane Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onBlur={() => setNameTouched(true)}
-                    className={`w-full pl-11 pr-4 py-3 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-500 rounded-xl focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all ${
+                    placeholder="Jane Doe"
+                    required
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#090d16]/90 border border-white/[0.09] text-white text-sm placeholder-slate-600 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 ${
                       nameError ? "!border-red-500/50 !focus:ring-red-500/20" : ""
                     }`}
                   />
                 </div>
                 {nameError && (
-                  <span className="text-[11px] text-red-400 font-medium pl-1 mt-1">
+                  <span className="text-[11px] text-red-400 font-medium pl-1 mt-1 block">
                     {nameError}
                   </span>
                 )}
@@ -157,39 +199,44 @@ export default function AuthPage() {
             )}
 
             {/* Email Field */}
-            <div className="flex flex-col">
-              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+            <div>
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5 ml-0.5">
                 Email Address
               </label>
-              <div className="flex items-center relative">
-                <Mail className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />
+              <div className="relative flex items-center">
+                <span className="absolute left-3.5 text-slate-500 pointer-events-none">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                  </svg>
+                </span>
                 <input
                   type="email"
-                  placeholder="student@university.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   onBlur={() => setEmailTouched(true)}
-                  className={`w-full pl-11 pr-4 py-3 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-500 rounded-xl focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all ${
+                  placeholder="student@university.edu"
+                  required
+                  className={`w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#090d16]/90 border border-white/[0.09] text-white text-sm placeholder-slate-600 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 ${
                     emailError ? "!border-red-500/50 !focus:ring-red-500/20" : ""
                   }`}
                 />
               </div>
               {emailError && (
-                <span className="text-[11px] text-red-400 font-medium pl-1 mt-1">
+                <span className="text-[11px] text-red-400 font-medium pl-1 mt-1 block">
                   {emailError}
                 </span>
               )}
             </div>
 
             {/* Password Field */}
-            <div className="flex flex-col">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <div>
+              <div className="flex items-center justify-between mb-1.5 ml-0.5">
+                <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                   Password
                 </label>
                 {!isSignUp && (
-                  <a
-                    href="#"
+                  <a 
+                    href="#" 
                     onClick={(e) => {
                       e.preventDefault();
                       alert("Password recovery link has been sent to your email!");
@@ -200,85 +247,90 @@ export default function AuthPage() {
                   </a>
                 )}
               </div>
-              <div className="flex items-center relative">
-                <Lock className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />
+              <div className="relative flex items-center">
+                <span className="absolute left-3.5 text-slate-500 pointer-events-none">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </span>
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onBlur={() => setPasswordTouched(true)}
-                  className={`w-full pl-11 pr-12 py-3 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-500 rounded-xl focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all ${
+                  placeholder="••••••••"
+                  required
+                  className={`w-full pl-10 pr-10 py-2.5 rounded-xl bg-[#090d16]/90 border border-white/[0.09] text-white text-sm placeholder-slate-600 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 ${
                     passwordError ? "!border-red-500/50 !focus:ring-red-500/20" : ""
                   }`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer select-none"
+                  className="absolute right-3.5 text-slate-400 hover:text-white transition-colors cursor-pointer select-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {passwordError && (
-                <span className="text-[11px] text-red-400 font-medium pl-1 mt-1">
+                <span className="text-[11px] text-red-400 font-medium pl-1 mt-1 block">
                   {passwordError}
                 </span>
               )}
             </div>
 
-            {/* Toggle Form / Terms Switcher */}
-            {isSignUp ? (
-              <div className="flex flex-col gap-4 mt-1">
-                <label className="flex items-start gap-2.5 text-xs text-slate-400 leading-relaxed cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={agreeTerms}
-                    onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="mt-0.5 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-400/30 cursor-pointer accent-cyan-500"
-                  />
-                  <span>
-                    I agree to the{" "}
-                    <a href="#" className="text-cyan-400 hover:underline font-semibold">Terms of Service</a>
-                    {" "}and{" "}
-                    <a href="#" className="text-cyan-400 hover:underline font-semibold">Privacy Policy</a>.
-                  </span>
-                </label>
-                <p className="text-center text-xs text-slate-400 select-none">
+            {/* Terms checkbox if in Sign Up mode */}
+            {isSignUp && (
+              <label className="flex items-start gap-2.5 text-xs text-slate-400 leading-relaxed cursor-pointer select-none pt-1">
+                <input
+                  type="checkbox"
+                  checked={agreeTerms}
+                  onChange={(e) => setAgreeTerms(e.target.checked)}
+                  className="mt-0.5 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-400/30 cursor-pointer accent-cyan-500"
+                />
+                <span>
+                  I agree to the{" "}
+                  <a href="#" className="text-cyan-400 hover:underline font-semibold">Terms of Service</a>
+                  {" "}and{" "}
+                  <a href="#" className="text-cyan-400 hover:underline font-semibold">Privacy Policy</a>.
+                </span>
+              </label>
+            )}
+
+            {/* Sign up / Sign in mode switch */}
+            <p className="text-xs text-center text-slate-400 pt-1">
+              {isSignUp ? (
+                <>
                   Already have an account?{" "}
                   <button
                     type="button"
                     onClick={() => setIsSignUp(false)}
-                    className="text-cyan-400 font-semibold hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
+                    className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                   >
                     Sign In
                   </button>
-                </p>
-              </div>
-            ) : (
-              <div className="mt-1 select-none">
-                <p className="text-center text-xs text-slate-400">
+                </>
+              ) : (
+                <>
                   New to AI Project Builder?{" "}
                   <button
                     type="button"
                     onClick={() => setIsSignUp(true)}
-                    className="text-cyan-400 font-semibold hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
+                    className="font-semibold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
                   >
                     Sign Up Free
                   </button>
-                </p>
-              </div>
-            )}
+                </>
+              )}
+            </p>
 
-            {/* Razor-Sharp Primary CTA Button */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitDisabled}
-              className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 text-slate-950 font-semibold shadow-[0_0_20px_rgba(6,182,212,0.35)] hover:shadow-[0_0_28px_rgba(6,182,212,0.55)] hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer mt-2 select-none ${
-                isSubmitDisabled 
-                  ? "!opacity-50 !cursor-not-allowed !pointer-events-none !shadow-none" 
-                  : ""
+              className={`w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-500 hover:from-cyan-300 hover:to-sky-400 text-slate-950 font-bold text-sm tracking-wide shadow-[0_0_24px_rgba(34,211,238,0.35)] hover:shadow-[0_0_32px_rgba(34,211,238,0.5)] active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                isSubmitDisabled ? "!opacity-50 !cursor-not-allowed !pointer-events-none !shadow-none" : ""
               }`}
             >
               {loading ? (
@@ -289,7 +341,9 @@ export default function AuthPage() {
               ) : (
                 <>
                   <span>{isSignUp ? "Create Free Account" : "Sign In to Account"}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
                 </>
               )}
             </button>
