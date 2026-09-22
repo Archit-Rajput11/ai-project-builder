@@ -105,200 +105,195 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen py-4 bg-background">
+    <div className="relative flex flex-col min-h-screen py-4 bg-background bg-[linear-gradient(to_right,#1f293715_1px,transparent_1px),linear-gradient(to_bottom,#1f293715_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:4rem_4rem] overflow-hidden">
       <Header />
-      <main className="flex-1 flex items-center justify-center w-full max-w-5xl mx-auto px-4 py-8 md:py-12">
-        {/* Subtle Outer Glow & Gradient Border Wrapper */}
-        <div className="relative w-full max-w-md p-[1px] rounded-3xl bg-gradient-to-b from-cyan-400/30 via-white/10 to-transparent shadow-2xl shadow-cyan-950/30 dark:shadow-black/50">
-          <div className="w-full p-8 sm:p-10 rounded-[23px] bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-2xl border border-white/5 flex flex-col gap-6">
-            
-            {/* Top Heading */}
-            <div className="text-center flex flex-col items-center gap-2">
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                {isSignUp ? "Create your account" : "Welcome back"}
-              </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                {isSignUp 
-                  ? "Start building your academic portfolio today" 
-                  : "Sign in to access your dashboard and projects"
-                }
-              </p>
-            </div>
+      <main className="relative flex-1 flex items-center justify-center w-full max-w-5xl mx-auto px-4 py-8 md:py-12">
+        {/* Centered Soft Ambient Blur Behind The Card */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
 
-            {/* Main Auth Form */}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Name Field (Only visible in signup mode) */}
-              {isSignUp && (
-                <div className="flex flex-col gap-1.5 animate-slide-down">
-                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Full Name
-                  </label>
-                  <div className="flex items-center relative">
-                    <User className="absolute left-4 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
-                    <input
-                      type="text"
-                      placeholder="Jane Doe"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      onBlur={() => setNameTouched(true)}
-                      className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200 ${
-                        nameError 
-                          ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" 
-                          : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700"
-                      }`}
-                    />
-                  </div>
-                  {nameError && (
-                    <span className="text-[11px] text-red-400 font-medium pl-1">
-                      {nameError}
-                    </span>
-                  )}
-                </div>
-              )}
+        {/* Tier-1 Modern SaaS Auth Card Container */}
+        <div className="relative w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-white/[0.08] shadow-[0_0_50px_-12px_rgba(6,182,212,0.15)] rounded-2xl p-8 sm:p-10 flex flex-col gap-6">
+          
+          {/* Heading */}
+          <div className="text-center flex flex-col items-center">
+            <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-b from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+              {isSignUp ? "Create your account" : "Welcome back"}
+            </h2>
+            <p className="text-slate-400 text-sm mt-1.5 leading-relaxed">
+              {isSignUp 
+                ? "Start building your academic portfolio today" 
+                : "Sign in to access your dashboard and projects"
+              }
+            </p>
+          </div>
 
-              {/* Email Field */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                  Email Address
+          {/* Main Auth Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            {/* Name Field (Only visible in signup mode) */}
+            {isSignUp && (
+              <div className="flex flex-col animate-slide-down">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                  Full Name
                 </label>
                 <div className="flex items-center relative">
-                  <Mail className="absolute left-4 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+                  <User className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />
                   <input
-                    type="email"
-                    placeholder="student@university.edu"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onBlur={() => setEmailTouched(true)}
-                    className={`w-full pl-11 pr-4 py-3 rounded-xl border bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200 ${
-                      emailError 
-                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" 
-                        : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700"
+                    type="text"
+                    placeholder="Jane Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    onBlur={() => setNameTouched(true)}
+                    className={`w-full pl-11 pr-4 py-3 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-500 rounded-xl focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all ${
+                      nameError ? "!border-red-500/50 !focus:ring-red-500/20" : ""
                     }`}
                   />
                 </div>
-                {emailError && (
-                  <span className="text-[11px] text-red-400 font-medium pl-1">
-                    {emailError}
+                {nameError && (
+                  <span className="text-[11px] text-red-400 font-medium pl-1 mt-1">
+                    {nameError}
                   </span>
                 )}
               </div>
+            )}
 
-              {/* Password Field */}
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Password
-                  </label>
-                  {!isSignUp && (
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        alert("Password recovery link has been sent to your email!");
-                      }}
-                      className="text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors"
-                    >
-                      Forgot?
-                    </a>
-                  )}
-                </div>
-                <div className="flex items-center relative">
-                  <Lock className="absolute left-4 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            {/* Email Field */}
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                Email Address
+              </label>
+              <div className="flex items-center relative">
+                <Mail className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />
+                <input
+                  type="email"
+                  placeholder="student@university.edu"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onBlur={() => setEmailTouched(true)}
+                  className={`w-full pl-11 pr-4 py-3 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-500 rounded-xl focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all ${
+                    emailError ? "!border-red-500/50 !focus:ring-red-500/20" : ""
+                  }`}
+                />
+              </div>
+              {emailError && (
+                <span className="text-[11px] text-red-400 font-medium pl-1 mt-1">
+                  {emailError}
+                </span>
+              )}
+            </div>
+
+            {/* Password Field */}
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Password
+                </label>
+                {!isSignUp && (
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      alert("Password recovery link has been sent to your email!");
+                    }}
+                    className="text-xs font-medium text-cyan-400 hover:text-cyan-300 transition-colors"
+                  >
+                    Forgot?
+                  </a>
+                )}
+              </div>
+              <div className="flex items-center relative">
+                <Lock className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onBlur={() => setPasswordTouched(true)}
+                  className={`w-full pl-11 pr-12 py-3 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-500 rounded-xl focus:border-cyan-400/80 focus:ring-2 focus:ring-cyan-500/20 focus:outline-none transition-all ${
+                    passwordError ? "!border-red-500/50 !focus:ring-red-500/20" : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer select-none"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {passwordError && (
+                <span className="text-[11px] text-red-400 font-medium pl-1 mt-1">
+                  {passwordError}
+                </span>
+              )}
+            </div>
+
+            {/* Toggle Form / Terms Switcher */}
+            {isSignUp ? (
+              <div className="flex flex-col gap-4 mt-1">
+                <label className="flex items-start gap-2.5 text-xs text-slate-400 leading-relaxed cursor-pointer select-none">
                   <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    onBlur={() => setPasswordTouched(true)}
-                    className={`w-full pl-11 pr-12 py-3 rounded-xl border bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200 ${
-                      passwordError 
-                        ? "border-red-500/50 focus:border-red-500 focus:ring-red-500/20" 
-                        : "border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700"
-                    }`}
+                    type="checkbox"
+                    checked={agreeTerms}
+                    onChange={(e) => setAgreeTerms(e.target.checked)}
+                    className="mt-0.5 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-400/30 cursor-pointer accent-cyan-500"
                   />
+                  <span>
+                    I agree to the{" "}
+                    <a href="#" className="text-cyan-400 hover:underline font-semibold">Terms of Service</a>
+                    {" "}and{" "}
+                    <a href="#" className="text-cyan-400 hover:underline font-semibold">Privacy Policy</a>.
+                  </span>
+                </label>
+                <p className="text-center text-xs text-slate-400 select-none">
+                  Already have an account?{" "}
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer select-none"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() => setIsSignUp(false)}
+                    className="text-cyan-400 font-semibold hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    Sign In
                   </button>
-                </div>
-                {passwordError && (
-                  <span className="text-[11px] text-red-400 font-medium pl-1">
-                    {passwordError}
-                  </span>
-                )}
+                </p>
               </div>
+            ) : (
+              <div className="mt-1 select-none">
+                <p className="text-center text-xs text-slate-400">
+                  New to AI Project Builder?{" "}
+                  <button
+                    type="button"
+                    onClick={() => setIsSignUp(true)}
+                    className="text-cyan-400 font-semibold hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
+                  >
+                    Sign Up Free
+                  </button>
+                </p>
+              </div>
+            )}
 
-              {/* Toggle Form / Terms Switcher */}
-              {isSignUp ? (
-                <div className="flex flex-col gap-4 mt-1">
-                  <label className="flex items-start gap-2.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={agreeTerms}
-                      onChange={(e) => setAgreeTerms(e.target.checked)}
-                      className="mt-0.5 rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-cyan-500 focus:ring-cyan-400/30 cursor-pointer accent-cyan-500"
-                    />
-                    <span>
-                      I agree to the{" "}
-                      <a href="#" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">Terms of Service</a>
-                      {" "}and{" "}
-                      <a href="#" className="text-cyan-600 dark:text-cyan-400 hover:underline font-semibold">Privacy Policy</a>.
-                    </span>
-                  </label>
-                  <p className="text-center text-xs text-slate-500 dark:text-slate-400 select-none">
-                    Already have an account?{" "}
-                    <button
-                      type="button"
-                      onClick={() => setIsSignUp(false)}
-                      className="text-cyan-600 dark:text-cyan-400 font-semibold hover:text-cyan-500 dark:hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
-                    >
-                      Sign In
-                    </button>
-                  </p>
-                </div>
+            {/* Razor-Sharp Primary CTA Button */}
+            <button
+              type="submit"
+              disabled={isSubmitDisabled}
+              className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-sky-500 text-slate-950 font-semibold shadow-[0_0_20px_rgba(6,182,212,0.35)] hover:shadow-[0_0_28px_rgba(6,182,212,0.55)] hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer mt-2 select-none ${
+                isSubmitDisabled 
+                  ? "!opacity-50 !cursor-not-allowed !pointer-events-none !shadow-none" 
+                  : ""
+              }`}
+            >
+              {loading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                  <span>Processing...</span>
+                </>
               ) : (
-                <div className="mt-1 select-none">
-                  <p className="text-center text-xs text-slate-500 dark:text-slate-400">
-                    New to AI Project Builder?{" "}
-                    <button
-                      type="button"
-                      onClick={() => setIsSignUp(true)}
-                      className="text-cyan-600 dark:text-cyan-400 font-semibold hover:text-cyan-500 dark:hover:text-cyan-300 hover:underline cursor-pointer transition-colors"
-                    >
-                      Sign Up Free
-                    </button>
-                  </p>
-                </div>
+                <>
+                  <span>{isSignUp ? "Create Free Account" : "Sign In to Account"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
               )}
-
-              {/* High-Contrast Primary CTA Button */}
-              <button
-                type="submit"
-                disabled={isSubmitDisabled}
-                className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-200 mt-2 select-none ${
-                  isSubmitDisabled 
-                    ? "opacity-50 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-500 shadow-none pointer-events-none" 
-                    : "bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 active:scale-[0.99] cursor-pointer"
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
-                    <span>Processing...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>{isSignUp ? "Create Free Account" : "Sign In to Account"}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
+            </button>
+          </form>
         </div>
       </main>
     </div>
