@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Sparkles } from "lucide-react";
+import { Sun, Moon, Terminal } from "lucide-react";
 import Link from "next/link";
 
 export function Header() {
@@ -18,35 +18,50 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-4 z-50 w-full max-w-5xl mx-auto px-4 select-none">
-      <nav className="flex items-center justify-between px-6 py-3 rounded-2xl bg-slate-950/60 backdrop-blur-xl border border-white/[0.08] shadow-lg shadow-black/20 transition-all duration-200">
+    <header className="sticky top-0 z-50 w-full border-b border-white/[0.08] bg-zinc-950/80 backdrop-blur-md px-6 py-3.5 select-none">
+      <div className="max-w-6xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 group-hover:scale-105 group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 transition-all duration-200 shadow-sm shadow-cyan-500/10">
-            <Sparkles className="w-4.5 h-4.5" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-900 border border-white/[0.08] text-zinc-100 group-hover:border-zinc-700 transition-colors">
+            <Terminal className="w-4 h-4" />
           </div>
-          <span className="font-sans font-semibold tracking-tight text-slate-100 text-base">
+          <span className="font-sans font-semibold tracking-tight text-[#f8fafc] text-sm sm:text-base">
             AI College Project Builder
           </span>
         </Link>
 
-        {/* Theme Toggle Button */}
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle theme"
-          className="relative flex items-center justify-center w-9 h-9 rounded-xl border border-white/[0.08] bg-slate-900/60 text-slate-200 hover:bg-white/10 hover:border-cyan-500/30 active:scale-95 transition-all duration-200 cursor-pointer"
-        >
-          {mounted ? (
-            resolvedTheme === "dark" ? (
-              <Sun className="w-4 h-4 text-amber-400 rotate-0 transition-transform duration-300 hover:rotate-90" />
+        {/* Right Nav Actions */}
+        <div className="flex items-center gap-3">
+          <Link
+            href="/auth"
+            className="text-xs font-medium text-zinc-400 hover:text-zinc-100 transition-colors hidden sm:block"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/dashboard"
+            className="text-xs font-medium px-3 py-1.5 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 transition-colors"
+          >
+            Console
+          </Link>
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/[0.08] bg-zinc-900/60 text-zinc-400 hover:text-zinc-100 hover:border-zinc-700 transition-colors cursor-pointer"
+          >
+            {mounted ? (
+              resolvedTheme === "dark" ? (
+                <Sun className="w-3.5 h-3.5" />
+              ) : (
+                <Moon className="w-3.5 h-3.5" />
+              )
             ) : (
-              <Moon className="w-4 h-4 text-cyan-400 rotate-0 transition-transform duration-300 hover:-rotate-12" />
-            )
-          ) : (
-            <div className="w-4 h-4 rounded-full bg-slate-800 animate-pulse" />
-          )}
-        </button>
-      </nav>
+              <div className="w-3.5 h-3.5 rounded-full bg-zinc-800 animate-pulse" />
+            )}
+          </button>
+        </div>
+      </div>
     </header>
   );
 }

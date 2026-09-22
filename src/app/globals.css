@@ -18,24 +18,24 @@
 
 /* Light Theme Variables */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a; /* Rich dark-slate typography */
-  --border-accent: #e2e8f0; /* Crisp cool-gray accents */
-  --bg-accent: #ffffff; /* Card background */
-  --bg-elevated: #f1f5f9; /* Elevated containers/inputs */
-  --primary: #0284c7; /* Sky blue focus & primary indicators */
-  --primary-hover: #0369a1;
+  --background: #ffffff;
+  --foreground: #09090b;
+  --border-accent: #e4e4e7;
+  --bg-accent: #f4f4f5;
+  --bg-elevated: #f4f4f5;
+  --primary: #18181b;
+  --primary-hover: #27272a;
 }
 
-/* Dark Theme Variables (Linear/Vercel SaaS tier palette) */
+/* Dark Theme Variables (Minimal, enterprise-grade engineering palette: GitHub / Linear / Supabase) */
 .dark {
-  --background: #090d16; /* Deep layered neutral dark canvas */
-  --foreground: #f8fafc; /* Clear crisp typography */
-  --border-accent: rgba(255, 255, 255, 0.08); /* Crisp semi-transparent border */
-  --bg-accent: #0f172a; /* Card background */
-  --bg-elevated: #1e293b; /* Elevated container/input background */
-  --primary: #38bdf8; /* Vibrant electric sky/cyan highlight */
-  --primary-hover: #0284c7;
+  --background: #0a0a0c; /* Neutral deep charcoal/slate */
+  --foreground: #f8fafc; /* Crisp white typography */
+  --border-accent: rgba(255, 255, 255, 0.08); /* Crisp ultra-subtle border */
+  --bg-accent: #11141c; /* Flat matte dark panel */
+  --bg-elevated: #161a24; /* Secondary surface / input container */
+  --primary: #f8fafc; /* Authoritative high-contrast */
+  --primary-hover: #e2e8f0;
 }
 
 /* Global resets and smooth transition effects */
@@ -48,7 +48,7 @@ html, body {
   background-color: var(--background);
   color: var(--foreground);
   transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 200ms;
+  transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -73,7 +73,6 @@ html, body {
 
 /* Print Media Stylesheet for PDF Generation */
 @media print {
-  /* Hide all UI elements except the printable area */
   body * {
     visibility: hidden;
   }
@@ -91,7 +90,6 @@ html, body {
     background: #ffffff !important;
   }
   
-  /* Force collapsible detail contents to display fully open when printing */
   details > *:not(summary) {
     display: block !important;
     visibility: visible !important;
@@ -102,12 +100,10 @@ html, body {
     margin-bottom: 0.5rem;
   }
   
-  /* Ensure page breaks are formatted neatly */
   .page-break {
     page-break-before: always;
   }
   
-  /* Hide download triggers during print execution */
   .no-print {
     display: none !important;
   }

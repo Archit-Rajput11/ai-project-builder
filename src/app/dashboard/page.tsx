@@ -724,17 +724,18 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
   }
 
   return (
-    <div className="flex flex-col gap-8 pb-16 animate-fade-in">
+    <div className="flex flex-col gap-8 pb-16 animate-fade-in max-w-6xl mx-auto">
       
       {/* Parameter Form Section (Hidden during printing via CSS no-print) */}
-      <section className="no-print p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-[#0f172a]/80 backdrop-blur-xl shadow-xl shadow-black/5 dark:shadow-cyan-950/5 flex flex-col gap-6">
+      <section className="no-print p-6 md:p-7 rounded-xl border border-white/[0.08] bg-[#11141c] flex flex-col gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight flex items-center gap-2.5 text-slate-900 dark:text-white">
-              <Zap className="w-5 h-5 text-cyan-500 dark:text-cyan-400" />
-              Configure Your AI Blueprint {isPremium && <ProBadge />}
+            <h2 className="text-lg sm:text-xl font-semibold tracking-tight flex items-center gap-2.5 text-[#f8fafc]">
+              <Zap className="w-4 h-4 text-zinc-300" />
+              <span>Configure Your AI Blueprint</span>
+              {isPremium && <ProBadge />}
             </h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-[#94a3b8] mt-1">
               Define your preferences to generate a custom-tailored academic project plan.
             </p>
           </div>
@@ -742,21 +743,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {/* Account Tier Status Badge */}
           <div className="flex items-center select-none">
             {isPremium ? (
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300 text-xs font-semibold backdrop-blur-md shadow-sm shadow-amber-500/5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-                <span>✨ Premium Tier: Unlimited Projects</span>
+              <div className="inline-flex items-center gap-2 text-xs font-medium px-2.5 py-1 rounded-full border border-zinc-700 bg-zinc-800 text-zinc-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>Premium Tier: Unlimited Projects</span>
               </div>
             ) : (
-              <div className="flex items-center gap-2.5 p-1 pl-3.5 rounded-full border border-amber-500/30 bg-amber-500/10 backdrop-blur-md transition-all duration-200">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  <span>Free Tier: 1 project/week ({1 - generatedCount > 0 ? 1 - generatedCount : 0} left)</span>
-                </div>
+              <div className="inline-flex items-center gap-2 text-xs font-medium px-2.5 py-1 rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+                <span>Free Tier: 1 project/week ({1 - generatedCount > 0 ? 1 - generatedCount : 0} left)</span>
                 <button
                   onClick={() => router.push("/dashboard/pricing")}
-                  className="px-3 py-1 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 hover:border-amber-400 text-amber-300 hover:text-amber-200 font-bold text-xs transition-all duration-200 cursor-pointer shadow-sm shadow-amber-500/10"
+                  className="ml-1 px-2.5 py-0.5 rounded-full bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-medium transition-colors cursor-pointer"
                 >
-                  Get Premium
+                  Upgrade
                 </button>
               </div>
             )}
@@ -767,14 +766,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Domain Dropdown */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            <label className="text-xs font-medium text-[#94a3b8]">
               Domain
             </label>
             <div className="relative">
               <select
                 value={domain}
                 onChange={(e) => setDomain(e.target.value)}
-                className="w-full appearance-none pl-4 pr-10 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 cursor-pointer transition-all duration-200"
+                className="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-lg border border-white/[0.1] hover:border-zinc-700 bg-[#161a24] text-[#f8fafc] text-sm font-medium focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 focus:outline-none cursor-pointer transition-colors"
               >
                 <option value="Web Development">Web Development</option>
                 <option value="Mobile Apps">Mobile Apps</option>
@@ -783,61 +782,61 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 <option value="Cybersecurity">Cybersecurity</option>
                 <option value="IoT">Internet of Things (IoT)</option>
               </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
             </div>
           </div>
 
           {/* Complexity Dropdown */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            <label className="text-xs font-medium text-[#94a3b8]">
               Complexity
             </label>
             <div className="relative">
               <select
                 value={complexity}
                 onChange={(e) => setComplexity(e.target.value)}
-                className="w-full appearance-none pl-4 pr-10 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 cursor-pointer transition-all duration-200"
+                className="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-lg border border-white/[0.1] hover:border-zinc-700 bg-[#161a24] text-[#f8fafc] text-sm font-medium focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 focus:outline-none cursor-pointer transition-colors"
               >
                 <option value="Basic">Basic (Scaffolds & Boilerplate)</option>
                 <option value="Intermediate">Intermediate (Core Full-Stack)</option>
                 <option value="Advanced">Advanced (Distributed & Scale)</option>
               </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
             </div>
           </div>
 
           {/* Skill Level Dropdown */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+            <label className="text-xs font-medium text-[#94a3b8]">
               Skill Level
             </label>
             <div className="relative">
               <select
                 value={skillLevel}
                 onChange={(e) => setSkillLevel(e.target.value)}
-                className="w-full appearance-none pl-4 pr-10 py-3 rounded-xl border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50 dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 cursor-pointer transition-all duration-200"
+                className="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-lg border border-white/[0.1] hover:border-zinc-700 bg-[#161a24] text-[#f8fafc] text-sm font-medium focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 focus:outline-none cursor-pointer transition-colors"
               >
                 <option value="Beginner">Beginner (1st/2nd Year)</option>
                 <option value="Competent">Competent (3rd Year)</option>
                 <option value="Expert">Expert (Final Year / Capstone)</option>
               </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
+              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
             </div>
           </div>
         </div>
 
         {/* Custom Keywords Input */}
-        <div className={`relative flex flex-col gap-1.5 p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 transition-all duration-300 ${!isPremium ? 'opacity-90 select-none' : ''}`}>
+        <div className={`relative flex flex-col gap-1.5 p-3.5 rounded-lg border border-white/[0.08] bg-[#161a24]/50 transition-colors ${!isPremium ? 'opacity-90 select-none' : ''}`}>
           {/* Overlay Lock Message */}
           {!isPremium && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-950/40 backdrop-blur-[2px] border border-dashed border-white/10 rounded-xl pointer-events-auto z-10 transition-all duration-200">
-              <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-amber-500/30 text-amber-300 text-xs font-bold tracking-wider uppercase shadow-xl shadow-black/50">
-                <Lock className="w-3.5 h-3.5 text-amber-400" />
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/80 backdrop-blur-sm border border-zinc-800 rounded-lg pointer-events-auto z-10">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xs font-medium">
+                <Lock className="w-3 h-3 text-zinc-400" />
                 <span>Premium Feature</span>
               </div>
             </div>
           )}
-          <label htmlFor="customKeywords" className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+          <label htmlFor="customKeywords" className="text-xs font-medium text-[#94a3b8]">
             Project Focus / Keywords (Optional)
           </label>
           <input
@@ -847,7 +846,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             value={customKeywords}
             onChange={(e) => setCustomKeywords(e.target.value)}
             disabled={!isPremium}
-            className="px-4 py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900/80 text-slate-900 dark:text-slate-100 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all duration-200"
+            className="px-3.5 py-2 rounded-lg border border-white/[0.1] bg-[#161a24] text-[#f8fafc] text-sm placeholder:text-[#64748b] focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition-colors"
           />
         </div>
 
@@ -856,16 +855,16 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           <button
             onClick={() => handleGenerate(false)}
             disabled={loading}
-            className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none transition-all duration-200 cursor-pointer"
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 font-medium text-sm active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
           >
             {loading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-slate-950" />
+                <Loader2 className="w-4 h-4 animate-spin text-zinc-950" />
                 <span>Generating Project Scaffolding...</span>
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
+                <Zap className="w-4 h-4" />
                 <span>Build Project Plan</span>
               </>
             )}
@@ -874,20 +873,16 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {plan && (
             <button
               onClick={handlePremiumPdfClick}
-              className={`flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border transition-all duration-200 shadow-sm cursor-pointer ${
-                isPremium 
-                  ? "border-emerald-500/30 hover:border-emerald-500/60 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-sm shadow-emerald-500/5"
-                  : "border-amber-500/30 hover:border-amber-500/60 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-sm shadow-amber-500/5"
-              }`}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-sm transition-colors cursor-pointer"
             >
               {isPremium ? (
                 <>
-                  <Download className="w-4 h-4 text-emerald-400" />
+                  <Download className="w-4 h-4 text-zinc-300" />
                   <span>Download PDF</span>
                 </>
               ) : (
                 <>
-                  <Award className="w-4 h-4 text-amber-400" />
+                  <Award className="w-4 h-4 text-zinc-400" />
                   <span>Get Premium PDF</span>
                 </>
               )}
@@ -916,14 +911,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           </div>
 
           {/* Tab Switcher Controls (Hidden during printing via CSS no-print) */}
-          <div className="no-print flex items-center justify-between border-b border-slate-200 dark:border-white/10 gap-2 overflow-x-auto select-none">
+          <div className="no-print flex items-center justify-between border-b border-white/[0.08] gap-2 overflow-x-auto select-none">
             <div className="flex gap-1 md:gap-2">
               {[
                 { id: "overview", label: "Overview", icon: Award },
                 { id: "tech", label: "Tech & GitHub", icon: Terminal },
                 { id: "roadmap", label: "Roadmap", icon: Calendar },
                 { id: "report", label: "Report & Viva", icon: FileText },
-                { id: "copilot", label: "AI Copilot Guides", icon: Sparkles },
+                { id: "copilot", label: "AI Copilot Guides", icon: Zap },
               ].map((tab) => {
                 const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
@@ -931,13 +926,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 cursor-pointer transition-all duration-200 ${
+                    className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 cursor-pointer transition-colors ${
                       isActive
-                        ? "border-cyan-500 text-cyan-600 dark:text-cyan-400 font-bold"
-                        : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
+                        ? "border-white text-white"
+                        : "border-transparent text-[#94a3b8] hover:text-zinc-200"
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive && tab.id === "copilot" ? "text-purple-400 animate-pulse" : ""}`} />
+                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-[#64748b]"}`} />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -949,35 +944,35 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Share Project Button */}
               <button
                 onClick={handleShareProject}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 hover:border-purple-500/60 bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
               >
-                Share with Team
+                Share
               </button>
 
               {/* Premium PDF Download */}
               <button
                 onClick={handlePremiumPdfClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/30 hover:border-amber-500/60 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
               >
-                <Award className="w-3.5 h-3.5 text-amber-400" />
-                Get Premium PDF
+                <Award className="w-3.5 h-3.5 text-zinc-400" />
+                <span>PDF Blueprint</span>
               </button>
 
               {/* Quick print action button */}
               {isPremium && (
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  Download Plan
+                  <span>Download</span>
                 </button>
               )}
 
               {/* Sign Out Button */}
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-500 dark:text-red-400 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-transparent hover:border-red-500/20 text-[#94a3b8] hover:text-red-400 hover:bg-red-500/10 font-medium text-xs transition-colors cursor-pointer"
               >
                 Sign Out
               </button>
@@ -990,12 +985,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 1: OVERVIEW PANEL (Always visible in prints) */}
             <div className={`${activeTab === "overview" ? "block" : "hidden print:block"} flex flex-col gap-4 animate-fade-in`}>
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white">{plan.projectTitle}</h3>
-                <span className="shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border border-cyan-500/20">
+                <h3 className="text-xl font-semibold tracking-tight text-[#f8fafc]">{plan.projectTitle}</h3>
+                <span className="shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium border border-zinc-700 bg-zinc-800 text-zinc-300">
                   {plan.difficultyRating}
                 </span>
               </div>
-              <p className="text-base text-slate-700 dark:text-slate-300 leading-relaxed border-l-2 border-cyan-500/50 pl-4 py-1">
+              <p className="text-sm text-[#94a3b8] leading-relaxed border-l-2 border-zinc-700 pl-4 py-1">
                 {plan.description}
               </p>
             </div>
@@ -1003,35 +998,35 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 2: TECH STACK & GITHUB PANEL (Always visible in prints) */}
             <div className={`${activeTab === "tech" ? "block" : "hidden print:block"} flex flex-col gap-6 animate-fade-in`}>
               <div>
-                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
+                <h4 className="text-xs font-medium mb-3 uppercase tracking-wider text-[#94a3b8] print:text-black">
                   Recommended Tech Stack
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {/* Frontend Card */}
-                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
-                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Frontend</span>
-                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
+                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
+                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Frontend</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
                       {plan.techStack.frontend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Backend Card */}
-                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
-                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Backend</span>
-                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
+                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
+                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Backend</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
                       {plan.techStack.backend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Database Card */}
-                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
-                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Database</span>
-                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
+                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
+                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Database</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
                       {plan.techStack.database.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Hosting & Tools Card */}
-                  <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md shadow-sm hover:border-cyan-500/30 transition-all duration-200">
-                    <span className="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Hosting & Tools</span>
-                    <ul className="mt-2.5 text-sm space-y-1.5 list-disc list-inside text-slate-700 dark:text-slate-300">
+                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
+                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Hosting & Tools</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
                       {plan.techStack.hostingAndTools.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
@@ -1041,28 +1036,24 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* GitHub Structure Terminal */}
               <div className="page-break">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-                  <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
+                  <h4 className="text-xs font-medium uppercase tracking-wider text-[#94a3b8] print:text-black">
                     Repository Directory Tree
                   </h4>
                   <button
                     onClick={handleDownloadBoilerplate}
-                    className={`no-print self-start flex items-center gap-2 px-3.5 py-1.5 rounded-lg border transition-all duration-200 cursor-pointer ${
-                      isPremium
-                        ? "border-emerald-500/30 hover:border-emerald-500/60 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-xs"
-                        : "border-amber-500/30 hover:border-amber-500/60 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-bold text-xs"
-                    }`}
+                    className="no-print self-start flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
                   >
                     {isPremium ? "📦 Download Starter Boilerplate" : "🔒 Unlock Starter Boilerplate"}
                   </button>
                 </div>
-                <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-950 shadow-xl">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-slate-900/80 border-b border-white/5 no-print">
-                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                    <span className="text-xs text-slate-400 font-mono ml-2">repository-structure.txt</span>
+                <div className="rounded-lg overflow-hidden border border-white/[0.08] bg-[#0a0a0c]">
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900 border-b border-white/[0.08] no-print">
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+                    <span className="text-xs text-zinc-400 font-mono ml-2">repository-structure.txt</span>
                   </div>
-                  <pre className="p-5 overflow-x-auto text-xs text-cyan-300 font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200 rounded-b-2xl">
+                  <pre className="p-4 overflow-x-auto text-xs text-zinc-300 font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200">
                     <code>{plan.githubStructure}</code>
                   </pre>
                 </div>
@@ -1073,45 +1064,41 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <div className={`${activeTab === "roadmap" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in`}>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <h4 className="text-xs font-medium uppercase tracking-wider text-[#94a3b8]">
                     Interactive Roadmap Kanban Board
                   </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  <p className="text-xs text-[#64748b] mt-0.5">
                     Drag and drop cards between status columns to update your implementation progress.
                   </p>
                 </div>
               </div>
 
               {!mounted ? (
-                <div className="flex items-center justify-center p-12 border border-dashed border-slate-200 dark:border-white/10 rounded-2xl bg-white/40 dark:bg-slate-900/40">
+                <div className="flex items-center justify-center p-12 border border-dashed border-white/[0.08] rounded-lg bg-[#11141c]">
                   <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="w-8 h-8 text-cyan-500 dark:text-cyan-400 animate-spin" />
-                    <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">Loading Kanban Board...</span>
+                    <Loader2 className="w-6 h-6 text-zinc-400 animate-spin" />
+                    <span className="text-xs text-[#94a3b8]">Loading Kanban Board...</span>
                   </div>
                 </div>
               ) : (
                 <DragDropContext onDragEnd={onDragEnd}>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {(["todo", "in_progress", "completed"] as const).map((columnKey) => {
                       const columnTitle = 
                         columnKey === "todo" ? "To Do" : 
                         columnKey === "in_progress" ? "In Progress" : 
                         "Completed";
                       const columnTasks = kanbanTasks[columnKey] || [];
-                      const colHeaderColor = 
-                        columnKey === "todo" ? "text-cyan-600 dark:text-cyan-400 border-cyan-500/20 bg-cyan-500/5" :
-                        columnKey === "in_progress" ? "text-amber-500 border-amber-500/20 bg-amber-500/5" :
-                        "text-emerald-500 border-emerald-500/20 bg-emerald-500/5";
 
                       return (
-                        <div key={columnKey} className="flex flex-col rounded-2xl border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-slate-900/50 backdrop-blur-md p-4 h-[600px] overflow-hidden">
+                        <div key={columnKey} className="flex flex-col rounded-lg border border-white/[0.08] bg-[#11141c] p-4 h-[600px] overflow-hidden">
                           {/* Column Header */}
-                          <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-3 mb-4">
+                          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 mb-3">
                             <div className="flex items-center gap-2">
-                              <span className={`px-2.5 py-1 rounded-lg text-xs font-bold border ${colHeaderColor}`}>
+                              <span className="px-2 py-0.5 rounded text-xs font-medium border border-zinc-700 bg-zinc-800/80 text-zinc-300">
                                 {columnTitle}
                               </span>
-                              <span className="text-xs font-mono text-slate-400 font-bold">
+                              <span className="text-xs font-mono text-[#64748b]">
                                 {columnTasks.length}
                               </span>
                             </div>
@@ -1123,8 +1110,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                               <div
                                 ref={provided.innerRef}
                                 {...provided.droppableProps}
-                                className={`flex-1 flex flex-col gap-3 overflow-y-auto pr-1 pb-4 transition-colors rounded-xl ${
-                                  snapshot.isDraggingOver ? "bg-cyan-500/5" : ""
+                                className={`flex-1 flex flex-col gap-2.5 overflow-y-auto pr-1 pb-4 transition-colors rounded-lg ${
+                                  snapshot.isDraggingOver ? "bg-white/[0.02]" : ""
                                 }`}
                               >
                                 {columnTasks.map((task, index) => (
@@ -1134,38 +1121,38 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                         ref={draggableProvided.innerRef}
                                         {...draggableProvided.draggableProps}
                                         {...draggableProvided.dragHandleProps}
-                                        className={`p-4 rounded-xl border bg-white dark:bg-slate-900/90 backdrop-blur-md cursor-grab active:cursor-grabbing hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 select-none ${
+                                        className={`p-3.5 rounded-lg border bg-[#161a24] cursor-grab active:cursor-grabbing hover:border-zinc-600 transition-colors select-none ${
                                           draggableSnapshot.isDragging 
-                                            ? "border-cyan-400 shadow-xl shadow-cyan-950/40 scale-[1.02]" 
-                                            : "border-slate-200 dark:border-white/10 hover:border-cyan-500/40"
+                                            ? "border-zinc-400 shadow-xl" 
+                                            : "border-white/[0.08]"
                                         }`}
                                       >
                                         <div className="flex items-center justify-between gap-2 mb-2">
-                                          <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20 uppercase tracking-wide">
+                                          <span className="text-[10px] font-medium text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700 uppercase tracking-wider">
                                             Week {task.week}
                                           </span>
                                           {getToolForTask(task) && (
-                                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-wider ${getToolBadgeColor(getToolForTask(task) || "")}`}>
+                                            <span className="text-[9px] font-medium text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-700 uppercase tracking-wider">
                                               {getToolForTask(task)}
                                             </span>
                                           )}
                                         </div>
-                                        <h5 className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight mb-1">
+                                        <h5 className="text-xs font-semibold text-[#f8fafc] leading-tight mb-1">
                                           {task.title}
                                         </h5>
-                                        <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-normal line-clamp-2">
+                                        <p className="text-[11px] text-[#94a3b8] leading-normal line-clamp-2">
                                           {task.description}
                                         </p>
-                                        <div className="mt-3 pt-2 border-t border-slate-200 dark:border-white/5 flex items-center justify-between">
-                                          <span className="text-[9px] text-slate-400 font-mono">ID: {task.id}</span>
+                                        <div className="mt-3 pt-2 border-t border-white/[0.06] flex items-center justify-between">
+                                          <span className="text-[9px] text-[#64748b] font-mono">ID: {task.id}</span>
                                           <button
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               handleDebugClick(task);
                                             }}
-                                            className="px-2 py-1 rounded border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-500 dark:text-red-400 font-semibold text-[9px] transition-all cursor-pointer"
+                                            className="px-2 py-0.5 rounded border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-300 font-medium text-[10px] transition-colors cursor-pointer"
                                           >
-                                            🚨 Debug / Get Help
+                                            Debug
                                           </button>
                                         </div>
                                       </div>
@@ -1174,8 +1161,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                 ))}
                                 {provided.placeholder}
                                 {columnTasks.length === 0 && (
-                                  <div className="flex-1 flex items-center justify-center border border-dashed border-slate-200 dark:border-white/10 rounded-xl py-12">
-                                    <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">Empty</span>
+                                  <div className="flex-1 flex items-center justify-center border border-dashed border-white/[0.08] rounded-lg py-12">
+                                    <span className="text-xs text-[#64748b] font-medium uppercase tracking-wider">Empty</span>
                                   </div>
                                 )}
                               </div>
@@ -1193,36 +1180,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <div className={`${activeTab === "report" ? "block" : "hidden print:block"} flex flex-col gap-6 animate-fade-in page-break`}>
               {/* Thesis Outline Abstract */}
               <div>
-                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
+                <h4 className="text-xs font-medium mb-3 uppercase tracking-wider text-[#94a3b8] print:text-black">
                   Report Abstract Skeleton
                 </h4>
-                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-white/70 dark:bg-slate-900/60 p-5 rounded-2xl border border-slate-200 dark:border-white/10 backdrop-blur-md">
+                <p className="text-xs sm:text-sm text-[#94a3b8] leading-relaxed bg-[#161a24] p-4 rounded-lg border border-white/[0.08]">
                   {plan.reportOutline.abstract}
                 </p>
               </div>
 
               {/* Collapsible Chapter Layout (HTML Details Accordions) */}
               <div>
-                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
+                <h4 className="text-xs font-medium mb-3 uppercase tracking-wider text-[#94a3b8] print:text-black">
                   Chapter Breakdown
                 </h4>
-                <div className="flex flex-col gap-2.5">
+                <div className="flex flex-col gap-2">
                   {plan.reportOutline.chapters.map((chapter, idx) => (
                     <details
                       key={idx}
-                      className="group p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md open:bg-slate-50 dark:open:bg-slate-900/90 transition-all duration-200"
+                      className="group p-3.5 rounded-lg border border-white/[0.08] bg-[#161a24] open:bg-[#11141c] transition-colors"
                     >
-                      <summary className="flex items-center justify-between text-sm font-bold text-slate-900 dark:text-slate-100 cursor-pointer select-none outline-none">
+                      <summary className="flex items-center justify-between text-xs sm:text-sm font-medium text-[#f8fafc] cursor-pointer select-none outline-none">
                         <span className="flex items-center gap-2">
-                          <span className="text-cyan-500 font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
+                          <span className="text-zinc-400 font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
                           {chapter.title}
                         </span>
-                        <ChevronRight className="w-4 h-4 text-slate-400 group-open:rotate-90 transition-transform duration-200 no-print" />
+                        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 group-open:rotate-90 transition-transform duration-150 no-print" />
                       </summary>
                       
-                      <div className="mt-3 pl-4 border-l-2 border-cyan-500/30 space-y-1.5">
+                      <div className="mt-2.5 pl-4 border-l border-zinc-700 space-y-1">
                         {chapter.subsections.map((sub, sidx) => (
-                          <div key={sidx} className="text-xs text-slate-600 dark:text-slate-300 py-0.5">
+                          <div key={sidx} className="text-xs text-[#94a3b8] py-0.5">
                             {chapter.chapterNumber}.{sidx + 1} {sub}
                           </div>
                         ))}
@@ -1234,18 +1221,18 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
               {/* Viva Exam Questions */}
               <div className="page-break">
-                <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-black">
+                <h4 className="text-xs font-medium mb-3 uppercase tracking-wider text-[#94a3b8] print:text-black">
                   Viva Practice Question Sheet
                 </h4>
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-3">
                   {plan.vivaQuestions.map((q, idx) => (
-                    <div key={idx} className="p-5 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md">
+                    <div key={idx} className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24]">
                       <div className="flex gap-2.5 items-start">
-                        <span className="text-xs font-extrabold text-cyan-500 shrink-0 mt-0.5 font-mono">Q{idx + 1}.</span>
-                        <h6 className="text-sm font-bold text-slate-900 dark:text-slate-100">{q.question}</h6>
+                        <span className="text-xs font-bold text-zinc-400 shrink-0 font-mono">Q{idx + 1}.</span>
+                        <h6 className="text-xs sm:text-sm font-medium text-[#f8fafc]">{q.question}</h6>
                       </div>
-                      <div className="mt-2.5 pl-6 text-xs text-slate-600 dark:text-slate-300 print:text-gray-900 leading-relaxed border-t border-slate-200 dark:border-white/10 pt-2.5">
-                        <span className="font-semibold text-emerald-500 print:text-emerald-700 uppercase mr-1 text-[10px]">Ideal Answer:</span>
+                      <div className="mt-2.5 pl-5 text-xs text-[#94a3b8] print:text-gray-900 leading-relaxed border-t border-white/[0.06] pt-2">
+                        <span className="font-semibold text-zinc-300 print:text-zinc-900 uppercase mr-1 text-[10px]">Ideal Answer:</span>
                         {q.idealAnswer}
                       </div>
                     </div>
@@ -1254,10 +1241,10 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               </div>
 
               {/* Download Action Footer (Hidden when printing) */}
-              <div className="no-print flex items-center justify-end pt-4 border-t border-slate-200 dark:border-white/10">
+              <div className="no-print flex items-center justify-end pt-3 border-t border-white/[0.08]">
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition-all duration-200 cursor-pointer shadow-lg shadow-cyan-500/25 active:scale-[0.99]"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 font-medium text-xs sm:text-sm transition-colors cursor-pointer"
                 >
                   <Download className="w-4 h-4" />
                   <span>Save Report Blueprint as PDF</span>
@@ -1269,26 +1256,26 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 5: AI COPILOT GUIDES PANEL */}
             <div className={`${activeTab === "copilot" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in no-print`}>
               {/* Hero Header */}
-              <div className="p-6 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 backdrop-blur-md flex flex-col gap-2 shadow-lg shadow-cyan-950/5">
-                <h4 className="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-cyan-500 dark:text-cyan-400 animate-pulse" />
-                  Select a week below to get the best AI tool recommendation and matching master development prompts.
+              <div className="p-5 rounded-lg border border-white/[0.08] bg-[#11141c] flex flex-col gap-1.5">
+                <h4 className="text-sm font-semibold text-[#f8fafc] flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-zinc-300" />
+                  Select a week below for tool recommendations and development prompts.
                 </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-[#94a3b8] leading-relaxed">
                   These guides matching your generated blueprint week objectives are custom compiled by our academic AI engine.
                 </p>
               </div>
 
               {/* Horizontal Row of Clickable Week Buttons */}
-              <div className="flex gap-2 border-b border-slate-200 dark:border-white/10 pb-3 overflow-x-auto select-none">
+              <div className="flex gap-2 border-b border-white/[0.08] pb-3 overflow-x-auto select-none">
                 {plan.roadmapWeeks?.map((week) => (
                   <button
                     key={week.weekNumber}
                     onClick={() => setSelectedCopilotWeek(week.weekNumber)}
-                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all duration-200 cursor-pointer ${
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                       selectedCopilotWeek === week.weekNumber
-                        ? "bg-cyan-500 border-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20 scale-[1.02]"
-                        : "border-slate-200 dark:border-white/10 hover:border-cyan-500/40 text-slate-600 dark:text-slate-300"
+                        ? "bg-white text-zinc-950 border-white"
+                        : "border-white/[0.08] text-[#94a3b8] hover:text-zinc-200 hover:border-zinc-700"
                     }`}
                   >
                     Week {week.weekNumber}
@@ -1305,49 +1292,48 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 const prompt = currentWeekObj.aiToolGuide?.masterPrompt || "";
 
                 return (
-                  <div className="p-6 md:p-8 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#0f172a]/90 backdrop-blur-xl shadow-xl flex flex-col gap-5">
+                  <div className="p-6 rounded-lg border border-white/[0.08] bg-[#11141c] flex flex-col gap-4">
                     {/* Tool Badge & Goal */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-white/10 pb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
                       <div>
-                        <span className="text-[10px] font-bold text-cyan-500 uppercase tracking-wider">Phase {selectedCopilotWeek} Focus</span>
-                        <h4 className="text-base font-extrabold text-slate-900 dark:text-white mt-0.5">
+                        <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Phase {selectedCopilotWeek} Focus</span>
+                        <h4 className="text-sm sm:text-base font-semibold text-[#f8fafc] mt-0.5">
                           {currentWeekObj.focusGoal}
                         </h4>
                       </div>
                       
-                      {/* Prominent glowing badge */}
-                      <span className={`px-4 py-1.5 rounded-full border text-xs font-extrabold uppercase tracking-widest shadow-md ${getToolBadgeColor(tool)}`}>
+                      <span className="px-2.5 py-1 rounded-md border border-zinc-700 bg-zinc-800 text-zinc-200 text-xs font-medium">
                         {tool}
                       </span>
                     </div>
 
                     {/* Why this tool? */}
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Why this tool?</span>
-                      <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200 dark:border-white/10 italic">
-                        "{justification}"
+                    <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-medium text-[#94a3b8] uppercase tracking-wider">Why this tool?</span>
+                      <p className="text-xs text-[#94a3b8] leading-relaxed bg-[#161a24] p-3.5 rounded-lg border border-white/[0.08]">
+                        {justification}
                       </p>
                     </div>
 
                     {/* Master Prompt */}
-                    <div className="flex flex-col gap-2.5">
+                    <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">AI Master Prompt</span>
+                        <span className="text-[10px] font-medium text-[#94a3b8] uppercase tracking-wider">AI Master Prompt</span>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(prompt);
                             setCopiedWeek(selectedCopilotWeek);
                             setTimeout(() => setCopiedWeek(null), 2000);
                           }}
-                          className="px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:border-cyan-500/40 text-slate-700 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 text-[10px] font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5"
+                          className="px-3 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.1] text-zinc-200 text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5"
                         >
-                          {copiedWeek === selectedCopilotWeek ? "✓ Copied!" : "📋 Copy Master Prompt"}
+                          {copiedWeek === selectedCopilotWeek ? "✓ Copied!" : "Copy Master Prompt"}
                         </button>
                       </div>
                       <textarea
                         readOnly
                         value={prompt}
-                        className="w-full h-64 p-4 bg-slate-950 border border-slate-200 dark:border-white/10 rounded-2xl text-xs font-mono leading-relaxed text-cyan-300 focus:outline-none resize-none shadow-inner"
+                        className="w-full h-56 p-3.5 bg-[#0a0a0c] border border-white/[0.08] rounded-lg text-xs font-mono leading-relaxed text-zinc-300 focus:outline-none resize-none"
                       />
                     </div>
                   </div>
@@ -1595,17 +1581,16 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Debugger Get Help Modal */}
       {debugTask && (
-        <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="w-full max-w-2xl bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+        <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="w-full max-w-2xl bg-[#11141c] rounded-xl border border-white/[0.08] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
             {/* Modal Header */}
-            <div className="p-6 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-between">
+            <div className="p-5 border-b border-white/[0.08] bg-zinc-900/40 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span className="text-red-500 font-bold">🚨</span>
+                <h3 className="text-sm font-semibold text-[#f8fafc] flex items-center gap-2">
                   Tutor Debugger: Task Support
                 </h3>
-                <span className="text-xs text-slate-500 dark:text-slate-400 mt-1 block">
-                  Task: <span className="font-semibold text-slate-700 dark:text-slate-200">"{debugTask.title}"</span>
+                <span className="text-xs text-[#94a3b8] mt-0.5 block">
+                  Task: <span className="font-medium text-[#f8fafc]">"{debugTask.title}"</span>
                 </span>
               </div>
               <button
@@ -1614,16 +1599,16 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   setDebugErrorInput("");
                   setDebugResult("");
                 }}
-                className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 text-xs font-semibold transition-all cursor-pointer"
+                className="p-1.5 rounded-lg border border-white/[0.08] text-zinc-400 hover:text-white text-xs font-medium transition-colors cursor-pointer"
               >
                 Close
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto flex flex-col gap-4 flex-1">
+            <div className="p-5 overflow-y-auto flex flex-col gap-4 flex-1">
               <form onSubmit={handleFixCode} className="flex flex-col gap-3">
-                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <label className="text-xs font-medium text-[#94a3b8]">
                   Paste Broken Code or Console Error
                 </label>
                 <textarea
@@ -1632,13 +1617,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   value={debugErrorInput}
                   onChange={(e) => setDebugErrorInput(e.target.value)}
                   disabled={debugLoading}
-                  className="w-full h-32 p-3 bg-slate-950 border border-slate-200 dark:border-white/10 rounded-xl text-xs font-mono leading-relaxed text-cyan-300 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 placeholder:text-slate-600 disabled:opacity-50 transition-all"
+                  className="w-full h-32 p-3 bg-[#0a0a0c] border border-white/[0.1] rounded-lg text-xs font-mono leading-relaxed text-zinc-300 focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 placeholder:text-[#64748b] disabled:opacity-50 transition-colors"
                 />
                 
                 <button
                   type="submit"
                   disabled={!debugErrorInput.trim() || debugLoading}
-                  className="self-end px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer shadow-md shadow-red-950/30"
+                  className="self-end px-4 py-2 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 font-medium text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
                 >
                   {debugLoading ? "Analyzing Error..." : "Fix Code"}
                 </button>
@@ -1646,19 +1631,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
               {/* Debug Result Display */}
               {(debugLoading || debugResult) && (
-                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-slate-200 dark:border-white/10">
-                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-white/[0.08]">
+                  <span className="text-xs font-medium text-[#94a3b8]">
                     Tutor Diagnostic Resolution
                   </span>
                   
                   {debugLoading ? (
-                    <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/60 flex items-center gap-3">
-                      <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
-                      <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Tutor is analyzing your stack trace...</span>
+                    <div className="p-3.5 rounded-lg border border-white/[0.08] bg-[#161a24] flex items-center gap-3">
+                      <Loader2 className="w-4 h-4 text-zinc-400 animate-spin" />
+                      <span className="text-xs text-[#94a3b8]">Tutor is analyzing your stack trace...</span>
                     </div>
                   ) : (
-                    <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-950 overflow-x-auto max-h-[300px]">
-                      <pre className="text-xs text-slate-200 font-sans leading-relaxed whitespace-pre-wrap">
+                    <div className="p-3.5 rounded-lg border border-white/[0.08] bg-[#0a0a0c] overflow-x-auto max-h-[300px]">
+                      <pre className="text-xs text-zinc-200 font-sans leading-relaxed whitespace-pre-wrap">
                         {debugResult}
                       </pre>
                     </div>
@@ -1672,7 +1657,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Toast Notification for sharing */}
       {shareToast && (
-        <div className="no-print fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-950/90 text-emerald-400 text-xs font-bold shadow-lg shadow-emerald-950/50 animate-fade-in flex items-center gap-2">
+        <div className="no-print fixed bottom-6 right-6 z-50 px-3.5 py-2.5 rounded-lg border border-zinc-700 bg-zinc-900 text-zinc-200 text-xs font-medium shadow-2xl flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>Link copied to clipboard!</span>
         </div>
@@ -1680,31 +1665,31 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Limit Reached Modal */}
       {showLimitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in no-print">
-          <div className="w-full max-w-md p-8 rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-2xl flex flex-col gap-6 text-center">
-            <div className="flex flex-col items-center gap-2.5">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-1 shadow-sm">
-                <Zap className="w-6 h-6 animate-pulse" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in no-print">
+          <div className="w-full max-w-md p-6 rounded-xl border border-white/[0.08] bg-[#11141c] shadow-2xl flex flex-col gap-5 text-center">
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 mb-1">
+                <Zap className="w-5 h-5" />
               </div>
-              <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">Limit Reached</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed px-2">
-                You've reached your free weekly limit! Upgrade to Premium for unlimited projects and one-click PDF downloads.
+              <h3 className="text-base font-semibold text-[#f8fafc]">Weekly Generation Limit Reached</h3>
+              <p className="text-xs text-[#94a3b8] leading-relaxed">
+                You've reached your free weekly limit. Upgrade to Pro for unlimited project scaffolds, full source downloads, and AI guides.
               </p>
             </div>
 
-            <div className="flex flex-col gap-2.5">
+            <div className="flex flex-col gap-2">
               <button
                 onClick={() => {
                   setShowLimitModal(false);
                   router.push("/dashboard/pricing");
                 }}
-                className="w-full py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all duration-200 shadow-lg shadow-cyan-500/25 cursor-pointer"
+                className="w-full py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-medium text-xs transition-colors cursor-pointer"
               >
-                Upgrade to Premium
+                Upgrade to Pro
               </button>
               <button
                 onClick={() => setShowLimitModal(false)}
-                className="w-full py-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 font-medium text-xs transition-all duration-200 cursor-pointer"
+                className="w-full py-2 rounded-lg border border-white/[0.08] bg-white/[0.04] text-zinc-300 hover:bg-white/[0.08] font-medium text-xs transition-colors cursor-pointer"
               >
                 Cancel
               </button>

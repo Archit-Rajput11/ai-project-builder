@@ -13,7 +13,8 @@ import {
   ChevronLeft, 
   ChevronRight,
   LogOut,
-  Sparkles
+  Terminal,
+  Zap
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -50,61 +51,60 @@ export default function DashboardLayout({
     {
       name: "Upgrade to Pro",
       href: "/dashboard/pricing",
-      icon: Sparkles,
+      icon: Zap,
     },
   ];
 
   const handleSignOut = () => {
-    // Clear mock session cookie
     document.cookie = "mock-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push("/auth");
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col md:flex-row bg-background text-foreground gap-0">
+    <div className="w-full min-h-screen flex flex-col md:flex-row bg-[#0a0a0c] text-[#f8fafc] gap-0">
       {/* Mobile Top Header (Visible only on mobile) */}
-      <div className="md:hidden no-print flex items-center justify-between p-4 border-b border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-xl w-full">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-            <Sparkles className="w-4 h-4" />
+      <div className="md:hidden no-print flex items-center justify-between p-4 border-b border-white/[0.08] bg-zinc-950/80 backdrop-blur-md w-full">
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-zinc-900 border border-white/[0.08] text-zinc-100">
+            <Terminal className="w-4 h-4" />
           </div>
-          <span className="text-sm font-extrabold text-foreground">AI Project Builder</span>
+          <span className="text-sm font-semibold text-[#f8fafc]">AI Project Builder</span>
         </div>
         <button
           onClick={() => setIsMobileOpen(true)}
-          className="p-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-900/60 text-foreground hover:border-cyan-500/30 transition-all duration-200 cursor-pointer"
+          className="p-2 rounded-lg border border-white/[0.08] bg-zinc-900/60 text-zinc-300 hover:text-white transition-colors cursor-pointer"
           aria-label="Open navigation menu"
         >
-          <Menu className="w-5 h-5" />
+          <Menu className="w-4 h-4" />
         </button>
       </div>
 
       {/* Desktop Sidebar Container (Fixed left side, hidden on mobile) */}
       <aside 
-        className={`hidden md:flex no-print flex-col shrink-0 border-r border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#0f172a]/95 backdrop-blur-xl p-5 transition-all duration-200 ease-out ${
-          isExpanded ? "w-64" : "w-20"
+        className={`hidden md:flex no-print flex-col shrink-0 border-r border-white/[0.08] bg-[#0d1017] p-4 transition-all duration-150 ease-out ${
+          isExpanded ? "w-60" : "w-18"
         } relative min-h-screen`}
       >
         {/* Toggle Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="absolute -right-3 top-6 w-6 h-6 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:text-cyan-500 dark:hover:text-cyan-400 hover:border-cyan-500/40 transition-all duration-200 cursor-pointer shadow-sm z-10"
+          className="absolute -right-3 top-5 w-6 h-6 rounded-full border border-white/[0.1] bg-zinc-900 flex items-center justify-center text-zinc-400 hover:text-white hover:border-zinc-600 transition-colors cursor-pointer z-10"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         >
           {isExpanded ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
         </button>
 
         {/* Brand Header */}
-        <div className="flex items-center gap-3 px-2 py-1 mb-6">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 shrink-0 shadow-sm shadow-cyan-500/10">
-            <Sparkles className="w-5 h-5" />
+        <div className="flex items-center gap-2.5 px-2 py-1 mb-6">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-900 border border-white/[0.08] text-zinc-100 shrink-0">
+            <Terminal className="w-4 h-4" />
           </div>
           {isExpanded && (
             <div className="flex flex-col overflow-hidden">
-              <span className="text-sm font-extrabold tracking-tight truncate bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+              <span className="text-sm font-semibold tracking-tight text-[#f8fafc] truncate">
                 Project Builder
               </span>
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+              <span className="text-[10px] font-medium text-[#64748b] uppercase tracking-wider">
                 Workspace
               </span>
             </div>
@@ -112,7 +112,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-col gap-1.5 flex-1">
+        <nav className="flex flex-col gap-1 flex-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -120,13 +120,13 @@ export default function DashboardLayout({
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl border text-xs font-semibold transition-all duration-200 ease-out ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                   isActive 
-                    ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-600 dark:text-cyan-400 shadow-sm shadow-cyan-500/10 font-bold" 
-                    : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/50 dark:hover:bg-white/5"
+                    ? "bg-white/[0.08] text-white border border-white/[0.08]" 
+                    : "border border-transparent text-[#94a3b8] hover:text-white hover:bg-white/[0.04]"
                 }`}
               >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-cyan-500 dark:text-cyan-400" : ""}`} />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-white" : "text-[#64748b]"}`} />
                 {isExpanded && <span className="truncate">{item.name}</span>}
               </Link>
             );
@@ -134,10 +134,10 @@ export default function DashboardLayout({
         </nav>
 
         {/* Footer Logout Button */}
-        <div className="border-t border-slate-200 dark:border-white/10 pt-4 mt-auto">
+        <div className="border-t border-white/[0.08] pt-3 mt-auto">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-500 dark:text-red-400 text-xs font-semibold transition-all duration-200 ease-out cursor-pointer"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg border border-transparent hover:border-red-500/20 text-[#94a3b8] hover:text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4 shrink-0" />
             {isExpanded && <span className="truncate">Sign Out</span>}
@@ -151,28 +151,28 @@ export default function DashboardLayout({
           {/* Backdrop */}
           <div 
             onClick={() => setIsMobileOpen(false)}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
           />
 
           {/* Drawer Content */}
-          <div className="relative flex flex-col w-64 bg-white dark:bg-[#0f172a] border-r border-slate-200 dark:border-white/10 p-6 gap-6 animate-slide-in h-full shadow-2xl">
+          <div className="relative flex flex-col w-64 bg-[#0d1017] border-r border-white/[0.08] p-5 gap-6 h-full shadow-2xl">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-                  <Sparkles className="w-4 h-4" />
+              <div className="flex items-center gap-2.5">
+                <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-zinc-900 border border-white/[0.08] text-zinc-100">
+                  <Terminal className="w-4 h-4" />
                 </div>
-                <span className="text-sm font-extrabold text-foreground">Navigation</span>
+                <span className="text-sm font-semibold text-[#f8fafc]">Navigation</span>
               </div>
               <button
                 onClick={() => setIsMobileOpen(false)}
-                className="p-1.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-500 hover:text-slate-100 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg border border-white/[0.08] text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 aria-label="Close menu"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <nav className="flex flex-col gap-1.5 flex-1">
+            <nav className="flex flex-col gap-1 flex-1">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -181,10 +181,10 @@ export default function DashboardLayout({
                     key={item.name}
                     href={item.href}
                     onClick={() => setIsMobileOpen(false)}
-                    className={`flex items-center gap-3 px-3.5 py-3 rounded-xl border text-xs font-semibold transition-all duration-200 ease-out ${
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
                       isActive 
-                        ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-600 dark:text-cyan-400 shadow-sm shadow-cyan-500/10 font-bold" 
-                        : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5"
+                        ? "bg-white/[0.08] text-white border border-white/[0.08]" 
+                        : "border border-transparent text-[#94a3b8] hover:text-white hover:bg-white/[0.04]"
                     }`}
                   >
                     <Icon className="w-4 h-4 shrink-0" />
@@ -195,13 +195,13 @@ export default function DashboardLayout({
             </nav>
 
             {/* Logout */}
-            <div className="border-t border-slate-200 dark:border-white/10 pt-4 mt-auto">
+            <div className="border-t border-white/[0.08] pt-3 mt-auto">
               <button
                 onClick={() => {
                   setIsMobileOpen(false);
                   handleSignOut();
                 }}
-                className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl border border-red-500/20 hover:border-red-500/50 bg-red-500/5 hover:bg-red-500/10 text-red-500 dark:text-red-400 text-xs font-semibold transition-all duration-200 ease-out cursor-pointer"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg border border-transparent hover:border-red-500/20 text-[#94a3b8] hover:text-red-400 hover:bg-red-500/10 text-xs font-medium transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4 shrink-0" />
                 <span>Sign Out</span>
