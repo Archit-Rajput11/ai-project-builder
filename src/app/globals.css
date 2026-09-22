@@ -23,19 +23,19 @@
   --border-accent: #e4e4e7;
   --bg-accent: #f4f4f5;
   --bg-elevated: #f4f4f5;
-  --primary: #18181b;
-  --primary-hover: #27272a;
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
 }
 
-/* Dark Theme Variables (Minimal, enterprise-grade engineering palette: GitHub / Linear / Supabase) */
+/* Dark Theme Variables (Raycast & Supabase Inspired Dark Developer Palette) */
 .dark {
-  --background: #0a0a0c; /* Neutral deep charcoal/slate */
+  --background: #080b11; /* Deepest canvas */
   --foreground: #f8fafc; /* Crisp white typography */
   --border-accent: rgba(255, 255, 255, 0.08); /* Crisp ultra-subtle border */
-  --bg-accent: #11141c; /* Flat matte dark panel */
-  --bg-elevated: #161a24; /* Secondary surface / input container */
-  --primary: #f8fafc; /* Authoritative high-contrast */
-  --primary-hover: #e2e8f0;
+  --bg-accent: #0c1017; /* Dark panel surface */
+  --bg-elevated: #111622; /* Elevated container / input surface */
+  --primary: #6366f1; /* Indigo highlight */
+  --primary-hover: #4f46e5;
 }
 
 /* Global resets and smooth transition effects */

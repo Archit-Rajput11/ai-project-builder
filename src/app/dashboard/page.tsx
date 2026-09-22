@@ -724,172 +724,239 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
   }
 
   return (
-    <div className="flex flex-col gap-8 pb-16 animate-fade-in max-w-6xl mx-auto">
+    <div className="flex flex-col gap-8 pb-16 animate-fade-in max-w-7xl mx-auto">
       
-      {/* Parameter Form Section (Hidden during printing via CSS no-print) */}
-      <section className="no-print p-6 md:p-7 rounded-xl border border-white/[0.08] bg-[#11141c] flex flex-col gap-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-lg sm:text-xl font-semibold tracking-tight flex items-center gap-2.5 text-[#f8fafc]">
-              <Zap className="w-4 h-4 text-zinc-300" />
-              <span>Configure Your AI Blueprint</span>
-              {isPremium && <ProBadge />}
-            </h2>
-            <p className="text-xs sm:text-sm text-[#94a3b8] mt-1">
-              Define your preferences to generate a custom-tailored academic project plan.
-            </p>
-          </div>
-          
-          {/* Account Tier Status Badge */}
-          <div className="flex items-center select-none">
-            {isPremium ? (
-              <div className="inline-flex items-center gap-2 text-xs font-medium px-2.5 py-1 rounded-full border border-zinc-700 bg-zinc-800 text-zinc-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span>Premium Tier: Unlimited Projects</span>
-              </div>
-            ) : (
-              <div className="inline-flex items-center gap-2 text-xs font-medium px-2.5 py-1 rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
-                <span>Free Tier: 1 project/week ({1 - generatedCount > 0 ? 1 - generatedCount : 0} left)</span>
-                <button
-                  onClick={() => router.push("/dashboard/pricing")}
-                  className="ml-1 px-2.5 py-0.5 rounded-full bg-white text-zinc-950 hover:bg-zinc-200 text-xs font-medium transition-colors cursor-pointer"
-                >
-                  Upgrade
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Dropdowns Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Domain Dropdown */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-[#94a3b8]">
-              Domain
-            </label>
-            <div className="relative">
-              <select
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                className="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-lg border border-white/[0.1] hover:border-zinc-700 bg-[#161a24] text-[#f8fafc] text-sm font-medium focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 focus:outline-none cursor-pointer transition-colors"
-              >
-                <option value="Web Development">Web Development</option>
-                <option value="Mobile Apps">Mobile Apps</option>
-                <option value="AI/ML">AI / Machine Learning</option>
-                <option value="Blockchain">Blockchain Tech</option>
-                <option value="Cybersecurity">Cybersecurity</option>
-                <option value="IoT">Internet of Things (IoT)</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+      {/* Two-Part Structured Dashboard Grid (Hidden during printing via CSS no-print) */}
+      <div className="no-print grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column: Configuration Form (lg:col-span-7) */}
+        <section className="lg:col-span-7 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col gap-5 shadow-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.06]">
+            <div>
+              <h2 className="text-base sm:text-lg font-semibold tracking-tight flex items-center gap-2 text-[#f8fafc]">
+                <Zap className="w-4 h-4 text-indigo-400" />
+                <span>Configure Your AI Blueprint</span>
+                {isPremium && <ProBadge />}
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Define preferences to generate a custom-tailored academic project plan.
+              </p>
             </div>
-          </div>
-
-          {/* Complexity Dropdown */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-[#94a3b8]">
-              Complexity
-            </label>
-            <div className="relative">
-              <select
-                value={complexity}
-                onChange={(e) => setComplexity(e.target.value)}
-                className="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-lg border border-white/[0.1] hover:border-zinc-700 bg-[#161a24] text-[#f8fafc] text-sm font-medium focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 focus:outline-none cursor-pointer transition-colors"
-              >
-                <option value="Basic">Basic (Scaffolds & Boilerplate)</option>
-                <option value="Intermediate">Intermediate (Core Full-Stack)</option>
-                <option value="Advanced">Advanced (Distributed & Scale)</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-            </div>
-          </div>
-
-          {/* Skill Level Dropdown */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-[#94a3b8]">
-              Skill Level
-            </label>
-            <div className="relative">
-              <select
-                value={skillLevel}
-                onChange={(e) => setSkillLevel(e.target.value)}
-                className="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-lg border border-white/[0.1] hover:border-zinc-700 bg-[#161a24] text-[#f8fafc] text-sm font-medium focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 focus:outline-none cursor-pointer transition-colors"
-              >
-                <option value="Beginner">Beginner (1st/2nd Year)</option>
-                <option value="Competent">Competent (3rd Year)</option>
-                <option value="Expert">Expert (Final Year / Capstone)</option>
-              </select>
-              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-            </div>
-          </div>
-        </div>
-
-        {/* Custom Keywords Input */}
-        <div className={`relative flex flex-col gap-1.5 p-3.5 rounded-lg border border-white/[0.08] bg-[#161a24]/50 transition-colors ${!isPremium ? 'opacity-90 select-none' : ''}`}>
-          {/* Overlay Lock Message */}
-          {!isPremium && (
-            <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/80 backdrop-blur-sm border border-zinc-800 rounded-lg pointer-events-auto z-10">
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-700 text-zinc-300 text-xs font-medium">
-                <Lock className="w-3 h-3 text-zinc-400" />
-                <span>Premium Feature</span>
-              </div>
-            </div>
-          )}
-          <label htmlFor="customKeywords" className="text-xs font-medium text-[#94a3b8]">
-            Project Focus / Keywords (Optional)
-          </label>
-          <input
-            id="customKeywords"
-            type="text"
-            placeholder="e.g., E-commerce, Healthcare, Fitness tracker..."
-            value={customKeywords}
-            onChange={(e) => setCustomKeywords(e.target.value)}
-            disabled={!isPremium}
-            className="px-3.5 py-2 rounded-lg border border-white/[0.1] bg-[#161a24] text-[#f8fafc] text-sm placeholder:text-[#64748b] focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition-colors"
-          />
-        </div>
-
-        {/* Generate Trigger Button & Premium Action */}
-        <div className="flex flex-wrap items-center gap-3">
-          <button
-            onClick={() => handleGenerate(false)}
-            disabled={loading}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 font-medium text-sm active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin text-zinc-950" />
-                <span>Generating Project Scaffolding...</span>
-              </>
-            ) : (
-              <>
-                <Zap className="w-4 h-4" />
-                <span>Build Project Plan</span>
-              </>
-            )}
-          </button>
-
-          {plan && (
-            <button
-              onClick={handlePremiumPdfClick}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-sm transition-colors cursor-pointer"
-            >
+            
+            {/* Account Tier Status Badge */}
+            <div className="flex items-center select-none shrink-0">
               {isPremium ? (
+                <div className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span>Premium: Unlimited</span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2 text-xs font-medium px-2.5 py-1 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-300">
+                  <span>Free ({1 - generatedCount > 0 ? 1 - generatedCount : 0}/1 left)</span>
+                  <button
+                    onClick={() => router.push("/dashboard/pricing")}
+                    className="ml-1 px-2 py-0.5 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-semibold transition-colors cursor-pointer"
+                  >
+                    Upgrade
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Dropdowns Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            {/* Domain Dropdown */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-slate-300">
+                Domain
+              </label>
+              <div className="relative">
+                <select
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-lg border border-white/[0.1] hover:border-slate-600 bg-[#111622] text-[#f8fafc] text-xs font-medium focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 focus:outline-none cursor-pointer transition-colors"
+                >
+                  <option value="Web Development">Web Development</option>
+                  <option value="Mobile Apps">Mobile Apps</option>
+                  <option value="AI/ML">AI / Machine Learning</option>
+                  <option value="Blockchain">Blockchain Tech</option>
+                  <option value="Cybersecurity">Cybersecurity</option>
+                  <option value="IoT">Internet of Things (IoT)</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Complexity Dropdown */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-slate-300">
+                Complexity
+              </label>
+              <div className="relative">
+                <select
+                  value={complexity}
+                  onChange={(e) => setComplexity(e.target.value)}
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-lg border border-white/[0.1] hover:border-slate-600 bg-[#111622] text-[#f8fafc] text-xs font-medium focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 focus:outline-none cursor-pointer transition-colors"
+                >
+                  <option value="Basic">Basic (Scaffolding)</option>
+                  <option value="Intermediate">Intermediate (Full-Stack)</option>
+                  <option value="Advanced">Advanced (Scale)</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Skill Level Dropdown */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-slate-300">
+                Skill Level
+              </label>
+              <div className="relative">
+                <select
+                  value={skillLevel}
+                  onChange={(e) => setSkillLevel(e.target.value)}
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-lg border border-white/[0.1] hover:border-slate-600 bg-[#111622] text-[#f8fafc] text-xs font-medium focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 focus:outline-none cursor-pointer transition-colors"
+                >
+                  <option value="Beginner">Beginner (1st/2nd Yr)</option>
+                  <option value="Competent">Competent (3rd Yr)</option>
+                  <option value="Expert">Expert (Capstone)</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+          </div>
+
+          {/* Custom Keywords Input */}
+          <div className={`relative flex flex-col gap-1.5 p-3 rounded-lg border border-white/[0.08] bg-[#111622]/60 transition-colors ${!isPremium ? 'opacity-90 select-none' : ''}`}>
+            {!isPremium && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded-lg pointer-events-auto z-10">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#161c28] border border-amber-500/30 text-amber-300 text-xs font-medium">
+                  <Lock className="w-3 h-3 text-amber-400" />
+                  <span>Pro Feature (Custom Keywords)</span>
+                </div>
+              </div>
+            )}
+            <label htmlFor="customKeywords" className="text-xs font-medium text-slate-300">
+              Project Focus / Specific Keywords (Optional)
+            </label>
+            <input
+              id="customKeywords"
+              type="text"
+              placeholder="e.g., E-commerce, Healthcare, Fitness tracker, Real-time telemetry..."
+              value={customKeywords}
+              onChange={(e) => setCustomKeywords(e.target.value)}
+              disabled={!isPremium}
+              className="px-3.5 py-2 rounded-lg border border-white/[0.1] bg-[#111622] text-[#f8fafc] text-xs placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-colors"
+            />
+          </div>
+
+          {/* Generate Trigger Button & Premium Action */}
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <button
+              onClick={() => handleGenerate(false)}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white font-medium text-xs sm:text-sm shadow-sm border border-indigo-400/30 active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+            >
+              {loading ? (
                 <>
-                  <Download className="w-4 h-4 text-zinc-300" />
-                  <span>Download PDF</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Generating Scaffolding...</span>
                 </>
               ) : (
                 <>
-                  <Award className="w-4 h-4 text-zinc-400" />
-                  <span>Get Premium PDF</span>
+                  <Zap className="w-4 h-4" />
+                  <span>Build Project Plan</span>
                 </>
               )}
             </button>
-          )}
-        </div>
-      </section>
+
+            {plan && (
+              <button
+                onClick={handlePremiumPdfClick}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-white/[0.1] bg-[#161c28] hover:bg-[#1c2433] text-slate-200 font-medium text-xs sm:text-sm transition-colors cursor-pointer"
+              >
+                {isPremium ? (
+                  <>
+                    <Download className="w-4 h-4 text-indigo-400" />
+                    <span>Download PDF</span>
+                  </>
+                ) : (
+                  <>
+                    <Award className="w-4 h-4 text-amber-400" />
+                    <span>Get Premium PDF</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        </section>
+
+        {/* Right Column: Live Blueprint Preview / Recent Specs (lg:col-span-5) */}
+        <aside className="lg:col-span-5 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col gap-4 shadow-lg">
+          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-400" />
+              <h3 className="text-sm font-semibold text-[#f8fafc]">Live Blueprint Specs</h3>
+            </div>
+            <span className="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
+              Active Parameters
+            </span>
+          </div>
+
+          {/* Dynamic Wireframe / Specs Card */}
+          <div className="p-3.5 rounded-lg border border-white/[0.06] bg-[#07090e] flex flex-col gap-2.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Target Domain</span>
+              <span className="text-white font-medium">{domain}</span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Complexity Rating</span>
+              <span className="text-indigo-300 font-medium">{complexity}</span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-slate-400">Target Year / Level</span>
+              <span className="text-slate-300 font-medium">{skillLevel}</span>
+            </div>
+            {customKeywords && (
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-400">Custom Keywords</span>
+                <span className="text-slate-300 font-mono text-[11px] truncate max-w-[150px]">{customKeywords}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Deliverables Overview Checklist */}
+          <div className="flex flex-col gap-2 pt-1">
+            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+              Included in this generation:
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
+              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span>Full Repo Tree</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span>6-Wk Kanban</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span>IEEE Report Doc</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                <span>Viva Q&A Prep</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Tip / Dev note */}
+          <div className="p-3 rounded-lg border border-indigo-500/20 bg-indigo-500/5 text-[11px] text-slate-400 leading-relaxed">
+            <span className="text-indigo-300 font-semibold">Pro tip: </span>
+            All blueprints include starter boilerplate downloads and personalized AI Copilot master prompts.
+          </div>
+        </aside>
+      </div>
 
       {/* Error Card */}
       {error && (
@@ -928,11 +995,11 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 cursor-pointer transition-colors ${
                       isActive
-                        ? "border-white text-white"
-                        : "border-transparent text-[#94a3b8] hover:text-zinc-200"
+                        ? "border-indigo-400 text-indigo-300 font-semibold"
+                        : "border-transparent text-slate-400 hover:text-slate-200"
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-[#64748b]"}`} />
+                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-indigo-400" : "text-slate-500"}`} />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -944,7 +1011,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Share Project Button */}
               <button
                 onClick={handleShareProject}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-[#161c28] hover:bg-[#1c2433] text-slate-200 font-medium text-xs transition-colors cursor-pointer"
               >
                 Share
               </button>
@@ -952,9 +1019,9 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Premium PDF Download */}
               <button
                 onClick={handlePremiumPdfClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-[#161c28] hover:bg-[#1c2433] text-slate-200 font-medium text-xs transition-colors cursor-pointer"
               >
-                <Award className="w-3.5 h-3.5 text-zinc-400" />
+                <Award className="w-3.5 h-3.5 text-amber-400" />
                 <span>PDF Blueprint</span>
               </button>
 
