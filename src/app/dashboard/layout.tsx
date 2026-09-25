@@ -20,6 +20,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
+import { supabase } from "@/lib/supabase";
 
 export default function DashboardLayout({
   children,
@@ -60,7 +61,12 @@ export default function DashboardLayout({
     },
   ];
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error("Sign out error:", e);
+    }
     document.cookie = "mock-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push("/auth");
   };

@@ -7,7 +7,11 @@ export const authConfig = {
   },
   callbacks: {
     authorized({ auth, request }) {
-      const isLoggedIn = !!auth?.user || !!request?.cookies?.has("mock-logged-in");
+      const cookiesList = request?.cookies?.getAll ? request.cookies.getAll() : [];
+      const hasSupabaseCookie = cookiesList.some(
+        (c) => (c.name.startsWith("sb-") && c.name.endsWith("-auth-token")) || c.name === "mock-logged-in"
+      );
+      const isLoggedIn = !!auth?.user || hasSupabaseCookie || !!request?.cookies?.has("mock-logged-in");
       const nextUrl = request?.nextUrl;
       const isDashboard = nextUrl ? nextUrl.pathname.startsWith("/dashboard") : false;
       

@@ -834,7 +834,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     }
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.error("Sign out error:", e);
+    }
     // Clear mock session cookie
     document.cookie = "mock-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push("/auth");
