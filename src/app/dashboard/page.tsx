@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import LZString from "lz-string";
-import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, ChevronDown, Lock, CheckCircle2, Award, Zap, Loader2 } from "lucide-react";
+import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, ChevronDown, Lock, CheckCircle2, Award, Zap, Loader2, FolderGit2, Plus, ArrowUpRight, Check, AlertCircle } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 import { supabase } from "@/lib/supabase";
 import ProBadge from "@/components/ProBadge";
@@ -75,6 +75,15 @@ interface ProjectPlan {
   vivaQuestions: VivaQuestion[];
 }
 
+const GENERATION_STEPS = [
+  "Analyzing project requirements",
+  "Selecting technology stack",
+  "Designing project architecture",
+  "Creating repository structure",
+  "Preparing development roadmap",
+  "Preparing documentation",
+];
+
 const encodeSharedData = (data: any): string => {
   try {
     return LZString.compressToEncodedURIComponent(JSON.stringify(data));
@@ -110,6 +119,12 @@ export default function Dashboard() {
   const [plan, setPlan] = React.useState<ProjectPlan | null>(null);
   const [selectedCopilotWeek, setSelectedCopilotWeek] = React.useState<number>(1);
   const [error, setError] = React.useState<string | null>(null);
+  
+  // AI Blueprint Generation Progress Modal states
+  const [generationModalOpen, setGenerationModalOpen] = React.useState(false);
+  const [generationStep, setGenerationStep] = React.useState(0);
+  const [generationError, setGenerationError] = React.useState<string | null>(null);
+  const generationTimerRef = React.useRef<NodeJS.Timeout[]>([]);
 
   // Freemium states — checked live directly against the database via useProStatus
   const { isPro: isPremium, loading: isProLoading } = useProStatus();
@@ -152,6 +167,94 @@ export default function Dashboard() {
 
   // Copied state for week prompts
   const [copiedWeek, setCopiedWeek] = React.useState<number | null>(null);
+
+  // Recent projects states
+  const [recentProjects, setRecentProjects] = React.useState<any[]>([]);
+  const [loadingRecent, setLoadingRecent] = React.useState(true);
+
+  const fetchRecentProjects = React.useCallback(async () => {
+    try {
+      setLoadingRecent(true);
+      const headers: Record<string, string> = {};
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData?.session?.access_token) {
+          headers["Authorization"] = `Bearer ${sessionData.session.access_token}`;
+        }
+      } catch (authErr) {
+        // Fall back to default cookies
+      }
+
+      const res = await fetch("/api/projects", { headers });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setRecentProjects(data);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load recent projects:", err);
+    } finally {
+      setLoadingRecent(false);
+    }
+  }, []);
+
+  React.useEffect(() => {
+    fetchRecentProjects();
+  }, [fetchRecentProjects]);
+
+  const handleOpenProject = (project: any) => {
+    if (!project) return;
+    if (project.blueprint) {
+      const bp = project.blueprint;
+      setPlan(bp);
+      if (project.domain) setDomain(project.domain);
+      if (project.complexity) setComplexity(project.complexity);
+      if (bp.domain) setDomain(bp.domain);
+      if (bp.complexity) setComplexity(bp.complexity);
+
+      if (bp.roadmapWeeks && Array.isArray(bp.roadmapWeeks)) {
+        const allTasks: Task[] = [];
+        bp.roadmapWeeks.forEach((week: any) => {
+          if (week.tasks && Array.isArray(week.tasks)) {
+            week.tasks.forEach((task: any) => {
+              allTasks.push({
+                id: task.id || `task-${week.weekNumber}-${Math.random()}`,
+                title: task.title || "",
+                week: task.week || week.weekNumber,
+                description: task.description || "",
+              });
+            });
+          }
+        });
+        setKanbanTasks({
+          todo: allTasks,
+          in_progress: [],
+          completed: [],
+        });
+      }
+
+      setSelectedCopilotWeek(1);
+      setActiveTab("overview");
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("loaded_project_blueprint", JSON.stringify(bp));
+      }
+
+      setTimeout(() => {
+        const printableArea = document.getElementById("printable-area");
+        printableArea?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      router.push("/dashboard/projects");
+    }
+  };
+
+  const handleScrollToConfig = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const keywordInput = document.getElementById("customKeywords");
+    keywordInput?.focus();
+  };
 
   const getToolForTask = (task: Task) => {
     if (!plan || !plan.roadmapWeeks) return null;
@@ -573,6 +676,21 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
     setLoading(true);
     setError(null);
+    setGenerationError(null);
+    setGenerationStep(0);
+    setGenerationModalOpen(true);
+
+    // Clear any previous interval timers
+    generationTimerRef.current.forEach(clearTimeout);
+    generationTimerRef.current = [];
+
+    // Schedule progressive step advances reflecting the AI generation flow
+    const t1 = setTimeout(() => setGenerationStep(1), 1200);
+    const t2 = setTimeout(() => setGenerationStep(2), 2600);
+    const t3 = setTimeout(() => setGenerationStep(3), 4200);
+    const t4 = setTimeout(() => setGenerationStep(4), 5800);
+    generationTimerRef.current = [t1, t2, t3, t4];
+
     try {
       const response = await fetch("/api/generate-plan", {
         method: "POST",
@@ -589,22 +707,48 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       }
 
       const data = await response.json();
+
+      // Clear pending timers
+      generationTimerRef.current.forEach(clearTimeout);
+      generationTimerRef.current = [];
+
+      // Finish remaining steps on verified backend response delivery
+      setGenerationStep(5); // Preparing documentation
+      await new Promise((r) => setTimeout(r, 400));
+      setGenerationStep(6); // All steps completed
+      await new Promise((r) => setTimeout(r, 500));
+
       setPlan(data);
       setSelectedCopilotWeek(1);
       if (!isInitial) {
         setActiveTab("overview");
       }
       
+      // Close generation modal and reset loading
+      setGenerationModalOpen(false);
+      setLoading(false);
+
       // Increment generation count
       setGeneratedCount((prev) => {
         const next = prev + 1;
         localStorage.setItem("project_generation_count", next.toString());
         return next;
       });
+
+      // Refresh recent projects from database
+      fetchRecentProjects();
+
+      setTimeout(() => {
+        const printableArea = document.getElementById("printable-area");
+        printableArea?.scrollIntoView({ behavior: "smooth" });
+      }, 150);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to generate project plan.");
-    } finally {
+      generationTimerRef.current.forEach(clearTimeout);
+      generationTimerRef.current = [];
+      const errorMsg = err.message || "Failed to generate project plan.";
+      setError(errorMsg);
+      setGenerationError(errorMsg);
       setLoading(false);
     }
   };
@@ -727,14 +871,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     <div className="flex flex-col gap-8 pb-16 animate-fade-in max-w-7xl mx-auto">
       
       {/* Two-Part Structured Dashboard Grid (Hidden during printing via CSS no-print) */}
-      <div className="no-print grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="no-print grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Left Column: Configuration Form (lg:col-span-7) */}
-        <section className="lg:col-span-7 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col gap-5 shadow-lg">
+        <section className="lg:col-span-7 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col justify-between gap-5 shadow-lg">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.06]">
             <div>
               <h2 className="text-base sm:text-lg font-semibold tracking-tight flex items-center gap-2 text-[#f8fafc]">
                 <Zap className="w-4 h-4 text-indigo-400" />
-                <span>Configure Your AI Blueprint</span>
+                <span>Create Your Project Blueprint</span>
                 {isPremium && <ProBadge />}
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -750,13 +894,26 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   <span>Premium: Unlimited</span>
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-2 text-xs font-medium px-2.5 py-1 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-300">
-                  <span>Free ({1 - generatedCount > 0 ? 1 - generatedCount : 0}/1 left)</span>
+                <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg border border-amber-500/25 bg-amber-500/10 text-amber-300 text-xs">
+                  <div className="flex flex-col text-left leading-tight">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-amber-200">Free Plan</span>
+                      <span className="text-[11px] text-amber-300/90 font-medium">
+                        • {Math.max(0, 1 - generatedCount)} of 1 blueprint remaining
+                      </span>
+                    </div>
+                    {generatedCount >= 1 && (
+                      <span className="text-[10px] text-amber-400/80 font-normal">
+                        Free generation used — upgrade for unlimited
+                      </span>
+                    )}
+                  </div>
                   <button
                     onClick={() => router.push("/dashboard/pricing")}
-                    className="ml-1 px-2 py-0.5 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11px] font-semibold transition-colors cursor-pointer"
+                    className="ml-1 px-2.5 py-1 rounded-md bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-slate-950 text-xs font-semibold shadow-sm transition-all cursor-pointer flex items-center gap-1 shrink-0"
                   >
-                    Upgrade
+                    <Sparkles className="w-3 h-3 text-slate-950" />
+                    <span>Upgrade</span>
                   </button>
                 </div>
               )}
@@ -785,6 +942,9 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                Choose the primary area of your project.
+              </p>
             </div>
 
             {/* Complexity Dropdown */}
@@ -804,6 +964,9 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                Controls how advanced the generated project architecture will be.
+              </p>
             </div>
 
             {/* Skill Level Dropdown */}
@@ -823,32 +986,64 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               </div>
+              <p className="text-[11px] text-slate-400 leading-tight">
+                Helps tailor the project to your current experience.
+              </p>
             </div>
           </div>
 
-          {/* Custom Keywords Input */}
-          <div className={`relative flex flex-col gap-1.5 p-3 rounded-lg border border-white/[0.08] bg-[#111622]/60 transition-colors ${!isPremium ? 'opacity-90 select-none' : ''}`}>
-            {!isPremium && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm border border-white/[0.08] rounded-lg pointer-events-auto z-10">
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#161c28] border border-amber-500/30 text-amber-300 text-xs font-medium">
-                  <Lock className="w-3 h-3 text-amber-400" />
-                  <span>Pro Feature (Custom Keywords)</span>
-                </div>
+          {/* Custom Keywords / Pro Feature Locked Component */}
+          {isPremium ? (
+            <div className="flex flex-col gap-1.5 p-3 rounded-lg border border-white/[0.08] bg-[#111622]/60 transition-colors">
+              <div className="flex items-center justify-between">
+                <label htmlFor="customKeywords" className="text-xs font-medium text-slate-300">
+                  Project Focus & Keywords <span className="text-slate-500 font-normal">(Optional)</span>
+                </label>
+                <span className="text-[10px] font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
+                  Pro Unlocked
+                </span>
               </div>
-            )}
-            <label htmlFor="customKeywords" className="text-xs font-medium text-slate-300">
-              Project Focus / Specific Keywords (Optional)
-            </label>
-            <input
-              id="customKeywords"
-              type="text"
-              placeholder="e.g., E-commerce, Healthcare, Fitness tracker, Real-time telemetry..."
-              value={customKeywords}
-              onChange={(e) => setCustomKeywords(e.target.value)}
-              disabled={!isPremium}
-              className="px-3.5 py-2 rounded-lg border border-white/[0.1] bg-[#111622] text-[#f8fafc] text-xs placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-colors"
-            />
-          </div>
+              <input
+                id="customKeywords"
+                type="text"
+                placeholder="e.g., E-commerce, Healthcare, Fitness tracker, Real-time telemetry..."
+                value={customKeywords}
+                onChange={(e) => setCustomKeywords(e.target.value)}
+                className="px-3.5 py-2 rounded-lg border border-white/[0.1] bg-[#111622] text-[#f8fafc] text-xs placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-colors"
+              />
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-lg border border-white/[0.08] bg-[#111622]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
+              <div className="flex flex-col gap-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-medium text-slate-300">
+                    Project Focus & Keywords
+                  </span>
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#161c28] border border-amber-500/25 text-amber-300/90 text-[10px] font-medium">
+                    <Lock className="w-3 h-3 text-amber-400/90 shrink-0" />
+                    <span>Custom project keywords</span>
+                  </div>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-snug">
+                  Define specific technologies, features, or requirements for your project.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-center">
+                <span className="text-[11px] font-medium text-slate-400">
+                  Available with Pro
+                </span>
+                <button
+                  type="button"
+                  onClick={() => router.push("/dashboard/pricing")}
+                  className="px-2.5 py-1 rounded-md bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-slate-950 text-xs font-semibold shadow-sm transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <Sparkles className="w-3 h-3 text-slate-950" />
+                  <span>Upgrade</span>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Generate Trigger Button & Premium Action */}
           <div className="flex flex-wrap items-center gap-3 pt-1">
@@ -860,7 +1055,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin text-white" />
-                  <span>Generating Scaffolding...</span>
+                  <span>Generating Blueprint...</span>
                 </>
               ) : (
                 <>
@@ -892,7 +1087,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </section>
 
         {/* Right Column: Live Blueprint Preview / Recent Specs (lg:col-span-5) */}
-        <aside className="lg:col-span-5 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col gap-4 shadow-lg">
+        <aside className="lg:col-span-5 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col justify-between gap-4 shadow-lg">
           <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-indigo-400" />
@@ -906,15 +1101,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {/* Dynamic Wireframe / Specs Card */}
           <div className="p-3.5 rounded-lg border border-white/[0.06] bg-[#07090e] flex flex-col gap-2.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Target Domain</span>
+              <span className="text-slate-400">Project Domain</span>
               <span className="text-white font-medium">{domain}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Complexity Rating</span>
+              <span className="text-slate-400">Project Complexity</span>
               <span className="text-indigo-300 font-medium">{complexity}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Target Year / Level</span>
+              <span className="text-slate-400">Your Skill Level</span>
               <span className="text-slate-300 font-medium">{skillLevel}</span>
             </div>
             {customKeywords && (
@@ -928,7 +1123,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {/* Deliverables Overview Checklist */}
           <div className="flex flex-col gap-2 pt-1">
             <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
-              Included in this generation:
+              Included with your blueprint:
             </span>
             <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
               <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
@@ -1544,6 +1739,114 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </div>
       )}
 
+      {/* Recent Projects Section */}
+      <section className="no-print flex flex-col gap-4 mt-2 mb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#111622] border border-white/[0.08] text-indigo-400">
+              <FolderGit2 className="w-4 h-4" />
+            </div>
+            <div>
+              <h2 className="text-base font-semibold tracking-tight text-[#f8fafc]">
+                Recent Projects
+              </h2>
+              <p className="text-xs text-slate-400">
+                Your saved project architectures and academic blueprint records
+              </p>
+            </div>
+          </div>
+
+          {recentProjects.length > 0 && (
+            <button
+              onClick={() => router.push("/dashboard/projects")}
+              className="text-xs font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              <span>View all</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
+        {loadingRecent ? (
+          <div className="p-8 rounded-xl border border-white/[0.08] bg-[#0c1017] flex items-center justify-center gap-3 text-xs text-slate-400">
+            <Loader2 className="w-4 h-4 animate-spin text-indigo-400" />
+            <span>Loading projects from database...</span>
+          </div>
+        ) : recentProjects.length === 0 ? (
+          <div className="p-8 sm:p-10 rounded-xl border border-dashed border-white/[0.1] bg-[#0c1017]/50 text-center flex flex-col items-center justify-center gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-[#111622] border border-white/[0.08] flex items-center justify-center text-indigo-400/80 shadow-sm">
+              <FolderGit2 className="w-5 h-5" />
+            </div>
+            <div className="flex flex-col gap-1 max-w-sm">
+              <h3 className="text-sm font-semibold text-[#f8fafc]">No projects yet</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Your generated project blueprints will appear here.
+              </p>
+            </div>
+            <button
+              onClick={handleScrollToConfig}
+              className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-medium text-xs shadow-sm transition-all cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Create Your First Project</span>
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {recentProjects.map((project) => (
+              <div
+                key={project.id}
+                className="p-5 rounded-xl border border-white/[0.08] bg-[#0c1017] hover:border-indigo-500/40 hover:bg-[#0e1420] transition-all duration-150 flex flex-col justify-between gap-4 group"
+              >
+                <div className="flex flex-col gap-3">
+                  {/* Top Badges: Domain, Complexity, Status */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-semibold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded tracking-wide uppercase">
+                      {project.domain || "Web Development"}
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-medium text-slate-400 bg-white/[0.05] border border-white/[0.08] px-2 py-0.5 rounded">
+                        {project.complexity || "Intermediate"}
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                        {project.status || "Ready"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Project Title */}
+                  <h3 className="text-sm font-semibold text-[#f8fafc] group-hover:text-indigo-300 transition-colors line-clamp-1">
+                    {project.title || "Untitled Project"}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                    {project.description || "Production-grade academic software specification."}
+                  </p>
+                </div>
+
+                {/* Footer: Date and Small Action Button (Open) */}
+                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{project.date || "Recently saved"}</span>
+                  </div>
+
+                  <button
+                    onClick={() => handleOpenProject(project)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-[#111622] hover:bg-indigo-600 hover:text-white hover:border-indigo-500 text-slate-200 text-xs font-medium transition-all cursor-pointer"
+                  >
+                    <span>Open</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Floating Action Button - Ask Tutor */}
       {plan && (
         <button
@@ -1761,6 +2064,139 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 Cancel
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* AI Blueprint Generation Progress Modal */}
+      {generationModalOpen && (
+        <div className="no-print fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
+          <div className="w-full max-w-md p-6 rounded-2xl border border-white/[0.1] bg-[#0c1017] shadow-2xl shadow-indigo-950/50 flex flex-col gap-5">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                  generationError 
+                    ? "bg-rose-500/10 border-rose-500/30 text-rose-400" 
+                    : "bg-indigo-500/10 border-indigo-500/30 text-indigo-400"
+                }`}>
+                  {generationError ? (
+                    <AlertCircle className="w-5 h-5" />
+                  ) : (
+                    <Sparkles className="w-5 h-5 animate-pulse" />
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <h3 className="text-base font-semibold text-[#f8fafc]">
+                    {generationError ? "Generation Failed" : "Generating Your Project Blueprint"}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {generationError 
+                      ? "An issue occurred while communicating with the AI service." 
+                      : `Architecting custom specifications for ${domain} (${complexity}).`}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Error Content State */}
+            {generationError ? (
+              <div className="flex flex-col gap-4">
+                <div className="p-3.5 rounded-xl border border-rose-500/20 bg-rose-500/10 text-xs text-rose-300 leading-relaxed">
+                  <p className="font-medium text-rose-200 mb-1">Error Details:</p>
+                  <p>{generationError}</p>
+                </div>
+                
+                <div className="flex items-center justify-end gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setGenerationModalOpen(false);
+                      setGenerationError(null);
+                      setLoading(false);
+                    }}
+                    className="px-4 py-2 rounded-lg border border-white/[0.1] bg-[#111622] hover:bg-[#161c28] text-slate-300 text-xs font-medium transition-colors cursor-pointer"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleGenerate(false)}
+                    className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>Retry Generation</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Steps Progress State */
+              <div className="flex flex-col gap-4">
+                {/* Thin progress bar */}
+                <div className="w-full bg-white/[0.06] rounded-full h-1.5 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-400 h-full transition-all duration-500 ease-out"
+                    style={{
+                      width: `${Math.min(100, Math.max(8, ((generationStep + 0.5) / GENERATION_STEPS.length) * 100))}%`
+                    }}
+                  />
+                </div>
+
+                {/* Steps List */}
+                <div className="flex flex-col gap-2 py-1">
+                  {GENERATION_STEPS.map((stepLabel, idx) => {
+                    const isCompleted = idx < generationStep;
+                    const isInProgress = idx === generationStep;
+                    const isPending = idx > generationStep;
+
+                    return (
+                      <div 
+                        key={idx} 
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg border transition-all duration-300 ${
+                          isCompleted
+                            ? "border-emerald-500/20 bg-emerald-500/5 text-slate-200"
+                            : isInProgress
+                            ? "border-indigo-500/30 bg-indigo-500/10 text-white"
+                            : "border-transparent bg-transparent text-slate-500"
+                        }`}
+                      >
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0">
+                          {isCompleted ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          ) : isInProgress ? (
+                            <Loader2 className="w-3.5 h-3.5 text-indigo-400 animate-spin" />
+                          ) : (
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                          )}
+                        </div>
+
+                        <span className={`text-xs ${
+                          isCompleted 
+                            ? "text-slate-300 font-medium" 
+                            : isInProgress 
+                            ? "text-indigo-200 font-semibold" 
+                            : "text-slate-500 font-normal"
+                        }`}>
+                          {stepLabel}
+                        </span>
+
+                        {isInProgress && (
+                          <span className="ml-auto text-[10px] font-mono text-indigo-400 animate-pulse">
+                            Processing...
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="pt-1 text-center">
+                  <span className="text-[11px] text-slate-400">
+                    Estimated completion: ~5-10 seconds
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

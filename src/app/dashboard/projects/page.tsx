@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck, Lock, Sparkles, Trash2, Loader2, AlertCircle } from "lucide-react";
+import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck, Lock, Sparkles, Trash2, Loader2, AlertCircle, Plus } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 
 export default function ProjectsPage() {
@@ -123,14 +123,23 @@ export default function ProjectsPage() {
           {error}
         </div>
       ) : projects.length === 0 ? (
-        <div className="p-12 rounded-2xl border border-dashed border-border-accent/40 bg-bg-accent/5 text-center flex flex-col items-center gap-3">
-          <FolderGit2 className="w-10 h-10 text-foreground/30" />
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-bold text-foreground/80">No blueprints generated yet</span>
-            <p className="text-xs text-foreground/50 max-w-xs leading-relaxed">
-              Generate your first project plan from the dashboard to save it in your history collection.
+        <div className="p-8 sm:p-12 rounded-xl border border-dashed border-white/[0.1] bg-[#0c1017]/50 text-center flex flex-col items-center justify-center gap-3.5 my-4">
+          <div className="w-10 h-10 rounded-xl bg-[#111622] border border-white/[0.08] flex items-center justify-center text-indigo-400/80 shadow-sm">
+            <FolderGit2 className="w-5 h-5" />
+          </div>
+          <div className="flex flex-col gap-1 max-w-sm">
+            <h3 className="text-sm font-semibold text-[#f8fafc]">No projects yet</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">
+              Your generated project blueprints will appear here.
             </p>
           </div>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-medium text-xs shadow-sm transition-all cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Create Your First Project</span>
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

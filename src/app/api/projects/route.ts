@@ -2,24 +2,32 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../../../../auth";
 import { supabaseAdmin } from "../../../lib/supabase";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const session = await auth();
-    const userEmail = session?.user?.email;
+    let userEmail = session?.user?.email;
 
-    if (!userEmail) {
-      return NextResponse.json(
-        { error: "Unauthorized. Please log in first." },
-        { status: 401 }
-      );
-    }
+    const authHeader = request.headers.get("authorization");
+    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
 
     const isSupabaseConfigured = 
       (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
       (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
 
-    if (!isSupabaseConfigured) {
-      // Return empty array if DB is not configured yet
+    // Support Supabase token authentication if NextAuth session email is absent
+    if (!userEmail && token && isSupabaseConfigured) {
+      try {
+        const { data: { user }, error: supError } = await supabaseAdmin.auth.getUser(token);
+        if (user && !supError && user.email) {
+          userEmail = user.email;
+        }
+      } catch (tokenErr) {
+        console.error("Token user verification in GET /api/projects failed:", tokenErr);
+      }
+    }
+
+    if (!userEmail || !isSupabaseConfigured) {
+      // Gracefully return empty array if unauthenticated or DB not configured
       return NextResponse.json([]);
     }
 
@@ -37,7 +45,7 @@ export async function GET() {
       );
     }
 
-    // Map database fields to the format expected by the frontend ProjectsPage
+    // Map database fields to the format expected by the frontend
     const projects = (dbProjects || []).map((project: any) => ({
       id: project.id,
       title: project.title,
@@ -47,6 +55,7 @@ export async function GET() {
       date: new Date(project.created_at).toISOString().split("T")[0],
       description: project.blueprint?.description || project.title,
       blueprint: project.blueprint,
+      status: project.status || "Ready",
     }));
 
     return NextResponse.json(projects);

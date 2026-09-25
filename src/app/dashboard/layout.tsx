@@ -240,7 +240,7 @@ export default function DashboardLayout({
               <input
                 type="text"
                 placeholder="Search templates or stacks..."
-                className="pl-8 pr-3 py-1.5 rounded-lg bg-[#111622] border border-white/[0.08] text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-400/50 w-52 transition-all"
+                className="pl-8 pr-3 py-1.5 rounded-lg bg-[#111622] border border-white/[0.08] text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 w-52 transition-all"
               />
             </div>
 
