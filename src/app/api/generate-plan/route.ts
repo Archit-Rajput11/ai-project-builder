@@ -5,165 +5,261 @@ import { auth } from "../../../../auth";
 import jwt from "jsonwebtoken";
 import { supabaseAdmin } from "../../../lib/supabase";
 
+const activeGenerations = new Set<string>();
+
 export async function POST(req: NextRequest) {
   let domain = "Web Development";
   let complexity = "Intermediate";
   let skillLevel = "Competent";
   let customKeywords = "";
 
-  try {
-    // 1. Fetch selections and quota count from request body
-    const body = await req.json().catch(() => ({}));
-    let clientGeneratedCount = 0;
-    if (body) {
-      if (body.domain) domain = body.domain;
-      if (body.complexity) complexity = body.complexity;
-      if (body.skillLevel) skillLevel = body.skillLevel;
-      if (body.customKeywords) customKeywords = body.customKeywords;
-      if (body.generatedCount !== undefined) {
-        clientGeneratedCount = typeof body.generatedCount === "string" 
-          ? parseInt(body.generatedCount, 10) 
-          : Number(body.generatedCount);
-      }
-    }
+  // 1. Fetch selections from request body
+  const body = await req.json().catch(() => ({}));
+  if (body) {
+    if (body.domain) domain = body.domain;
+    if (body.complexity) complexity = body.complexity;
+    if (body.skillLevel) skillLevel = body.skillLevel;
+    if (body.customKeywords) customKeywords = body.customKeywords;
+  }
 
-    if (!domain || !complexity || !skillLevel) {
+  if (!domain || !complexity || !skillLevel) {
+    return NextResponse.json(
+      { error: "Missing required selection parameters: domain, complexity, and skillLevel" },
+      { status: 400 }
+    );
+  }
+
+  // 2. Fetch logged-in user session and bearer token
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
+
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://your-supabase-project.supabase.co";
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  const hasServiceRoleKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY && !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("your-supabase-service-role"));
+
+  const dbClient = hasServiceRoleKey
+    ? supabaseAdmin
+    : createClient(supabaseUrl, supabaseAnonKey, {
+        global: {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        },
+      });
+
+  const isSupabaseConfigured = 
+    (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+    (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
+
+  let userId: string | null = null;
+  let userEmail: string | null = null;
+
+  // Verify user from Supabase token
+  if (token && isSupabaseConfigured) {
+    try {
+      const { data: { user }, error: supError } = await dbClient.auth.getUser(token);
+      if (user && !supError) {
+        userId = user.id;
+        userEmail = user.email || null;
+      }
+    } catch (supErr) {
+      console.error("Supabase token user verification failed:", supErr);
+    }
+  }
+
+  // Fallback to NextAuth session
+  if (!userId) {
+    const session = await auth();
+    if (session?.user?.email) {
+      userEmail = session.user.email;
+      const { data: dbUser } = await supabaseAdmin
+        .from("users")
+        .select("id")
+        .eq("email", session.user.email)
+        .maybeSingle();
+      if (dbUser?.id) userId = dbUser.id;
+    }
+  }
+
+  const ownerKey = userId || userEmail;
+  if (!ownerKey) {
+    return NextResponse.json(
+      { error: "Unauthorized. Please sign in to generate blueprints." },
+      { status: 401 }
+    );
+  }
+
+  let isPremiumUser = false;
+
+  // Helper function to check if DB user object indicates active Pro status
+  const checkDbUserIsPro = (dbUser: any): boolean => {
+    if (!dbUser) return false;
+    const isPro = Boolean(dbUser.is_pro || dbUser.is_premium);
+    if (!isPro) return false;
+    const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
+    if (!expiryString) return true;
+    return new Date(expiryString).getTime() > Date.now();
+  };
+
+  // Check Pro subscription status from database
+  if (ownerKey && isSupabaseConfigured) {
+    try {
+      const orFilter = userId && userEmail
+        ? `id.eq.${userId},email.eq.${userEmail}`
+        : userId ? `id.eq.${userId}` : `email.eq.${userEmail}`;
+
+      const { data: dbUsers } = await supabaseAdmin
+        .from("users")
+        .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+        .or(orFilter);
+
+      if (dbUsers && dbUsers.some(checkDbUserIsPro)) {
+        isPremiumUser = true;
+      }
+    } catch (dbErr) {
+      console.error("Database email premium check failed:", dbErr);
+    }
+  }
+
+  // Fallback: Verify custom JWT token if passed
+  if (!isPremiumUser && token && process.env.JWT_SECRET) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+      if (decoded && decoded.isPro === true) {
+        const currentTime = Math.floor(Date.now() / 1000);
+        if (!decoded.exp || currentTime < decoded.exp) {
+          isPremiumUser = true;
+        }
+      }
+    } catch (err: any) {}
+  }
+
+  // 3. Database Usage Limit Check & Race Condition Protection
+  if (!isPremiumUser) {
+    // Prevent simultaneous generation requests for the same account
+    if (activeGenerations.has(ownerKey)) {
       return NextResponse.json(
-        { error: "Missing required selection parameters: domain, complexity, and skillLevel" },
-        { status: 400 }
+        { error: "A blueprint generation is already in progress for your account. Please wait a moment." },
+        { status: 429 }
       );
     }
 
-    // 2. Fetch logged-in user session and bearer token
-    const session = await auth();
-    let userEmail = session?.user?.email;
+    // Query actual usage recorded in Supabase database
+    let currentUsage = 0;
+    try {
+      const { data: usageRow, error: usageErr } = await supabaseAdmin
+        .from("user_usage")
+        .select("blueprints_used")
+        .eq("user_id", ownerKey)
+        .maybeSingle();
 
-    const authHeader = req.headers.get("authorization");
-    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
-
-    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://your-supabase-project.supabase.co";
-    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-    const hasServiceRoleKey = !!(process.env.SUPABASE_SERVICE_ROLE_KEY && !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("your-supabase-service-role"));
-
-    const dbClient = hasServiceRoleKey
-      ? supabaseAdmin
-      : createClient(supabaseUrl, supabaseAnonKey, {
-          global: {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          },
-        });
-
-    const isSupabaseConfigured = 
-      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
-      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
-
-    let isPremiumUser = false;
-
-    // Helper function to check if DB user object indicates active Pro status
-    const checkDbUserIsPro = (dbUser: any): boolean => {
-      if (!dbUser) return false;
-      const isPro = Boolean(dbUser.is_pro || dbUser.is_premium);
-      if (!isPro) return false;
-      const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
-      if (!expiryString) return true; // Active Pro if is_pro is true and no explicit expiry date is set
-      return new Date(expiryString).getTime() > Date.now();
-    };
-
-    // 3. Verify user profile status from Supabase Auth & Database
-    if (token && isSupabaseConfigured) {
-      try {
-        const { data: { user }, error: supError } = await dbClient.auth.getUser(token);
-        if (user && !supError) {
-          if (!userEmail) userEmail = user.email;
-
-          // Fetch user profile status from the Supabase users table using user ID or email
-          const { data: dbUsers } = await dbClient
-            .from("users")
-            .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
-            .or(`id.eq.${user.id},email.eq.${user.email}`);
-
-          if (dbUsers && dbUsers.some(checkDbUserIsPro)) {
-            isPremiumUser = true;
-            console.log(`Supabase token premium validation succeeded for user: ${user.email}`);
-          }
-        }
-      } catch (supErr) {
-        console.error("Supabase token user verification failed:", supErr);
+      if (usageRow) {
+        currentUsage = usageRow.blueprints_used ?? 0;
+      } else if (!usageErr) {
+        // Initialize row safely with 0
+        try {
+          await supabaseAdmin
+            .from("user_usage")
+            .insert({
+              user_id: ownerKey,
+              blueprints_used: 0,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            });
+        } catch (initErr) {}
+      } else {
+        // Fallback: If user_usage table does not exist in schema cache yet,
+        // count actual blueprints previously generated in projects table
+        const { count } = await supabaseAdmin
+          .from("projects")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", ownerKey);
+        currentUsage = count ?? 0;
       }
+    } catch (err) {
+      console.error("Usage limit check error:", err);
     }
 
-    // Fallback: Fetch user profile status from Supabase users table using email
-    if (!isPremiumUser && userEmail && isSupabaseConfigured) {
-      try {
-        const { data: dbUsers } = await supabaseAdmin
-          .from("users")
-          .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
-          .eq("email", userEmail);
-
-        if (dbUsers && dbUsers.some(checkDbUserIsPro)) {
-          isPremiumUser = true;
-          console.log(`Database email premium validation succeeded for: ${userEmail}`);
-        }
-      } catch (dbErr) {
-        console.error("Database email premium check failed:", dbErr);
-      }
-    }
-
-    // Fallback: Verify custom JWT token if passed
-    if (!isPremiumUser && token && process.env.JWT_SECRET) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
-        if (decoded && decoded.isPro === true) {
-          const currentTime = Math.floor(Date.now() / 1000);
-          if (!decoded.exp || currentTime < decoded.exp) {
-            isPremiumUser = true;
-          }
-        }
-      } catch (err: any) {
-        console.error("JWT verification failed:", err.message);
-      }
-    }
-
-    // 4. Daily Generation Limit Check:
-    // If the user is a Premium/Pro member, completely bypass the 1-project-per-day restriction.
-    // If they are a free tier user and have reached the limit (generatedCount >= 1), block generation.
-    if (!isPremiumUser && clientGeneratedCount >= 1) {
+    // Free users can only generate 1 blueprint
+    if (currentUsage >= 1) {
       return NextResponse.json(
-        { error: "Daily project generation limit reached. Please upgrade to Pro for unlimited project generations." },
+        { error: "Free plan limit reached (1 of 1 blueprint used). Please upgrade to Pro for unlimited project blueprints." },
         { status: 403 }
       );
     }
+  }
 
-    const saveProjectToDb = async (planData: any) => {
-      const isSupabaseConfigured = 
-        (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
-        (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
+  // Acquire concurrency lock for this account
+  activeGenerations.add(ownerKey);
 
-      if (userEmail && isSupabaseConfigured) {
-        try {
-          const { error: dbError } = await supabaseAdmin
-            .from("projects")
-            .insert({
-              user_email: userEmail,
-              title: planData.projectTitle || "Untitled Project",
-              domain: domain,
-              complexity: complexity,
-              skill_level: skillLevel,
-              custom_keywords: customKeywords || null,
-              blueprint: planData,
-            });
-
-          if (dbError) {
-            console.error("Supabase project history storage error:", dbError.message);
-          } else {
-            console.log(`Successfully saved blueprint history for ${userEmail}`);
-          }
-        } catch (dbErr) {
-          console.error("Database storage catch block error:", dbErr);
+  const saveProjectToDb = async (planData: any) => {
+    if (ownerKey && isSupabaseConfigured) {
+      try {
+        // Ensure user row exists in public.users to satisfy foreign key relationships
+        if (userId && userEmail) {
+          try {
+            await supabaseAdmin
+              .from("users")
+              .upsert(
+                { id: userId, email: userEmail },
+                { onConflict: "id", ignoreDuplicates: true }
+              );
+          } catch (userUpsertErr) {}
         }
-      }
-    };
 
+        // Save blueprint to projects table
+        const { error: dbError } = await supabaseAdmin
+          .from("projects")
+          .insert({
+            user_id: ownerKey,
+            title: planData.projectTitle || "Untitled Project",
+            blueprint_data: planData,
+          });
+
+        if (dbError) {
+          console.error("Supabase project history storage error:", dbError.message);
+        } else {
+          console.log(`Successfully saved blueprint history for ${ownerKey}`);
+        }
+
+        // Atomically increment user_usage in Supabase
+        try {
+          const { data: rpcData, error: rpcErr } = await supabaseAdmin.rpc(
+            "increment_blueprint_usage",
+            {
+              p_user_id: ownerKey,
+              p_max_limit: isPremiumUser ? 999999 : 1,
+            }
+          );
+
+          if (rpcErr) {
+            // Fallback: Direct upsert increment if RPC function not yet created
+            const { data: existingUsage } = await supabaseAdmin
+              .from("user_usage")
+              .select("blueprints_used")
+              .eq("user_id", ownerKey)
+              .maybeSingle();
+
+            const nextCount = (existingUsage?.blueprints_used ?? 0) + 1;
+            await supabaseAdmin
+              .from("user_usage")
+              .upsert(
+                {
+                  user_id: ownerKey,
+                  blueprints_used: nextCount,
+                  updated_at: new Date().toISOString(),
+                },
+                { onConflict: "user_id" }
+              );
+          }
+        } catch (incErr) {
+          console.error("Failed to increment user_usage:", incErr);
+        }
+      } catch (dbErr) {
+        console.error("Database storage catch block error:", dbErr);
+      }
+    }
+  };
+
+  try {
     // 4. Extract GEMINI_API_KEY
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey || apiKey === "your_gemini_api_key_here") {
@@ -305,31 +401,12 @@ ${customKeywords ? `- Focus/Keywords: ${customKeywords}` : ""}`;
   } catch (error: any) {
     console.error("Gemini API call failed, falling back to local mock data:", error);
     const mockPlan = generateMockPlan(domain, complexity, skillLevel, customKeywords);
-    // Since saveProjectToDb was defined in the outer try block, let's call it here
-    const session = await auth();
-    const userEmail = session?.user?.email;
-    const isSupabaseConfigured = 
-      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
-      (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
-
-    if (userEmail && isSupabaseConfigured) {
-      try {
-        await supabaseAdmin
-          .from("projects")
-          .insert({
-            user_email: userEmail,
-            title: mockPlan.projectTitle || "Untitled Project",
-            domain: domain,
-            complexity: complexity,
-            skill_level: skillLevel,
-            custom_keywords: customKeywords || null,
-            blueprint: mockPlan,
-          });
-      } catch (dbErr) {
-        console.error("Error saving fallback plan to Supabase:", dbErr);
-      }
-    }
+    await saveProjectToDb(mockPlan);
     return NextResponse.json(mockPlan);
+  } finally {
+    if (ownerKey) {
+      activeGenerations.delete(ownerKey);
+    }
   }
 }
 

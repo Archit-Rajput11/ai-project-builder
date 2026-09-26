@@ -14,19 +14,37 @@ export async function GET(request: NextRequest) {
       (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) &&
       (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL) !== "https://your-supabase-project.supabase.co";
 
-    // Support Supabase token authentication if NextAuth session email is absent
-    if (!userEmail && token && isSupabaseConfigured) {
+    let userId: string | null = null;
+
+    // Support Supabase token authentication if Bearer token present
+    if (token && isSupabaseConfigured) {
       try {
         const { data: { user }, error: supError } = await supabaseAdmin.auth.getUser(token);
-        if (user && !supError && user.email) {
-          userEmail = user.email;
+        if (user && !supError) {
+          userId = user.id;
+          if (user.email) userEmail = user.email;
         }
       } catch (tokenErr) {
         console.error("Token user verification in GET /api/projects failed:", tokenErr);
       }
     }
 
-    if (!userEmail || !isSupabaseConfigured) {
+    if (!userId && userEmail && isSupabaseConfigured) {
+      try {
+        const { data: dbUser } = await supabaseAdmin
+          .from("users")
+          .select("id")
+          .eq("email", userEmail)
+          .maybeSingle();
+        if (dbUser?.id) userId = dbUser.id;
+      } catch (dbErr) {
+        console.error("User lookup failed in GET /api/projects:", dbErr);
+      }
+    }
+
+    const lookupKey = userId || userEmail;
+
+    if (!lookupKey || !isSupabaseConfigured) {
       // Gracefully return empty array if unauthenticated or DB not configured
       return NextResponse.json([]);
     }
@@ -34,7 +52,7 @@ export async function GET(request: NextRequest) {
     const { data: dbProjects, error } = await supabaseAdmin
       .from("projects")
       .select("*")
-      .eq("user_email", userEmail)
+      .eq("user_id", lookupKey)
       .order("created_at", { ascending: false });
 
     if (error) {
@@ -46,17 +64,20 @@ export async function GET(request: NextRequest) {
     }
 
     // Map database fields to the format expected by the frontend
-    const projects = (dbProjects || []).map((project: any) => ({
-      id: project.id,
-      title: project.title,
-      domain: project.domain,
-      complexity: project.complexity,
-      weeks: project.blueprint?.roadmapWeeks?.length || 6,
-      date: new Date(project.created_at).toISOString().split("T")[0],
-      description: project.blueprint?.description || project.title,
-      blueprint: project.blueprint,
-      status: project.status || "Ready",
-    }));
+    const projects = (dbProjects || []).map((project: any) => {
+      const bp = project.blueprint_data || project.blueprint || {};
+      return {
+        id: project.id,
+        title: project.title,
+        domain: bp.domain || project.domain || "Web Development",
+        complexity: bp.complexity || project.complexity || "Intermediate",
+        weeks: bp.roadmapWeeks?.length || 6,
+        date: new Date(project.created_at).toISOString().split("T")[0],
+        description: bp.description || project.title,
+        blueprint: bp,
+        status: project.status || "Ready",
+      };
+    });
 
     return NextResponse.json(projects);
   } catch (err: any) {
@@ -71,9 +92,35 @@ export async function GET(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const session = await auth();
-    const userEmail = session?.user?.email;
+    let userEmail = session?.user?.email;
+    let userId: string | null = null;
+    const authHeader = request.headers.get("authorization");
+    const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : "";
 
-    if (!userEmail) {
+    if (token) {
+      try {
+        const { data: { user }, error: supError } = await supabaseAdmin.auth.getUser(token);
+        if (user && !supError) {
+          userId = user.id;
+          if (user.email) userEmail = user.email;
+        }
+      } catch (tokenErr) {}
+    }
+
+    if (!userId && userEmail) {
+      try {
+        const { data: dbUser } = await supabaseAdmin
+          .from("users")
+          .select("id")
+          .eq("email", userEmail)
+          .maybeSingle();
+        if (dbUser?.id) userId = dbUser.id;
+      } catch (dbErr) {}
+    }
+
+    const lookupKey = userId || userEmail;
+
+    if (!lookupKey) {
       return NextResponse.json(
         { error: "Unauthorized. Please log in first." },
         { status: 401 }
@@ -105,7 +152,7 @@ export async function DELETE(request: NextRequest) {
       .from("projects")
       .delete()
       .eq("id", projectId)
-      .eq("user_email", userEmail);
+      .eq("user_id", lookupKey);
 
     if (error) {
       console.error("Supabase project delete error:", error.message);

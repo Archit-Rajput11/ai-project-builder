@@ -129,13 +129,35 @@ export default function Dashboard() {
   // Freemium states — checked live directly against the database via useProStatus
   const { isPro: isPremium, loading: isProLoading } = useProStatus();
 
-  const [generatedCount, setGeneratedCount] = React.useState(() => {
-    if (typeof window !== "undefined") {
-      const count = localStorage.getItem("project_generation_count");
-      return count ? parseInt(count, 10) : 0;
+  const [generatedCount, setGeneratedCount] = React.useState<number>(0);
+
+  const fetchUsageCount = React.useCallback(async () => {
+    try {
+      let token = typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "";
+      if (!token && typeof window !== "undefined") {
+        const { data } = await supabase.auth.getSession();
+        token = data.session?.access_token || "";
+      }
+
+      if (!token) return;
+
+      const res = await fetch("/api/user/usage", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: "no-store",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (typeof data.blueprintsUsed === "number") {
+          setGeneratedCount(data.blueprintsUsed);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load blueprint usage count:", err);
     }
-    return 0;
-  });
+  }, []);
 
   // Premium PDF and simulated Ad states
   const [showPremiumPdfModal, setShowPremiumPdfModal] = React.useState(false);
@@ -200,8 +222,20 @@ export default function Dashboard() {
   }, []);
 
   React.useEffect(() => {
+    fetchUsageCount();
     fetchRecentProjects();
-  }, [fetchRecentProjects]);
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        fetchUsageCount();
+        fetchRecentProjects();
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [fetchUsageCount, fetchRecentProjects]);
 
   const handleOpenProject = (project: any) => {
     if (!project) return;
@@ -698,11 +732,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ domain, complexity, skillLevel, customKeywords, generatedCount }),
+        body: JSON.stringify({ domain, complexity, skillLevel, customKeywords }),
       });
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
+        if (response.status === 403) {
+          setGeneratedCount(1);
+          setShowLimitModal(true);
+        }
         throw new Error(errData.error || "Generation request failed. Please check key configuration.");
       }
 
@@ -728,14 +766,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       setGenerationModalOpen(false);
       setLoading(false);
 
-      // Increment generation count
-      setGeneratedCount((prev) => {
-        const next = prev + 1;
-        localStorage.setItem("project_generation_count", next.toString());
-        return next;
-      });
-
-      // Refresh recent projects from database
+      // Refresh usage count and recent projects directly from Supabase
+      fetchUsageCount();
       fetchRecentProjects();
 
       setTimeout(() => {
@@ -840,6 +872,11 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
     } catch (e) {
       console.error("Sign out error:", e);
     }
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("project_generation_count");
+      localStorage.removeItem("loaded_project_blueprint");
+    }
+    setGeneratedCount(0);
     // Clear mock session cookie
     document.cookie = "mock-logged-in=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.push("/auth");
