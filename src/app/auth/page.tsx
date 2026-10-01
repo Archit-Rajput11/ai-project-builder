@@ -9,9 +9,12 @@ import {
   Lock, 
   Eye, 
   EyeOff, 
-  Info,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
   X
 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 type AuthMode = "signin" | "signup" | "reset";
 
@@ -20,7 +23,9 @@ export default function AuthPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-  const [showNotice, setShowNotice] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [message, setMessage] = React.useState<string | null>(null);
 
   // Update page title dynamically
   React.useEffect(() => {
@@ -32,13 +37,188 @@ export default function AuthPage() {
     document.title = titles[mode];
   }, [mode]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setShowNotice(true);
+  // Read URL parameters for OAuth errors or redirect messages
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlError = params.get("error") || params.get("error_description");
+      const urlMsg = params.get("message");
+      if (urlError) {
+        setError(decodeURIComponent(urlError));
+      }
+      if (urlMsg) {
+        setMessage(decodeURIComponent(urlMsg));
+      }
+    }
+  }, []);
+
+  // Clear notices on mode change
+  const handleModeChange = (newMode: AuthMode) => {
+    setError(null);
+    setMessage(null);
+    setMode(newMode);
   };
 
-  const handleGitHubClick = () => {
-    setShowNotice(true);
+  // Helper to extract safe relative redirect target
+  const getSafeRedirectUrl = React.useCallback(() => {
+    if (typeof window === "undefined") return "/dashboard";
+    try {
+      const currentParams = new URLSearchParams(window.location.search);
+      const rawTarget = currentParams.get("callbackUrl") || currentParams.get("next") || "";
+      if (!rawTarget) return "/dashboard";
+
+      // 1. Direct relative path starting with a single slash
+      if (rawTarget.startsWith("/") && !rawTarget.startsWith("//")) {
+        return rawTarget;
+      }
+
+      // 2. Full URL matching current origin or application hostnames
+      const parsed = new URL(rawTarget, window.location.origin);
+      const allowedHosts = [
+        window.location.hostname,
+        "ai-project-builder-rouge.vercel.app",
+        "localhost",
+        "127.0.0.1",
+      ];
+
+      if (allowedHosts.includes(parsed.hostname)) {
+        return `${parsed.pathname}${parsed.search}${parsed.hash}` || "/dashboard";
+      }
+    } catch (e) {
+      console.warn("Could not parse redirect destination:", e);
+    }
+    return "/dashboard";
+  }, []);
+
+  // Check if session already exists on mount (so authenticated users bypass /auth)
+  React.useEffect(() => {
+    let isSubscribed = true;
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (isSubscribed && session) {
+        document.cookie = "mock-logged-in=true; path=/; max-age=604800; SameSite=Lax";
+        const safeTarget = getSafeRedirectUrl();
+        window.location.href = safeTarget;
+      }
+    });
+
+    return () => {
+      isSubscribed = false;
+    };
+  }, [getSafeRedirectUrl]);
+
+  // Real GitHub OAuth Sign In
+  const handleGitHubClick = async () => {
+    if (loading) return;
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      const safeTarget = getSafeRedirectUrl();
+      const redirectUrl = `${window.location.origin}/auth/callback?callbackUrl=${encodeURIComponent(safeTarget)}`;
+
+      const { error: oAuthError } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          redirectTo: redirectUrl,
+        },
+      });
+
+      if (oAuthError) throw oAuthError;
+    } catch (err: any) {
+      console.error("OAuth sign in error:", err);
+      setError(err.message || "Failed to initialize GitHub sign in. Please try again.");
+      setLoading(false);
+    }
+  };
+
+  // Real Email/Password Authentication & Recovery
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loading) return;
+    setError(null);
+    setMessage(null);
+
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (mode !== "reset" && (!password || password.length < 6)) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    setLoading(true);
+    const targetUrl = getSafeRedirectUrl();
+
+    try {
+      if (mode === "signin") {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password,
+        });
+
+        if (signInError) {
+          if (signInError.message.toLowerCase().includes("invalid login credentials")) {
+            throw new Error("Incorrect email or password. Please verify and try again.");
+          }
+          if (signInError.message.toLowerCase().includes("email not confirmed")) {
+            throw new Error("Your email address is not verified yet. Please check your inbox for the confirmation email.");
+          }
+          throw signInError;
+        }
+
+        if (data?.session) {
+          document.cookie = "mock-logged-in=true; path=/; max-age=604800; SameSite=Lax";
+          window.location.href = targetUrl;
+          return;
+        }
+      } else if (mode === "signup") {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email: cleanEmail,
+          password,
+        });
+
+        if (signUpError) {
+          if (signUpError.message.toLowerCase().includes("already registered") || signUpError.message.toLowerCase().includes("already exists")) {
+            throw new Error("An account with this email address already exists. Please sign in instead.");
+          }
+          throw signUpError;
+        }
+
+        // Supabase returns empty identities array if user already registered (security obfuscation)
+        if (data?.user?.identities && data.user.identities.length === 0) {
+          setError("An account with this email address already exists. Please sign in instead.");
+          return;
+        }
+
+        if (data?.session) {
+          // Automatic login configured
+          document.cookie = "mock-logged-in=true; path=/; max-age=604800; SameSite=Lax";
+          window.location.href = targetUrl;
+          return;
+        } else {
+          // Email confirmation required
+          setMessage("Account created successfully! Please check your email to verify your address before logging in.");
+        }
+      } else if (mode === "reset") {
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(cleanEmail, {
+          redirectTo: `${window.location.origin}/auth/callback?type=recovery`,
+        });
+
+        if (resetError) throw resetError;
+
+        setMessage("Password reset instructions have been sent to your email address.");
+      }
+    } catch (err: any) {
+      console.error("Authentication error:", err);
+      setError(err.message || "Authentication failed. Please verify your credentials.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -115,21 +295,42 @@ export default function AuthPage() {
             </p>
           </div>
 
-          {/* Inline Preview Notice Bar */}
-          {showNotice && (
+          {/* Real Authentication Error Alert */}
+          {error && (
             <div 
               role="alert"
-              className="bg-[#E2E7ED] border border-[#CBD3DC] text-[#1B2733] px-3.5 py-3 rounded-[6px] text-xs font-medium mb-6 flex items-start justify-between gap-3 animate-fade-in shadow-2xs"
+              className="bg-red-500/10 border border-red-500/25 text-red-900 px-3.5 py-3 rounded-[6px] text-xs font-medium mb-6 flex items-start justify-between gap-3 animate-fade-in shadow-2xs"
             >
               <div className="flex items-center gap-2">
-                <Info className="w-4 h-4 text-[#1F2C4C] shrink-0" />
-                <span>This is a design preview. Account access is not connected yet.</span>
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                <span>{error}</span>
               </div>
               <button 
                 type="button"
-                onClick={() => setShowNotice(false)}
-                className="text-[#6C7D8E] hover:text-[#1B2733] transition-colors p-0.5"
-                aria-label="Dismiss notice"
+                onClick={() => setError(null)}
+                className="text-red-700/60 hover:text-red-900 transition-colors p-0.5 cursor-pointer"
+                aria-label="Dismiss error"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {/* Real Authentication Info/Success Message */}
+          {message && (
+            <div 
+              role="status"
+              className="bg-[#E2E7ED] border border-[#CBD3DC] text-[#1B2733] px-3.5 py-3 rounded-[6px] text-xs font-medium mb-6 flex items-start justify-between gap-3 animate-fade-in shadow-2xs"
+            >
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{message}</span>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setMessage(null)}
+                className="text-[#6C7D8E] hover:text-[#1B2733] transition-colors p-0.5 cursor-pointer"
+                aria-label="Dismiss message"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -144,13 +345,23 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={handleGitHubClick}
-                  className="w-full h-[52px] rounded-[6px] bg-[#F9FAFB] hover:bg-white border border-[#D5DBE1] hover:border-[#CBD3DC] text-[#1B2733] font-medium text-sm flex items-center justify-center gap-3 transition-all shadow-xs cursor-pointer active:scale-[0.99]"
+                  disabled={loading}
+                  className="w-full h-[52px] rounded-[6px] bg-[#F9FAFB] hover:bg-white border border-[#D5DBE1] hover:border-[#CBD3DC] text-[#1B2733] font-medium text-sm flex items-center justify-center gap-3 transition-all shadow-xs cursor-pointer active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {/* GitHub Icon */}
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                  </svg>
-                  <span>Continue with GitHub</span>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-[#1F2C4C]" />
+                      <span>Connecting to GitHub...</span>
+                    </>
+                  ) : (
+                    <>
+                      {/* GitHub Icon */}
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                      </svg>
+                      <span>Continue with GitHub</span>
+                    </>
+                  )}
                 </button>
 
                 {/* Divider: two hairlines with "OR WITH EMAIL" */}
@@ -179,10 +390,11 @@ export default function AuthPage() {
                   id="email"
                   type="email"
                   required
+                  disabled={loading}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full h-[52px] px-4 rounded-[6px] bg-[#F9FAFB] border border-[#D5DBE1] text-[#1B2733] placeholder-[#6C7D8E]/60 text-sm focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] transition-colors shadow-2xs"
+                  className="w-full h-[52px] px-4 rounded-[6px] bg-[#F9FAFB] border border-[#D5DBE1] text-[#1B2733] placeholder-[#6C7D8E]/60 text-sm focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] transition-colors shadow-2xs disabled:opacity-50"
                 />
               </div>
 
@@ -199,10 +411,7 @@ export default function AuthPage() {
                     {mode === "signin" && (
                       <button
                         type="button"
-                        onClick={() => {
-                          setShowNotice(false);
-                          setMode("reset");
-                        }}
+                        onClick={() => handleModeChange("reset")}
                         className="text-xs font-semibold text-[#6C7D8E] hover:text-[#1F2C4C] transition-colors cursor-pointer"
                       >
                         Forgot password?
@@ -214,10 +423,11 @@ export default function AuthPage() {
                       id="password"
                       type={showPassword ? "text" : "password"}
                       required
+                      disabled={loading}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••••••"
-                      className="w-full h-[52px] pl-4 pr-11 rounded-[6px] bg-[#F9FAFB] border border-[#D5DBE1] text-[#1B2733] placeholder-[#6C7D8E]/60 text-sm focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] transition-colors shadow-2xs"
+                      className="w-full h-[52px] pl-4 pr-11 rounded-[6px] bg-[#F9FAFB] border border-[#D5DBE1] text-[#1B2733] placeholder-[#6C7D8E]/60 text-sm focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] transition-colors shadow-2xs disabled:opacity-50"
                     />
                     <button
                       type="button"
@@ -238,14 +448,21 @@ export default function AuthPage() {
               {/* Full-width Submit Button: Deep Navy, Label Left, Arrow Right */}
               <button
                 type="submit"
-                className="w-full h-[52px] rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.99] text-[#F9FAFB] font-semibold text-sm transition-all shadow-xs cursor-pointer flex items-center justify-between px-5 mt-2 group"
+                disabled={loading}
+                className="w-full h-[52px] rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.99] text-[#F9FAFB] font-semibold text-sm transition-all shadow-xs cursor-pointer flex items-center justify-between px-5 mt-2 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span>
-                  {mode === "signin" && "Sign in to workspace"}
-                  {mode === "signup" && "Create account"}
-                  {mode === "reset" && "Reset password"}
+                  {loading ? (
+                    mode === "signin" ? "Signing in..." : mode === "signup" ? "Creating account..." : "Sending reset link..."
+                  ) : (
+                    mode === "signin" ? "Sign in to workspace" : mode === "signup" ? "Create account" : "Reset password"
+                  )}
                 </span>
-                <ArrowRight className="w-4 h-4 text-white transition-transform group-hover:translate-x-1" />
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                ) : (
+                  <ArrowRight className="w-4 h-4 text-white transition-transform group-hover:translate-x-1" />
+                )}
               </button>
             </form>
 
@@ -256,10 +473,7 @@ export default function AuthPage() {
                   <span>New here?</span>
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowNotice(false);
-                      setMode("signup");
-                    }}
+                    onClick={() => handleModeChange("signup")}
                     className="font-bold text-[#1F2C4C] hover:text-black inline-flex items-center gap-0.5 cursor-pointer underline-offset-2 hover:underline transition-colors"
                   >
                     <span>Create an account</span>
@@ -273,10 +487,7 @@ export default function AuthPage() {
                   <span>Already have an account?</span>
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowNotice(false);
-                      setMode("signin");
-                    }}
+                    onClick={() => handleModeChange("signin")}
                     className="font-bold text-[#1F2C4C] hover:text-black inline-flex items-center gap-0.5 cursor-pointer underline-offset-2 hover:underline transition-colors"
                   >
                     <span>Sign in</span>
@@ -290,10 +501,7 @@ export default function AuthPage() {
                   <span>Remember your password?</span>
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowNotice(false);
-                      setMode("signin");
-                    }}
+                    onClick={() => handleModeChange("signin")}
                     className="font-bold text-[#1F2C4C] hover:text-black inline-flex items-center gap-0.5 cursor-pointer underline-offset-2 hover:underline transition-colors"
                   >
                     <span>Back to sign in</span>

@@ -27,7 +27,36 @@ export default function AuthCallbackPage() {
           throw new Error(errorDescription || error || "OAuth authorization failed.");
         }
 
-        // 2. Extract code for PKCE exchange
+        // 2. Determine target redirection URL (preserve callbackUrl/next)
+        const getSafeRedirectUrl = () => {
+          try {
+            const rawTarget = searchParams.get("callbackUrl") || searchParams.get("next") || "";
+            if (!rawTarget) return "/dashboard";
+
+            if (rawTarget.startsWith("/") && !rawTarget.startsWith("//")) {
+              return rawTarget;
+            }
+
+            const parsed = new URL(rawTarget, window.location.origin);
+            const allowedHosts = [
+              window.location.hostname,
+              "ai-project-builder-rouge.vercel.app",
+              "localhost",
+              "127.0.0.1",
+            ];
+
+            if (allowedHosts.includes(parsed.hostname)) {
+              return `${parsed.pathname}${parsed.search}${parsed.hash}` || "/dashboard";
+            }
+          } catch (e) {
+            console.warn("Could not parse callbackUrl:", e);
+          }
+          return "/dashboard";
+        };
+
+        const safeTargetUrl = getSafeRedirectUrl();
+
+        // 3. Extract code for PKCE exchange
         const code = searchParams.get("code");
 
         if (code) {
@@ -41,30 +70,30 @@ export default function AuthCallbackPage() {
           if (data?.session) {
             // Establish session cookie for Next.js proxy route protection
             document.cookie = "mock-logged-in=true; path=/; max-age=604800; SameSite=Lax";
-            setStatusMessage("Session established! Redirecting to dashboard...");
-            window.location.href = "/dashboard";
+            setStatusMessage("Session established! Redirecting to workspace...");
+            window.location.href = safeTargetUrl;
             return;
           }
         }
 
-        // 3. Fallback: check if session is already active (e.g., implicit hash fragment)
+        // 4. Fallback: check if session is already active (e.g., implicit hash fragment)
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
 
         if (session) {
           document.cookie = "mock-logged-in=true; path=/; max-age=604800; SameSite=Lax";
-          setStatusMessage("Session recognized! Redirecting to dashboard...");
-          window.location.href = "/dashboard";
+          setStatusMessage("Session recognized! Redirecting to workspace...");
+          window.location.href = safeTargetUrl;
           return;
         }
 
-        // 4. Listen for auth state change if Supabase client is processing hash fragment asynchronously
+        // 5. Listen for auth state change if Supabase client is processing hash fragment asynchronously
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, newSession) => {
           if (!isSubscribed) return;
           if ((event === "SIGNED_IN" || event === "INITIAL_SESSION") && newSession) {
             document.cookie = "mock-logged-in=true; path=/; max-age=604800; SameSite=Lax";
             subscription.unsubscribe();
-            window.location.href = "/dashboard";
+            window.location.href = safeTargetUrl;
           }
         });
 
