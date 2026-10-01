@@ -92,11 +92,26 @@ export async function POST(req: NextRequest) {
   // Helper function to check if DB user object indicates active Pro status
   const checkDbUserIsPro = (dbUser: any): boolean => {
     if (!dbUser) return false;
-    const isPro = Boolean(dbUser.is_pro || dbUser.is_premium);
-    if (!isPro) return false;
+    const isExplicitPro =
+      dbUser.is_pro === true ||
+      String(dbUser.is_pro).trim().toLowerCase() === "true" ||
+      dbUser.is_pro === 1 ||
+      dbUser.is_premium === true ||
+      String(dbUser.is_premium).trim().toLowerCase() === "true" ||
+      dbUser.is_premium === 1;
+
+    // Explicit Pro in DB is always active
+    if (isExplicitPro) return true;
+
+    // Otherwise check for future expiry timestamp
     const expiryString = dbUser.current_period_end || dbUser.expires_at || dbUser.premium_expires_at;
-    if (!expiryString) return true;
-    return new Date(expiryString).getTime() > Date.now();
+    if (expiryString) {
+      const expiryTime = new Date(expiryString).getTime();
+      if (!isNaN(expiryTime) && expiryTime > Date.now()) {
+        return true;
+      }
+    }
+    return false;
   };
 
   // Check Pro subscription status from database
@@ -108,7 +123,7 @@ export async function POST(req: NextRequest) {
 
       const { data: dbUsers } = await supabaseAdmin
         .from("users")
-        .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+        .select("is_pro, current_period_end")
         .or(orFilter);
 
       if (dbUsers && dbUsers.some(checkDbUserIsPro)) {

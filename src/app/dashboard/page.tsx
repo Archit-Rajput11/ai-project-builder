@@ -133,11 +133,8 @@ export default function Dashboard() {
 
   const fetchUsageCount = React.useCallback(async () => {
     try {
-      let token = typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "";
-      if (!token && typeof window !== "undefined") {
-        const { data } = await supabase.auth.getSession();
-        token = data.session?.access_token || "";
-      }
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token || (typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "");
 
       if (!token) return;
 
@@ -702,11 +699,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       return;
     }
 
-    let token = typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "";
-    if (!token && typeof window !== "undefined") {
-      const { data } = await supabase.auth.getSession();
-      token = data.session?.access_token || "";
-    }
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData?.session?.access_token || (typeof window !== "undefined" ? localStorage.getItem("pro_session") || "" : "");
 
     setLoading(true);
     setError(null);
@@ -933,7 +927,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {isPremium ? (
                 <div className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  <span>Premium: Unlimited</span>
+                  <span>Pro Plan: Unlimited</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg border border-amber-500/25 bg-amber-500/10 text-amber-300 text-xs">

@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck, Lock, Sparkles, Trash2, Loader2, AlertCircle, Plus } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
+import { supabase } from "@/lib/supabase";
 
 export default function ProjectsPage() {
   const router = useRouter();
@@ -18,7 +19,14 @@ export default function ProjectsPage() {
     const fetchProjects = async () => {
       try {
         setLoadingHistory(true);
-        const res = await fetch("/api/projects");
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData?.session?.access_token;
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        const res = await fetch("/api/projects", { headers });
         if (res.ok) {
           const data = await res.json();
           setProjects(data);
@@ -48,8 +56,16 @@ export default function ProjectsPage() {
     if (!confirm("Are you sure you want to delete this blueprint from your history?")) return;
 
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`/api/projects?id=${projectId}`, {
         method: "DELETE",
+        headers,
       });
       if (res.ok) {
         setProjects((prev) => prev.filter((p) => p.id !== projectId));

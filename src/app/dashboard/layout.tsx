@@ -55,7 +55,7 @@ export default function DashboardLayout({
       icon: Settings,
     },
     {
-      name: "Upgrade to Pro",
+      name: isPro ? "Subscription" : "Upgrade to Pro",
       href: "/dashboard/pricing",
       icon: Zap,
     },

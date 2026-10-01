@@ -14,6 +14,8 @@
   
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Roboto Mono, monospace;
+  --font-display: var(--font-space-grotesk), "Space Grotesk", sans-serif;
+  --font-body: var(--font-dm-sans), "DM Sans", sans-serif;
 }
 
 /* Light Theme Variables */
@@ -108,3 +110,69 @@ html, body {
     display: none !important;
   }
 }
+
+/* Editorial Studio Auth Page Animations */
+@keyframes studioRise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes photoSettle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes lineTravel {
+  0% {
+    transform: translateX(-100%);
+  }
+  40% {
+    transform: translateX(160%);
+  }
+  100% {
+    transform: translateX(360%);
+  }
+}
+
+.animate-studio-header {
+  animation: studioRise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.animate-studio-hero {
+  animation: studioRise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.12s both;
+}
+
+.animate-studio-form {
+  animation: studioRise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.23s both;
+}
+
+.animate-photo-settle {
+  animation: photoSettle 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-line-travel {
+  animation: lineTravel 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-studio-header,
+  .animate-studio-hero,
+  .animate-studio-form,
+  .animate-photo-settle,
+  .animate-line-travel {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+

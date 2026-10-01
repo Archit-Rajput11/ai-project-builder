@@ -44,19 +44,19 @@ export async function GET(req: NextRequest) {
     if (userId && userEmail) {
       const { data } = await dbClient
         .from("users")
-        .select("id, email, is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+        .select("id, email, is_pro, current_period_end")
         .or(`id.eq.${userId},email.eq.${userEmail}`);
       if (data) profiles = data;
     } else if (userId) {
       const { data } = await dbClient
         .from("users")
-        .select("id, email, is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+        .select("id, email, is_pro, current_period_end")
         .eq("id", userId);
       if (data) profiles = data;
     } else if (userEmail) {
       const { data } = await dbClient
         .from("users")
-        .select("id, email, is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+        .select("id, email, is_pro, current_period_end")
         .eq("email", userEmail);
       if (data) profiles = data;
     }
@@ -66,13 +66,35 @@ export async function GET(req: NextRequest) {
     }
 
     // 3. Find if ANY matching row indicates active Pro status
-    const activeProProfile = profiles.find((p) => {
-      const isPro = p.is_pro === true || p.is_premium === true || String(p.is_pro) === "true";
-      if (!isPro) return false;
+    const isProfilePro = (p: any): boolean => {
+      if (!p) return false;
+      const isExplicitPro =
+        p.is_pro === true ||
+        String(p.is_pro).trim().toLowerCase() === "true" ||
+        p.is_pro === 1 ||
+        p.is_premium === true ||
+        String(p.is_premium).trim().toLowerCase() === "true" ||
+        p.is_premium === 1;
+
+      // If explicitly marked as Pro/premium in the database, always grant Pro
+      if (isExplicitPro) return true;
+
+      // Otherwise check if there is an active future expiration date
       const expiryString = p.current_period_end || p.expires_at || p.premium_expires_at;
-      if (!expiryString) return true;
-      return new Date(expiryString).getTime() > Date.now();
-    });
+      if (expiryString) {
+        const expiryTime = new Date(expiryString).getTime();
+        if (!isNaN(expiryTime) && expiryTime > Date.now()) {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    // Prioritize exact user ID match first if present, then check all matching rows
+    let activeProProfile = profiles.find((p) => p.id === userId && isProfilePro(p));
+    if (!activeProProfile) {
+      activeProProfile = profiles.find(isProfilePro);
+    }
 
     if (!activeProProfile) {
       return NextResponse.json({ isPro: false, reason: "not_pro", checkedRows: profiles.length });
@@ -99,12 +121,12 @@ export async function GET(req: NextRequest) {
     const jwtSecret = process.env.JWT_SECRET || "archit-jwt-secret-key-123456789-987654321";
     const expiryString = activeProProfile.current_period_end || activeProProfile.expires_at || activeProProfile.premium_expires_at;
     const expiryTime = expiryString ? new Date(expiryString).getTime() : null;
-    const expSeconds = expiryTime
+    const expSeconds = expiryTime && expiryTime > Date.now()
       ? Math.floor(expiryTime / 1000)
       : Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
     
     const freshToken = jwt.sign({ isPro: true, exp: expSeconds }, jwtSecret);
-    return NextResponse.json({ isPro: true, token: freshToken });
+    return NextResponse.json({ isPro: true, token: freshToken, plan: "pro" });
   } catch (err: any) {
     console.error("Subscription status check error:", err);
     return NextResponse.json({ isPro: false, reason: "error", message: err.message });

@@ -71,16 +71,29 @@ export async function GET(req: NextRequest) {
 
       const { data: dbUsers } = await supabaseAdmin
         .from("users")
-        .select("is_pro, is_premium, current_period_end, expires_at, premium_expires_at")
+        .select("is_pro, current_period_end")
         .or(orFilter);
 
       if (dbUsers && dbUsers.length > 0) {
         isPro = dbUsers.some((u: any) => {
-          const active = u.is_pro === true || u.is_premium === true;
-          if (!active) return false;
+          const isExplicitPro =
+            u.is_pro === true ||
+            String(u.is_pro).trim().toLowerCase() === "true" ||
+            u.is_pro === 1 ||
+            u.is_premium === true ||
+            String(u.is_premium).trim().toLowerCase() === "true" ||
+            u.is_premium === 1;
+
+          if (isExplicitPro) return true;
+
           const expiry = u.current_period_end || u.expires_at || u.premium_expires_at;
-          if (!expiry) return true;
-          return new Date(expiry).getTime() > Date.now();
+          if (expiry) {
+            const expiryTime = new Date(expiry).getTime();
+            if (!isNaN(expiryTime) && expiryTime > Date.now()) {
+              return true;
+            }
+          }
+          return false;
         });
       }
     } catch (proErr) {

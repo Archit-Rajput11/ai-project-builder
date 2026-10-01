@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
         if (data?.user) {
           const { data: profile, error: dbError } = await supabaseAdmin
             .from("users")
-            .select("id, email, is_pro, is_premium, current_period_end, expires_at, premium_expires_at, created_at")
+            .select("id, email, is_pro, current_period_end, created_at")
             .eq("id", data.user.id)
             .maybeSingle();
 
@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
           if (!profile && data.user.email) {
             const { data: profileByEmail, error: emailErr } = await supabaseAdmin
               .from("users")
-              .select("id, email, is_pro, is_premium, current_period_end, expires_at, premium_expires_at, created_at")
+              .select("id, email, is_pro, current_period_end, created_at")
               .eq("email", data.user.email)
               .maybeSingle();
 
