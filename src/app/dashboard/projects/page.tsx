@@ -2,7 +2,18 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { FolderGit2, Calendar, Award, ExternalLink, ShieldCheck, Lock, Sparkles, Trash2, Loader2, AlertCircle, Plus } from "lucide-react";
+import { 
+  FolderGit2, 
+  Calendar, 
+  ExternalLink, 
+  ShieldCheck, 
+  Lock, 
+  Sparkles, 
+  Trash2, 
+  Loader2, 
+  AlertCircle, 
+  Plus 
+} from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 import { supabase } from "@/lib/supabase";
 
@@ -80,34 +91,35 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="animate-pulse text-sm text-foreground/40 p-6 border border-border-accent bg-bg-accent/20 backdrop-blur-md rounded-3xl">
-        Checking premium credentials...
+      <div className="bg-white border border-[#D5DBE1] rounded-xl p-8 shadow-xs flex items-center justify-center gap-3 text-xs text-[#6C7D8E]">
+        <Loader2 className="w-4 h-4 animate-spin text-[#1F2C4C]" />
+        <span>Checking premium credentials...</span>
       </div>
     );
   }
 
   if (!isPremium) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
-        <div className="max-w-md w-full p-8 rounded-3xl border border-amber-500/25 bg-slate-900/40 dark:bg-slate-950/40 backdrop-blur-md text-center flex flex-col items-center gap-6 shadow-xl shadow-amber-950/5">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-            <Lock className="w-8 h-8" />
+      <div className="flex flex-col items-center justify-center min-h-[60vh] py-8">
+        <div className="bg-white border border-[#D5DBE1] rounded-xl p-8 shadow-xs max-w-md w-full mx-auto text-center flex flex-col items-center gap-6">
+          <div className="w-14 h-14 rounded-xl bg-[#EEF1F4] border border-[#D5DBE1] flex items-center justify-center text-[#1F2C4C] shadow-xs">
+            <Lock className="w-7 h-7" />
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center justify-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center justify-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-[#C7F03C]/10 border border-[#C7F03C]/30 text-[#1B2733] mx-auto">
+              <Sparkles className="w-3 h-3 text-[#1F2C4C]" />
               Pro Feature Locked
             </span>
-            <h3 className="text-xl font-extrabold tracking-tight text-foreground">
+            <h2 className="text-xl font-display font-semibold tracking-tight text-[#1B2733]">
               Project History & Save
-            </h3>
-            <p className="text-xs text-foreground/60 leading-relaxed px-2">
+            </h2>
+            <p className="text-xs text-[#6C7D8E] leading-relaxed">
               Save your generated blueprints, track timeline milestones, and review your historical project builds anytime with the Pro Plan.
             </p>
           </div>
           <button
             onClick={() => router.push("/dashboard/pricing")}
-            className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs"
           >
             Upgrade to Pro for ₹20/mo
           </button>
@@ -117,41 +129,52 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in pb-12">
-      <div>
-        <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-          <FolderGit2 className="w-5 h-5 text-primary" />
-          My Generated Blueprints
-        </h2>
-        <p className="text-sm text-foreground/60">
-          Access, manage, and load your previously compiled academic project plans.
-        </p>
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto pb-12">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-display font-semibold text-[#1B2733] tracking-tight flex items-center gap-2.5">
+            <FolderGit2 className="w-5 h-5 text-[#1F2C4C]" />
+            My Generated Blueprints
+          </h1>
+          <p className="text-xs sm:text-sm text-[#6C7D8E] mt-1">
+            Access, manage, and load your previously compiled academic project plans.
+          </p>
+        </div>
+        {projects.length > 0 && !loadingHistory && (
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>New Blueprint</span>
+          </button>
+        )}
       </div>
 
       {loadingHistory ? (
-        <div className="flex flex-col items-center justify-center py-12 gap-3 text-foreground/45 text-sm">
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          Loading your projects list...
+        <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#6C7D8E] text-xs bg-white border border-[#D5DBE1] rounded-xl shadow-xs">
+          <Loader2 className="w-6 h-6 animate-spin text-[#1F2C4C]" />
+          <span>Loading your projects list...</span>
         </div>
       ) : error ? (
-        <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 text-sm font-medium flex items-center gap-2">
-          <AlertCircle className="w-5 h-5" />
-          {error}
+        <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-900 text-xs font-medium flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+          <span>{error}</span>
         </div>
       ) : projects.length === 0 ? (
-        <div className="p-8 sm:p-12 rounded-xl border border-dashed border-white/[0.1] bg-[#0c1017]/50 text-center flex flex-col items-center justify-center gap-3.5 my-4">
-          <div className="w-10 h-10 rounded-xl bg-[#111622] border border-white/[0.08] flex items-center justify-center text-indigo-400/80 shadow-sm">
-            <FolderGit2 className="w-5 h-5" />
+        <div className="bg-white border border-dashed border-[#D5DBE1] rounded-xl p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-4 my-2 shadow-xs">
+          <div className="w-12 h-12 rounded-xl bg-[#EEF1F4] border border-[#D5DBE1] flex items-center justify-center text-[#1F2C4C] shadow-xs">
+            <FolderGit2 className="w-6 h-6" />
           </div>
           <div className="flex flex-col gap-1 max-w-sm">
-            <h3 className="text-sm font-semibold text-[#f8fafc]">No projects yet</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <h3 className="text-sm font-display font-semibold text-[#1B2733]">No projects yet</h3>
+            <p className="text-xs text-[#6C7D8E] leading-relaxed">
               Your generated project blueprints will appear here.
             </p>
           </div>
           <button
             onClick={() => router.push("/dashboard")}
-            className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-medium text-xs shadow-sm transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create Your First Project</span>
@@ -162,60 +185,70 @@ export default function ProjectsPage() {
           {projects.map((project) => (
             <div 
               key={project.id} 
-              className="p-5 rounded-2xl border border-border-accent bg-bg-accent/20 backdrop-blur-sm flex flex-col gap-3 hover:border-primary/40 hover:scale-[1.01] transition-all duration-200 group relative"
+              className="bg-white border border-[#D5DBE1] hover:border-[#1F2C4C]/40 rounded-xl p-5 shadow-xs transition-all flex flex-col justify-between group relative"
             >
               {/* Delete button */}
               <button
                 onClick={(e) => handleDeleteBlueprint(e, project.id)}
-                className="absolute top-4 right-4 p-1.5 rounded-lg border border-transparent hover:border-red-500/20 hover:bg-red-500/5 text-foreground/35 hover:text-red-400 transition-colors cursor-pointer"
+                className="absolute top-4 right-4 text-[#6C7D8E] hover:text-red-600 hover:bg-red-50 rounded-[4px] p-1.5 transition-colors cursor-pointer"
                 title="Delete blueprint"
+                aria-label="Delete blueprint"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
 
-              <div className="flex items-center justify-between border-b border-border-accent/30 pb-2.5 pr-8">
-                <span className="text-[10px] font-bold text-primary uppercase tracking-wide">
-                  {project.domain}
-                </span>
-                <span className="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary font-bold text-[9px] uppercase tracking-wide">
-                  {project.complexity}
-                </span>
-              </div>
-
-              <h4 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors pr-8">
-                {project.title}
-              </h4>
-
-              <p className="text-xs text-foreground/60 leading-relaxed line-clamp-3">
-                {project.description}
-              </p>
-
-              <div className="mt-2 pt-3 border-t border-border-accent/30 flex items-center justify-between text-[10px] text-foreground/40 font-semibold uppercase">
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{project.weeks} Weeks</span>
+              <div>
+                {/* Tags */}
+                <div className="flex items-center gap-2 border-b border-[#D5DBE1]/60 pb-3 pr-8">
+                  <span className="bg-[#EEF1F4] text-[#1F2C4C] border border-[#D5DBE1] rounded-[4px] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                    {project.domain || "General"}
+                  </span>
+                  <span className="bg-[#EEF1F4] text-[#1F2C4C] border border-[#D5DBE1] rounded-[4px] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                    {project.complexity || "Standard"}
+                  </span>
                 </div>
-                <span>Saved {project.date}</span>
+
+                {/* Title */}
+                <h3 className="mt-3 text-sm font-display font-semibold text-[#1B2733] group-hover:text-[#1F2C4C] transition-colors pr-8">
+                  {project.title}
+                </h3>
+
+                {/* Description */}
+                <p className="mt-1.5 text-[#6C7D8E] text-xs leading-relaxed line-clamp-3">
+                  {project.description}
+                </p>
               </div>
 
-              <button
-                onClick={() => handleLoadBlueprint(project)}
-                className="mt-3 w-full py-2 rounded-xl bg-bg-accent border border-border-accent hover:border-primary text-foreground hover:text-primary text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <span>Load Blueprint</span>
-                <ExternalLink className="w-3.5 h-3.5" />
-              </button>
+              <div className="mt-4 pt-3 border-t border-[#D5DBE1]/60 flex flex-col gap-3">
+                <div className="flex items-center justify-between text-[11px] text-[#6C7D8E] font-medium">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-[#1F2C4C]" />
+                    <span>{project.weeks ? `${project.weeks} Weeks` : "Flexible"}</span>
+                  </div>
+                  {project.date && <span>Saved {project.date}</span>}
+                </div>
+
+                <button
+                  onClick={() => handleLoadBlueprint(project)}
+                  className="w-full bg-[#1F2C4C] hover:bg-[#151F36] text-white rounded-[6px] py-2 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <span>Load Blueprint</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
 
       {/* Persistence Note Banner */}
-      <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex gap-3 items-start mt-4">
-        <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-bold text-foreground/90">Supabase Storage Active</span>
-          <p className="text-xs text-foreground/60 leading-relaxed">
+      <div className="bg-white border border-[#D5DBE1] rounded-xl p-4 shadow-xs flex gap-3.5 items-start mt-2">
+        <div className="p-2 rounded-[6px] bg-[#EEF1F4] border border-[#D5DBE1] text-[#1F2C4C] shrink-0 mt-0.5">
+          <ShieldCheck className="w-4 h-4" />
+        </div>
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs font-semibold text-[#1B2733]">Supabase Storage Active</span>
+          <p className="text-xs text-[#6C7D8E] leading-relaxed">
             Your premium project blueprints are fully synced and persisted securely inside your Supabase serverless database tables.
           </p>
         </div>

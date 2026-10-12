@@ -894,10 +894,10 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
   if (isProLoading) {
     return (
-      <div className="min-h-[400px] w-full flex items-center justify-center text-foreground">
+      <div className="min-h-[400px] w-full flex items-center justify-center text-[#1B2733] font-body">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          <p className="text-sm font-semibold text-foreground/70 animate-pulse">Loading your profile...</p>
+          <Loader2 className="w-8 h-8 text-[#1F2C4C] animate-spin" />
+          <p className="text-sm font-semibold text-[#6C7D8E] animate-pulse">Loading your profile...</p>
         </div>
       </div>
     );
@@ -909,15 +909,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Two-Part Structured Dashboard Grid (Hidden during printing via CSS no-print) */}
       <div className="no-print grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Left Column: Configuration Form (lg:col-span-7) */}
-        <section className="lg:col-span-7 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col justify-between gap-5 shadow-lg">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/[0.06]">
+        <section className="lg:col-span-7 p-6 rounded-xl border border-[#D5DBE1] bg-white flex flex-col justify-between gap-5 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#D5DBE1]/60">
             <div>
-              <h2 className="text-base sm:text-lg font-semibold tracking-tight flex items-center gap-2 text-[#f8fafc]">
-                <Zap className="w-4 h-4 text-indigo-400" />
+              <h2 className="text-base sm:text-lg font-display font-semibold tracking-tight flex items-center gap-2 text-[#1B2733]">
+                <Zap className="w-4 h-4 text-[#1F2C4C]" />
                 <span>Create Your Project Blueprint</span>
                 {isPremium && <ProBadge />}
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-[#6C7D8E] mt-0.5">
                 Define preferences to generate a custom-tailored academic project plan.
               </p>
             </div>
@@ -925,30 +925,30 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* Account Tier Status Badge */}
             <div className="flex items-center select-none shrink-0">
               {isPremium ? (
-                <div className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md border border-indigo-500/30 bg-indigo-500/10 text-indigo-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-md border border-[#C7F03C]/30 bg-[#C7F03C]/10 text-[#1B2733]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   <span>Pro Plan: Unlimited</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg border border-amber-500/25 bg-amber-500/10 text-amber-300 text-xs">
+                <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] text-[#1B2733] text-xs">
                   <div className="flex flex-col text-left leading-tight">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-amber-200">Free Plan</span>
-                      <span className="text-[11px] text-amber-300/90 font-medium">
+                      <span className="font-semibold text-[#1B2733]">Free Plan</span>
+                      <span className="text-[11px] text-[#6C7D8E] font-medium">
                         • {Math.max(0, 1 - generatedCount)} of 1 blueprint remaining
                       </span>
                     </div>
                     {generatedCount >= 1 && (
-                      <span className="text-[10px] text-amber-400/80 font-normal">
+                      <span className="text-[10px] text-amber-600 font-normal">
                         Free generation used — upgrade for unlimited
                       </span>
                     )}
                   </div>
                   <button
                     onClick={() => router.push("/dashboard/pricing")}
-                    className="ml-1 px-2.5 py-1 rounded-md bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-slate-950 text-xs font-semibold shadow-sm transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                    className="ml-1 px-2.5 py-1 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.98] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0"
                   >
-                    <Sparkles className="w-3 h-3 text-slate-950" />
+                    <Sparkles className="w-3 h-3 text-white" />
                     <span>Upgrade</span>
                   </button>
                 </div>
@@ -960,14 +960,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             {/* Domain Dropdown */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-slate-300">
+              <label className="text-xs font-semibold text-[#1B2733]">
                 Domain
               </label>
               <div className="relative">
                 <select
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
-                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-lg border border-white/[0.1] hover:border-slate-600 bg-[#111622] text-[#f8fafc] text-xs font-medium focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 focus:outline-none cursor-pointer transition-colors"
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#D5DBE1] hover:border-[#CBD3DC] bg-[#F9FAFB] text-[#1B2733] text-xs font-medium focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] focus:outline-none cursor-pointer transition-colors"
                 >
                   <option value="Web Development">Web Development</option>
                   <option value="Mobile Apps">Mobile Apps</option>
@@ -976,53 +976,53 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   <option value="Cybersecurity">Cybersecurity</option>
                   <option value="IoT">Internet of Things (IoT)</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6C7D8E] pointer-events-none" />
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">
+              <p className="text-[11px] text-[#6C7D8E] leading-tight">
                 Choose the primary area of your project.
               </p>
             </div>
 
             {/* Complexity Dropdown */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-slate-300">
+              <label className="text-xs font-semibold text-[#1B2733]">
                 Complexity
               </label>
               <div className="relative">
                 <select
                   value={complexity}
                   onChange={(e) => setComplexity(e.target.value)}
-                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-lg border border-white/[0.1] hover:border-slate-600 bg-[#111622] text-[#f8fafc] text-xs font-medium focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 focus:outline-none cursor-pointer transition-colors"
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#D5DBE1] hover:border-[#CBD3DC] bg-[#F9FAFB] text-[#1B2733] text-xs font-medium focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] focus:outline-none cursor-pointer transition-colors"
                 >
                   <option value="Basic">Basic (Scaffolding)</option>
                   <option value="Intermediate">Intermediate (Full-Stack)</option>
                   <option value="Advanced">Advanced (Scale)</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6C7D8E] pointer-events-none" />
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">
+              <p className="text-[11px] text-[#6C7D8E] leading-tight">
                 Controls how advanced the generated project architecture will be.
               </p>
             </div>
 
             {/* Skill Level Dropdown */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-slate-300">
+              <label className="text-xs font-semibold text-[#1B2733]">
                 Skill Level
               </label>
               <div className="relative">
                 <select
                   value={skillLevel}
                   onChange={(e) => setSkillLevel(e.target.value)}
-                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-lg border border-white/[0.1] hover:border-slate-600 bg-[#111622] text-[#f8fafc] text-xs font-medium focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 focus:outline-none cursor-pointer transition-colors"
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#D5DBE1] hover:border-[#CBD3DC] bg-[#F9FAFB] text-[#1B2733] text-xs font-medium focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] focus:outline-none cursor-pointer transition-colors"
                 >
                   <option value="Beginner">Beginner (1st/2nd Yr)</option>
                   <option value="Competent">Competent (3rd Yr)</option>
                   <option value="Expert">Expert (Capstone)</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6C7D8E] pointer-events-none" />
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">
+              <p className="text-[11px] text-[#6C7D8E] leading-tight">
                 Helps tailor the project to your current experience.
               </p>
             </div>
@@ -1030,12 +1030,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
           {/* Custom Keywords / Pro Feature Locked Component */}
           {isPremium ? (
-            <div className="flex flex-col gap-1.5 p-3 rounded-lg border border-white/[0.08] bg-[#111622]/60 transition-colors">
+            <div className="flex flex-col gap-1.5 p-3 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] transition-colors">
               <div className="flex items-center justify-between">
-                <label htmlFor="customKeywords" className="text-xs font-medium text-slate-300">
-                  Project Focus & Keywords <span className="text-slate-500 font-normal">(Optional)</span>
+                <label htmlFor="customKeywords" className="text-xs font-semibold text-[#1B2733]">
+                  Project Focus & Keywords <span className="text-[#6C7D8E] font-normal">(Optional)</span>
                 </label>
-                <span className="text-[10px] font-medium text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-semibold text-[#1B2733] bg-[#C7F03C]/20 border border-[#C7F03C]/30 px-2 py-0.5 rounded">
                   Pro Unlocked
                 </span>
               </div>
@@ -1045,36 +1045,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 placeholder="e.g., E-commerce, Healthcare, Fitness tracker, Real-time telemetry..."
                 value={customKeywords}
                 onChange={(e) => setCustomKeywords(e.target.value)}
-                className="px-3.5 py-2 rounded-lg border border-white/[0.1] bg-[#111622] text-[#f8fafc] text-xs placeholder:text-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/50 transition-colors"
+                className="px-3.5 py-2 rounded-[6px] border border-[#D5DBE1] bg-white text-[#1B2733] text-xs placeholder:text-[#6C7D8E]/50 focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] transition-colors"
               />
             </div>
           ) : (
-            <div className="p-3.5 rounded-lg border border-white/[0.08] bg-[#111622]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
+            <div className="p-3.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
               <div className="flex flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-medium text-slate-300">
+                  <span className="text-xs font-semibold text-[#1B2733]">
                     Project Focus & Keywords
                   </span>
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#161c28] border border-amber-500/25 text-amber-300/90 text-[10px] font-medium">
-                    <Lock className="w-3 h-3 text-amber-400/90 shrink-0" />
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white border border-[#D5DBE1] text-[#1B2733] text-[10px] font-medium">
+                    <Lock className="w-3 h-3 text-[#1F2C4C] shrink-0" />
                     <span>Custom project keywords</span>
                   </div>
                 </div>
-                <p className="text-[11px] text-slate-400 leading-snug">
+                <p className="text-[11px] text-[#6C7D8E] leading-snug">
                   Define specific technologies, features, or requirements for your project.
                 </p>
               </div>
 
               <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-center">
-                <span className="text-[11px] font-medium text-slate-400">
+                <span className="text-[11px] font-medium text-[#6C7D8E]">
                   Available with Pro
                 </span>
                 <button
                   type="button"
                   onClick={() => router.push("/dashboard/pricing")}
-                  className="px-2.5 py-1 rounded-md bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-slate-950 text-xs font-semibold shadow-sm transition-all cursor-pointer flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.98] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer flex items-center gap-1"
                 >
-                  <Sparkles className="w-3 h-3 text-slate-950" />
+                  <Sparkles className="w-3 h-3 text-white" />
                   <span>Upgrade</span>
                 </button>
               </div>
@@ -1086,7 +1086,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <button
               onClick={() => handleGenerate(false)}
               disabled={loading}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-b from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white font-medium text-xs sm:text-sm shadow-sm border border-indigo-400/30 active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs sm:text-sm shadow-xs active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
             >
               {loading ? (
                 <>
@@ -1104,7 +1104,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {plan && (
               <button
                 onClick={handlePremiumPdfClick}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-white/[0.1] bg-[#161c28] hover:bg-[#1c2433] text-slate-200 font-medium text-xs sm:text-sm transition-colors cursor-pointer"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer"
               >
                 {isPremium ? (
                   <>
@@ -1123,67 +1123,67 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </section>
 
         {/* Right Column: Live Blueprint Preview / Recent Specs (lg:col-span-5) */}
-        <aside className="lg:col-span-5 p-6 rounded-xl border border-white/[0.08] bg-[#0d121c] flex flex-col justify-between gap-4 shadow-lg">
-          <div className="flex items-center justify-between pb-3 border-b border-white/[0.06]">
+        <aside className="lg:col-span-5 p-6 rounded-xl border border-[#D5DBE1] bg-white flex flex-col justify-between gap-4 shadow-xs">
+          <div className="flex items-center justify-between pb-3 border-b border-[#D5DBE1]/60">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <h3 className="text-sm font-semibold text-[#f8fafc]">Live Blueprint Specs</h3>
+              <Sparkles className="w-4 h-4 text-[#1F2C4C]" />
+              <h3 className="text-sm font-display font-semibold text-[#1B2733]">Live Blueprint Specs</h3>
             </div>
-            <span className="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono text-[#1B2733] bg-[#EEF1F4] border border-[#D5DBE1] px-2 py-0.5 rounded">
               Active Parameters
             </span>
           </div>
 
           {/* Dynamic Wireframe / Specs Card */}
-          <div className="p-3.5 rounded-lg border border-white/[0.06] bg-[#07090e] flex flex-col gap-2.5">
+          <div className="p-3.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] flex flex-col gap-2.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Project Domain</span>
-              <span className="text-white font-medium">{domain}</span>
+              <span className="text-[#6C7D8E]">Project Domain</span>
+              <span className="text-[#1B2733] font-semibold">{domain}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Project Complexity</span>
-              <span className="text-indigo-300 font-medium">{complexity}</span>
+              <span className="text-[#6C7D8E]">Project Complexity</span>
+              <span className="text-[#1F2C4C] font-semibold">{complexity}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">Your Skill Level</span>
-              <span className="text-slate-300 font-medium">{skillLevel}</span>
+              <span className="text-[#6C7D8E]">Your Skill Level</span>
+              <span className="text-[#1B2733] font-medium">{skillLevel}</span>
             </div>
             {customKeywords && (
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-400">Custom Keywords</span>
-                <span className="text-slate-300 font-mono text-[11px] truncate max-w-[150px]">{customKeywords}</span>
+                <span className="text-[#6C7D8E]">Custom Keywords</span>
+                <span className="text-[#1B2733] font-mono text-[11px] truncate max-w-[150px]">{customKeywords}</span>
               </div>
             )}
           </div>
 
           {/* Deliverables Overview Checklist */}
           <div className="flex flex-col gap-2 pt-1">
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">
+            <span className="text-[11px] font-semibold text-[#6C7D8E] uppercase tracking-wider">
               Included with your blueprint:
             </span>
-            <div className="grid grid-cols-2 gap-2 text-xs text-slate-300">
-              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+            <div className="grid grid-cols-2 gap-2 text-xs text-[#1B2733]">
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
                 <span>Full Repo Tree</span>
               </div>
-              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
                 <span>6-Wk Kanban</span>
               </div>
-              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
                 <span>IEEE Report Doc</span>
               </div>
-              <div className="flex items-center gap-2 p-2 rounded-md bg-[#111622] border border-white/[0.05]">
-                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
                 <span>Viva Q&A Prep</span>
               </div>
             </div>
           </div>
 
           {/* Quick Tip / Dev note */}
-          <div className="p-3 rounded-lg border border-indigo-500/20 bg-indigo-500/5 text-[11px] text-slate-400 leading-relaxed">
-            <span className="text-indigo-300 font-semibold">Pro tip: </span>
+          <div className="p-3 rounded-lg border border-[#D5DBE1] bg-[#EEF1F4] text-[11px] text-[#6C7D8E] leading-relaxed">
+            <span className="text-[#1F2C4C] font-semibold">Pro tip: </span>
             All blueprints include starter boilerplate downloads and personalized AI Copilot master prompts.
           </div>
         </aside>
@@ -1191,7 +1191,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Error Card */}
       {error && (
-        <div className="no-print p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm font-medium animate-fade-in flex items-center gap-2">
+        <div className="no-print p-4 rounded-[6px] border border-red-200 bg-red-50 text-red-900 text-sm font-medium animate-fade-in flex items-center gap-2 shadow-xs">
           <span>{error}</span>
         </div>
       )}
@@ -1209,7 +1209,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           </div>
 
           {/* Tab Switcher Controls (Hidden during printing via CSS no-print) */}
-          <div className="no-print flex items-center justify-between border-b border-white/[0.08] gap-2 overflow-x-auto select-none">
+          <div className="no-print flex items-center justify-between border-b border-[#D5DBE1] gap-2 overflow-x-auto select-none">
             <div className="flex gap-1 md:gap-2">
               {[
                 { id: "overview", label: "Overview", icon: Award },
@@ -1226,11 +1226,11 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 cursor-pointer transition-colors ${
                       isActive
-                        ? "border-indigo-400 text-indigo-300 font-semibold"
-                        : "border-transparent text-slate-400 hover:text-slate-200"
+                        ? "border-[#1F2C4C] text-[#1F2C4C] font-semibold"
+                        : "border-transparent text-[#6C7D8E] hover:text-[#1B2733]"
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-indigo-400" : "text-slate-500"}`} />
+                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#1F2C4C]" : "text-[#6C7D8E]"}`} />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -1242,7 +1242,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Share Project Button */}
               <button
                 onClick={handleShareProject}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-[#161c28] hover:bg-[#1c2433] text-slate-200 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
               >
                 Share
               </button>
@@ -1250,7 +1250,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Premium PDF Download */}
               <button
                 onClick={handlePremiumPdfClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-[#161c28] hover:bg-[#1c2433] text-slate-200 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
               >
                 <Award className="w-3.5 h-3.5 text-amber-400" />
                 <span>PDF Blueprint</span>
@@ -1260,7 +1260,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {isPremium && (
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download</span>
@@ -1270,7 +1270,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Sign Out Button */}
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-transparent hover:border-red-500/20 text-[#94a3b8] hover:text-red-400 hover:bg-red-500/10 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-transparent hover:border-red-200 text-[#6C7D8E] hover:text-red-600 hover:bg-red-50 font-medium text-xs transition-colors cursor-pointer"
               >
                 Sign Out
               </button>
@@ -1283,12 +1283,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 1: OVERVIEW PANEL (Always visible in prints) */}
             <div className={`${activeTab === "overview" ? "block" : "hidden print:block"} flex flex-col gap-4 animate-fade-in`}>
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-xl font-semibold tracking-tight text-[#f8fafc]">{plan.projectTitle}</h3>
-                <span className="shrink-0 px-2.5 py-0.5 rounded-full text-xs font-medium border border-zinc-700 bg-zinc-800 text-zinc-300">
+                <h3 className="text-xl font-display font-semibold tracking-tight text-[#1B2733]">{plan.projectTitle}</h3>
+                <span className="shrink-0 px-2.5 py-0.5 rounded-full text-xs font-semibold border border-[#D5DBE1] bg-[#EEF1F4] text-[#1B2733]">
                   {plan.difficultyRating}
                 </span>
               </div>
-              <p className="text-sm text-[#94a3b8] leading-relaxed border-l-2 border-zinc-700 pl-4 py-1">
+              <p className="text-sm text-[#6C7D8E] leading-relaxed border-l-2 border-[#1F2C4C] pl-4 py-1">
                 {plan.description}
               </p>
             </div>
@@ -1296,35 +1296,35 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 2: TECH STACK & GITHUB PANEL (Always visible in prints) */}
             <div className={`${activeTab === "tech" ? "block" : "hidden print:block"} flex flex-col gap-6 animate-fade-in`}>
               <div>
-                <h4 className="text-xs font-medium mb-3 uppercase tracking-wider text-[#94a3b8] print:text-black">
+                <h4 className="text-xs font-semibold mb-3 uppercase tracking-wider text-[#6C7D8E] print:text-black">
                   Recommended Tech Stack
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {/* Frontend Card */}
-                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
-                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Frontend</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
+                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
+                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Frontend</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
                       {plan.techStack.frontend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Backend Card */}
-                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
-                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Backend</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
+                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
+                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Backend</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
                       {plan.techStack.backend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Database Card */}
-                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
-                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Database</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
+                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
+                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Database</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
                       {plan.techStack.database.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Hosting & Tools Card */}
-                  <div className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24] text-[#f8fafc]">
-                    <span className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Hosting & Tools</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#94a3b8]">
+                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
+                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Hosting & Tools</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
                       {plan.techStack.hostingAndTools.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
@@ -1334,24 +1334,24 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* GitHub Structure Terminal */}
               <div className="page-break">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-                  <h4 className="text-xs font-medium uppercase tracking-wider text-[#94a3b8] print:text-black">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#6C7D8E] print:text-black">
                     Repository Directory Tree
                   </h4>
                   <button
                     onClick={handleDownloadBoilerplate}
-                    className="no-print self-start flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-200 font-medium text-xs transition-colors cursor-pointer"
+                    className="no-print self-start flex items-center gap-2 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
                   >
                     {isPremium ? "📦 Download Starter Boilerplate" : "🔒 Unlock Starter Boilerplate"}
                   </button>
                 </div>
-                <div className="rounded-lg overflow-hidden border border-white/[0.08] bg-[#0a0a0c]">
-                  <div className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900 border-b border-white/[0.08] no-print">
-                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-                    <span className="text-xs text-zinc-400 font-mono ml-2">repository-structure.txt</span>
+                <div className="rounded-xl overflow-hidden border border-[#D5DBE1] bg-[#1F2C4C] text-white shadow-sm">
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-[#151F36] border-b border-[#1F2C4C] no-print">
+                    <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                    <span className="text-xs text-white/70 font-mono ml-2">repository-structure.txt</span>
                   </div>
-                  <pre className="p-4 overflow-x-auto text-xs text-zinc-300 font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200">
+                  <pre className="p-4 overflow-x-auto text-xs text-white/90 font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200">
                     <code>{plan.githubStructure}</code>
                   </pre>
                 </div>
@@ -1362,10 +1362,10 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <div className={`${activeTab === "roadmap" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in`}>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h4 className="text-xs font-medium uppercase tracking-wider text-[#94a3b8]">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#6C7D8E]">
                     Interactive Roadmap Kanban Board
                   </h4>
-                  <p className="text-xs text-[#64748b] mt-0.5">
+                  <p className="text-xs text-[#6C7D8E] mt-0.5">
                     Drag and drop cards between status columns to update your implementation progress.
                   </p>
                 </div>
@@ -1389,14 +1389,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                       const columnTasks = kanbanTasks[columnKey] || [];
 
                       return (
-                        <div key={columnKey} className="flex flex-col rounded-lg border border-white/[0.08] bg-[#11141c] p-4 h-[600px] overflow-hidden">
+                        <div key={columnKey} className="flex flex-col rounded-xl border border-[#D5DBE1] bg-[#F9FAFB] p-4 h-[600px] overflow-hidden shadow-xs">
                           {/* Column Header */}
-                          <div className="flex items-center justify-between border-b border-white/[0.08] pb-3 mb-3">
+                          <div className="flex items-center justify-between border-b border-[#D5DBE1] pb-3 mb-3">
                             <div className="flex items-center gap-2">
-                              <span className="px-2 py-0.5 rounded text-xs font-medium border border-zinc-700 bg-zinc-800/80 text-zinc-300">
+                              <span className="px-2 py-0.5 rounded-[4px] text-xs font-semibold border border-[#D5DBE1] bg-white text-[#1B2733]">
                                 {columnTitle}
                               </span>
-                              <span className="text-xs font-mono text-[#64748b]">
+                              <span className="text-xs font-mono text-[#6C7D8E]">
                                 {columnTasks.length}
                               </span>
                             </div>
@@ -1419,36 +1419,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                         ref={draggableProvided.innerRef}
                                         {...draggableProvided.draggableProps}
                                         {...draggableProvided.dragHandleProps}
-                                        className={`p-3.5 rounded-lg border bg-[#161a24] cursor-grab active:cursor-grabbing hover:border-zinc-600 transition-colors select-none ${
+                                        className={`p-3.5 rounded-lg border bg-white cursor-grab active:cursor-grabbing hover:border-[#1F2C4C]/40 transition-colors select-none shadow-xs ${
                                           draggableSnapshot.isDragging 
-                                            ? "border-zinc-400 shadow-xl" 
-                                            : "border-white/[0.08]"
+                                            ? "border-[#1F2C4C] shadow-xl" 
+                                            : "border-[#D5DBE1]"
                                         }`}
                                       >
                                         <div className="flex items-center justify-between gap-2 mb-2">
-                                          <span className="text-[10px] font-medium text-zinc-400 bg-zinc-800/80 px-1.5 py-0.5 rounded border border-zinc-700 uppercase tracking-wider">
+                                          <span className="text-[10px] font-semibold text-[#1F2C4C] bg-[#EEF1F4] px-1.5 py-0.5 rounded border border-[#D5DBE1] uppercase tracking-wider">
                                             Week {task.week}
                                           </span>
                                           {getToolForTask(task) && (
-                                            <span className="text-[9px] font-medium text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded border border-zinc-700 uppercase tracking-wider">
+                                            <span className="text-[9px] font-medium text-[#6C7D8E] bg-[#F9FAFB] px-1.5 py-0.5 rounded border border-[#D5DBE1] uppercase tracking-wider">
                                               {getToolForTask(task)}
                                             </span>
                                           )}
                                         </div>
-                                        <h5 className="text-xs font-semibold text-[#f8fafc] leading-tight mb-1">
+                                        <h5 className="text-xs font-semibold text-[#1B2733] leading-tight mb-1">
                                           {task.title}
                                         </h5>
-                                        <p className="text-[11px] text-[#94a3b8] leading-normal line-clamp-2">
+                                        <p className="text-[11px] text-[#6C7D8E] leading-normal line-clamp-2">
                                           {task.description}
                                         </p>
-                                        <div className="mt-3 pt-2 border-t border-white/[0.06] flex items-center justify-between">
-                                          <span className="text-[9px] text-[#64748b] font-mono">ID: {task.id}</span>
+                                        <div className="mt-3 pt-2 border-t border-[#D5DBE1]/60 flex items-center justify-between">
+                                          <span className="text-[9px] text-[#6C7D8E] font-mono">ID: {task.id}</span>
                                           <button
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               handleDebugClick(task);
                                             }}
-                                            className="px-2 py-0.5 rounded border border-white/[0.1] bg-white/[0.05] hover:bg-white/[0.1] text-zinc-300 font-medium text-[10px] transition-colors cursor-pointer"
+                                            className="px-2 py-0.5 rounded border border-[#D5DBE1] bg-[#F9FAFB] hover:bg-[#EEF1F4] text-[#1B2733] font-medium text-[10px] transition-colors cursor-pointer"
                                           >
                                             Debug
                                           </button>
@@ -1481,7 +1481,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 <h4 className="text-xs font-medium mb-3 uppercase tracking-wider text-[#94a3b8] print:text-black">
                   Report Abstract Skeleton
                 </h4>
-                <p className="text-xs sm:text-sm text-[#94a3b8] leading-relaxed bg-[#161a24] p-4 rounded-lg border border-white/[0.08]">
+                <p className="text-xs sm:text-sm text-[#6C7D8E] leading-relaxed bg-white p-4 rounded-xl border border-[#D5DBE1] shadow-xs">
                   {plan.reportOutline.abstract}
                 </p>
               </div>
@@ -1495,19 +1495,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   {plan.reportOutline.chapters.map((chapter, idx) => (
                     <details
                       key={idx}
-                      className="group p-3.5 rounded-lg border border-white/[0.08] bg-[#161a24] open:bg-[#11141c] transition-colors"
+                      className="group p-3.5 rounded-xl border border-[#D5DBE1] bg-white open:bg-[#F9FAFB] transition-colors shadow-xs"
                     >
-                      <summary className="flex items-center justify-between text-xs sm:text-sm font-medium text-[#f8fafc] cursor-pointer select-none outline-none">
+                      <summary className="flex items-center justify-between text-xs sm:text-sm font-semibold text-[#1B2733] cursor-pointer select-none outline-none">
                         <span className="flex items-center gap-2">
-                          <span className="text-zinc-400 font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
+                          <span className="text-[#6C7D8E] font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
                           {chapter.title}
                         </span>
-                        <ChevronRight className="w-3.5 h-3.5 text-zinc-400 group-open:rotate-90 transition-transform duration-150 no-print" />
+                        <ChevronRight className="w-3.5 h-3.5 text-[#6C7D8E] group-open:rotate-90 transition-transform duration-150 no-print" />
                       </summary>
                       
-                      <div className="mt-2.5 pl-4 border-l border-zinc-700 space-y-1">
+                      <div className="mt-2.5 pl-4 border-l border-[#D5DBE1] space-y-1">
                         {chapter.subsections.map((sub, sidx) => (
-                          <div key={sidx} className="text-xs text-[#94a3b8] py-0.5">
+                          <div key={sidx} className="text-xs text-[#6C7D8E] py-0.5">
                             {chapter.chapterNumber}.{sidx + 1} {sub}
                           </div>
                         ))}
@@ -1524,13 +1524,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 </h4>
                 <div className="grid grid-cols-1 gap-3">
                   {plan.vivaQuestions.map((q, idx) => (
-                    <div key={idx} className="p-4 rounded-lg border border-white/[0.08] bg-[#161a24]">
+                    <div key={idx} className="p-4 rounded-xl border border-[#D5DBE1] bg-white shadow-xs">
                       <div className="flex gap-2.5 items-start">
-                        <span className="text-xs font-bold text-zinc-400 shrink-0 font-mono">Q{idx + 1}.</span>
-                        <h6 className="text-xs sm:text-sm font-medium text-[#f8fafc]">{q.question}</h6>
+                        <span className="text-xs font-bold text-[#1F2C4C] shrink-0 font-mono">Q{idx + 1}.</span>
+                        <h6 className="text-xs sm:text-sm font-semibold text-[#1B2733]">{q.question}</h6>
                       </div>
-                      <div className="mt-2.5 pl-5 text-xs text-[#94a3b8] print:text-gray-900 leading-relaxed border-t border-white/[0.06] pt-2">
-                        <span className="font-semibold text-zinc-300 print:text-zinc-900 uppercase mr-1 text-[10px]">Ideal Answer:</span>
+                      <div className="mt-2.5 pl-5 text-xs text-[#6C7D8E] print:text-gray-900 leading-relaxed border-t border-[#D5DBE1]/60 pt-2">
+                        <span className="font-semibold text-[#1F2C4C] print:text-zinc-900 uppercase mr-1 text-[10px]">Ideal Answer:</span>
                         {q.idealAnswer}
                       </div>
                     </div>
@@ -1542,7 +1542,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               <div className="no-print flex items-center justify-end pt-3 border-t border-white/[0.08]">
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 font-medium text-xs sm:text-sm transition-colors cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 rounded-[6px] bg-[#1F2C4C] text-white hover:bg-[#151F36] font-semibold text-xs sm:text-sm transition-colors cursor-pointer shadow-xs"
                 >
                   <Download className="w-4 h-4" />
                   <span>Save Report Blueprint as PDF</span>
@@ -1554,26 +1554,26 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 5: AI COPILOT GUIDES PANEL */}
             <div className={`${activeTab === "copilot" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in no-print`}>
               {/* Hero Header */}
-              <div className="p-5 rounded-lg border border-white/[0.08] bg-[#11141c] flex flex-col gap-1.5">
-                <h4 className="text-sm font-semibold text-[#f8fafc] flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-zinc-300" />
+              <div className="p-5 rounded-xl border border-[#D5DBE1] bg-white flex flex-col gap-1.5 shadow-xs">
+                <h4 className="text-sm font-display font-semibold text-[#1B2733] flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-[#1F2C4C]" />
                   Select a week below for tool recommendations and development prompts.
                 </h4>
-                <p className="text-xs text-[#94a3b8] leading-relaxed">
+                <p className="text-xs text-[#6C7D8E] leading-relaxed">
                   These guides matching your generated blueprint week objectives are custom compiled by our academic AI engine.
                 </p>
               </div>
 
               {/* Horizontal Row of Clickable Week Buttons */}
-              <div className="flex gap-2 border-b border-white/[0.08] pb-3 overflow-x-auto select-none">
+              <div className="flex gap-2 border-b border-[#D5DBE1] pb-3 overflow-x-auto select-none">
                 {plan.roadmapWeeks?.map((week) => (
                   <button
                     key={week.weekNumber}
                     onClick={() => setSelectedCopilotWeek(week.weekNumber)}
                     className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                       selectedCopilotWeek === week.weekNumber
-                        ? "bg-white text-zinc-950 border-white"
-                        : "border-white/[0.08] text-[#94a3b8] hover:text-zinc-200 hover:border-zinc-700"
+                        ? "bg-[#1F2C4C] text-white border-[#1F2C4C]"
+                        : "border-[#D5DBE1] bg-white text-[#6C7D8E] hover:text-[#1B2733] hover:border-[#1F2C4C]/30"
                     }`}
                   >
                     Week {week.weekNumber}
@@ -1590,25 +1590,25 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 const prompt = currentWeekObj.aiToolGuide?.masterPrompt || "";
 
                 return (
-                  <div className="p-6 rounded-lg border border-white/[0.08] bg-[#11141c] flex flex-col gap-4">
+                  <div className="p-6 rounded-xl border border-[#D5DBE1] bg-white flex flex-col gap-4 shadow-xs">
                     {/* Tool Badge & Goal */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.08] pb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#D5DBE1]/60 pb-3">
                       <div>
-                        <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Phase {selectedCopilotWeek} Focus</span>
-                        <h4 className="text-sm sm:text-base font-semibold text-[#f8fafc] mt-0.5">
+                        <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider">Phase {selectedCopilotWeek} Focus</span>
+                        <h4 className="text-sm sm:text-base font-display font-semibold text-[#1B2733] mt-0.5">
                           {currentWeekObj.focusGoal}
                         </h4>
                       </div>
                       
-                      <span className="px-2.5 py-1 rounded-md border border-zinc-700 bg-zinc-800 text-zinc-200 text-xs font-medium">
+                      <span className="px-2.5 py-1 rounded-md border border-[#D5DBE1] bg-[#F9FAFB] text-[#1B2733] text-xs font-semibold">
                         {tool}
                       </span>
                     </div>
 
                     {/* Why this tool? */}
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-medium text-[#94a3b8] uppercase tracking-wider">Why this tool?</span>
-                      <p className="text-xs text-[#94a3b8] leading-relaxed bg-[#161a24] p-3.5 rounded-lg border border-white/[0.08]">
+                      <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider">Why this tool?</span>
+                      <p className="text-xs text-[#6C7D8E] leading-relaxed bg-[#F9FAFB] p-3.5 rounded-lg border border-[#D5DBE1]">
                         {justification}
                       </p>
                     </div>
@@ -1616,14 +1616,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                     {/* Master Prompt */}
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-medium text-[#94a3b8] uppercase tracking-wider">AI Master Prompt</span>
+                        <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider">AI Master Prompt</span>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(prompt);
                             setCopiedWeek(selectedCopilotWeek);
                             setTimeout(() => setCopiedWeek(null), 2000);
                           }}
-                          className="px-3 py-1 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.1] text-zinc-200 text-xs font-medium transition-colors cursor-pointer flex items-center gap-1.5"
+                          className="px-3 py-1 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
                         >
                           {copiedWeek === selectedCopilotWeek ? "✓ Copied!" : "Copy Master Prompt"}
                         </button>
@@ -1631,7 +1631,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                       <textarea
                         readOnly
                         value={prompt}
-                        className="w-full h-56 p-3.5 bg-[#0a0a0c] border border-white/[0.08] rounded-lg text-xs font-mono leading-relaxed text-zinc-300 focus:outline-none resize-none"
+                        className="w-full h-56 p-3.5 bg-[#F9FAFB] border border-[#D5DBE1] rounded-lg text-xs font-mono leading-relaxed text-[#1B2733] focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] resize-none"
                       />
                     </div>
                   </div>
@@ -1779,14 +1779,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       <section className="no-print flex flex-col gap-4 mt-2 mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[#111622] border border-white/[0.08] text-indigo-400">
+            <div className="flex items-center justify-center w-7 h-7 rounded-[6px] bg-[#1F2C4C] text-white shadow-xs">
               <FolderGit2 className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-semibold tracking-tight text-[#f8fafc]">
+              <h2 className="text-base font-display font-semibold tracking-tight text-[#1B2733]">
                 Recent Projects
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#6C7D8E]">
                 Your saved project architectures and academic blueprint records
               </p>
             </div>
@@ -1795,7 +1795,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {recentProjects.length > 0 && (
             <button
               onClick={() => router.push("/dashboard/projects")}
-              className="text-xs font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-xs font-semibold text-[#1F2C4C] hover:text-[#151F36] flex items-center gap-1 transition-colors cursor-pointer"
             >
               <span>View all</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -1804,24 +1804,24 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </div>
 
         {loadingRecent ? (
-          <div className="p-8 rounded-xl border border-white/[0.08] bg-[#0c1017] flex items-center justify-center gap-3 text-xs text-slate-400">
-            <Loader2 className="w-4 h-4 animate-spin text-indigo-400" />
+          <div className="p-8 rounded-xl border border-[#D5DBE1] bg-white flex items-center justify-center gap-3 text-xs text-[#6C7D8E] shadow-xs">
+            <Loader2 className="w-4 h-4 animate-spin text-[#1F2C4C]" />
             <span>Loading projects from database...</span>
           </div>
         ) : recentProjects.length === 0 ? (
-          <div className="p-8 sm:p-10 rounded-xl border border-dashed border-white/[0.1] bg-[#0c1017]/50 text-center flex flex-col items-center justify-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-[#111622] border border-white/[0.08] flex items-center justify-center text-indigo-400/80 shadow-sm">
+          <div className="p-8 sm:p-10 rounded-xl border border-dashed border-[#D5DBE1] bg-white text-center flex flex-col items-center justify-center gap-3.5 shadow-xs">
+            <div className="w-10 h-10 rounded-[6px] bg-[#1F2C4C] flex items-center justify-center text-white shadow-xs">
               <FolderGit2 className="w-5 h-5" />
             </div>
             <div className="flex flex-col gap-1 max-w-sm">
-              <h3 className="text-sm font-semibold text-[#f8fafc]">No projects yet</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h3 className="text-sm font-display font-semibold text-[#1B2733]">No projects yet</h3>
+              <p className="text-xs text-[#6C7D8E] leading-relaxed">
                 Your generated project blueprints will appear here.
               </p>
             </div>
             <button
               onClick={handleScrollToConfig}
-              className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:scale-[0.99] text-white font-medium text-xs shadow-sm transition-all cursor-pointer"
+              className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.99] text-white font-semibold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Your First Project</span>
@@ -1832,46 +1832,46 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {recentProjects.map((project) => (
               <div
                 key={project.id}
-                className="p-5 rounded-xl border border-white/[0.08] bg-[#0c1017] hover:border-indigo-500/40 hover:bg-[#0e1420] transition-all duration-150 flex flex-col justify-between gap-4 group"
+                className="p-5 rounded-xl border border-[#D5DBE1] bg-white hover:border-[#1F2C4C]/40 transition-all duration-150 flex flex-col justify-between gap-4 group shadow-xs"
               >
                 <div className="flex flex-col gap-3">
                   {/* Top Badges: Domain, Complexity, Status */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-semibold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded tracking-wide uppercase">
+                    <span className="text-[10px] font-semibold text-[#1F2C4C] bg-[#EEF1F4] border border-[#D5DBE1] px-2 py-0.5 rounded tracking-wide uppercase">
                       {project.domain || "Web Development"}
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-medium text-slate-400 bg-white/[0.05] border border-white/[0.08] px-2 py-0.5 rounded">
+                      <span className="text-[10px] font-medium text-[#6C7D8E] bg-[#F9FAFB] border border-[#D5DBE1] px-2 py-0.5 rounded">
                         {project.complexity || "Intermediate"}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         {project.status || "Ready"}
                       </span>
                     </div>
                   </div>
 
                   {/* Project Title */}
-                  <h3 className="text-sm font-semibold text-[#f8fafc] group-hover:text-indigo-300 transition-colors line-clamp-1">
+                  <h3 className="text-sm font-display font-semibold text-[#1B2733] group-hover:text-[#1F2C4C] transition-colors line-clamp-1">
                     {project.title || "Untitled Project"}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#6C7D8E] line-clamp-2 leading-relaxed">
                     {project.description || "Production-grade academic software specification."}
                   </p>
                 </div>
 
                 {/* Footer: Date and Small Action Button (Open) */}
-                <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                <div className="pt-3 border-t border-[#D5DBE1]/60 flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#6C7D8E] font-medium">
+                    <Calendar className="w-3.5 h-3.5 text-[#6C7D8E]" />
                     <span>{project.date || "Recently saved"}</span>
                   </div>
 
                   <button
                     onClick={() => handleOpenProject(project)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.1] bg-[#111622] hover:bg-indigo-600 hover:text-white hover:border-indigo-500 text-slate-200 text-xs font-medium transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-[#F9FAFB] hover:bg-[#1F2C4C] hover:text-white hover:border-[#1F2C4C] text-[#1B2733] text-xs font-semibold transition-all cursor-pointer shadow-xs"
                   >
                     <span>Open</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -1889,8 +1889,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           onClick={handleChatOpen}
           className={`no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3.5 rounded-full font-bold text-sm shadow-xl transition-all duration-200 hover:scale-[1.04] active:scale-[0.98] cursor-pointer animate-fade-in ${
             isPremium
-              ? "bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-cyan-500/25"
-              : "border border-amber-500/40 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 shadow-amber-500/10 backdrop-blur-md"
+              ? "bg-[#1F2C4C] hover:bg-[#151F36] text-white shadow-lg"
+              : "border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] shadow-md"
           }`}
         >
           <span className="relative flex h-2.5 w-2.5">
@@ -1904,19 +1904,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Slide-out Tutor Chat Sidebar */}
       {plan && (
         <div
-          className={`no-print fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white/95 dark:bg-[#0f172a]/95 border-l border-slate-200 dark:border-white/10 backdrop-blur-2xl shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
+          className={`no-print fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white border-l border-[#D5DBE1] shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
             isChatOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/60">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-[#D5DBE1] bg-[#F9FAFB]">
             <div className="flex items-center gap-2.5">
               <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <h4 className="text-sm font-bold tracking-wide uppercase text-slate-900 dark:text-slate-100">Project Tutor</h4>
+              <h4 className="text-sm font-display font-semibold tracking-wide uppercase text-[#1B2733]">Project Tutor</h4>
             </div>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 text-xs font-semibold transition-all cursor-pointer"
+              className="p-1.5 rounded-[6px] border border-[#D5DBE1] text-[#6C7D8E] hover:text-[#1B2733] text-xs font-semibold transition-all cursor-pointer"
             >
               Close
             </button>
@@ -1934,8 +1934,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   <div
                     className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                       isUser
-                        ? "bg-cyan-500 text-slate-950 font-medium rounded-br-none shadow-md shadow-cyan-500/15"
-                        : "bg-slate-100 dark:bg-slate-800/90 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-white/10 rounded-bl-none"
+                        ? "bg-[#1F2C4C] text-white font-medium rounded-br-none shadow-xs"
+                        : "bg-[#F9FAFB] text-[#1B2733] border border-[#D5DBE1] rounded-bl-none"
                     }`}
                   >
                     <p className="whitespace-pre-wrap font-sans leading-relaxed">
@@ -1965,19 +1965,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           </div>
 
           {/* Input Bar Form */}
-          <form onSubmit={handleSendChatMessage} className="p-4 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-950/60 flex gap-2">
+          <form onSubmit={handleSendChatMessage} className="p-4 border-t border-[#D5DBE1] bg-[#F9FAFB] flex gap-2">
             <input
               type="text"
               placeholder="Ask Tutor a question..."
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               disabled={chatLoading}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs font-medium focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 placeholder:text-slate-400 disabled:opacity-50 transition-all duration-200"
+              className="flex-1 px-4 py-2.5 rounded-[6px] border border-[#D5DBE1] bg-white text-[#1B2733] text-xs font-medium focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] placeholder:text-[#6C7D8E]/60 disabled:opacity-50 transition-all duration-200"
             />
             <button
               type="submit"
               disabled={!chatInput.trim() || chatLoading}
-              className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer shadow-md shadow-cyan-500/20"
+              className="px-4 py-2.5 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer shadow-xs"
             >
               Send
             </button>
@@ -1988,15 +1988,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Debugger Get Help Modal */}
       {debugTask && (
         <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="w-full max-w-2xl bg-[#11141c] rounded-xl border border-white/[0.08] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+          <div className="w-full max-w-2xl bg-white rounded-xl border border-[#D5DBE1] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
             {/* Modal Header */}
-            <div className="p-5 border-b border-white/[0.08] bg-zinc-900/40 flex items-center justify-between">
+            <div className="p-5 border-b border-[#D5DBE1] bg-[#F9FAFB] flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-[#f8fafc] flex items-center gap-2">
+                <h3 className="text-sm font-display font-semibold text-[#1B2733] flex items-center gap-2">
                   Tutor Debugger: Task Support
                 </h3>
-                <span className="text-xs text-[#94a3b8] mt-0.5 block">
-                  Task: <span className="font-medium text-[#f8fafc]">"{debugTask.title}"</span>
+                <span className="text-xs text-[#6C7D8E] mt-0.5 block">
+                  Task: <span className="font-semibold text-[#1B2733]">"{debugTask.title}"</span>
                 </span>
               </div>
               <button
@@ -2005,7 +2005,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   setDebugErrorInput("");
                   setDebugResult("");
                 }}
-                className="p-1.5 rounded-lg border border-white/[0.08] text-zinc-400 hover:text-white text-xs font-medium transition-colors cursor-pointer"
+                className="p-1.5 rounded-[6px] border border-[#D5DBE1] text-[#6C7D8E] hover:text-[#1B2733] text-xs font-medium transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -2014,7 +2014,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* Modal Body */}
             <div className="p-5 overflow-y-auto flex flex-col gap-4 flex-1">
               <form onSubmit={handleFixCode} className="flex flex-col gap-3">
-                <label className="text-xs font-medium text-[#94a3b8]">
+                <label className="text-xs font-semibold text-[#1B2733]">
                   Paste Broken Code or Console Error
                 </label>
                 <textarea
@@ -2023,13 +2023,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   value={debugErrorInput}
                   onChange={(e) => setDebugErrorInput(e.target.value)}
                   disabled={debugLoading}
-                  className="w-full h-32 p-3 bg-[#0a0a0c] border border-white/[0.1] rounded-lg text-xs font-mono leading-relaxed text-zinc-300 focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 placeholder:text-[#64748b] disabled:opacity-50 transition-colors"
+                  className="w-full h-32 p-3 bg-[#F9FAFB] border border-[#D5DBE1] rounded-lg text-xs font-mono leading-relaxed text-[#1B2733] focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] placeholder:text-[#6C7D8E]/60 disabled:opacity-50 transition-colors"
                 />
                 
                 <button
                   type="submit"
                   disabled={!debugErrorInput.trim() || debugLoading}
-                  className="self-end px-4 py-2 rounded-lg bg-white text-zinc-950 hover:bg-zinc-200 font-medium text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer"
+                  className="self-end px-4 py-2 rounded-[6px] bg-[#1F2C4C] text-white hover:bg-[#151F36] font-semibold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-colors cursor-pointer shadow-xs"
                 >
                   {debugLoading ? "Analyzing Error..." : "Fix Code"}
                 </button>
@@ -2048,8 +2048,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                       <span className="text-xs text-[#94a3b8]">Tutor is analyzing your stack trace...</span>
                     </div>
                   ) : (
-                    <div className="p-3.5 rounded-lg border border-white/[0.08] bg-[#0a0a0c] overflow-x-auto max-h-[300px]">
-                      <pre className="text-xs text-zinc-200 font-sans leading-relaxed whitespace-pre-wrap">
+                    <div className="p-3.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] overflow-x-auto max-h-[300px]">
+                      <pre className="text-xs text-[#1B2733] font-mono leading-relaxed whitespace-pre-wrap">
                         {debugResult}
                       </pre>
                     </div>
@@ -2063,7 +2063,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Toast Notification for sharing */}
       {shareToast && (
-        <div className="no-print fixed bottom-6 right-6 z-50 px-3.5 py-2.5 rounded-lg border border-zinc-700 bg-zinc-900 text-zinc-200 text-xs font-medium shadow-2xl flex items-center gap-2">
+        <div className="no-print fixed bottom-6 right-6 z-50 px-3.5 py-2.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-900 text-xs font-semibold shadow-2xl flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>Link copied to clipboard!</span>
         </div>
@@ -2072,13 +2072,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Limit Reached Modal */}
       {showLimitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in no-print">
-          <div className="w-full max-w-md p-6 rounded-xl border border-white/[0.08] bg-[#11141c] shadow-2xl flex flex-col gap-5 text-center">
+          <div className="w-full max-w-md p-6 rounded-xl border border-[#D5DBE1] bg-white shadow-2xl flex flex-col gap-5 text-center">
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 mb-1">
+              <div className="w-10 h-10 rounded-[6px] bg-[#EEF1F4] border border-[#D5DBE1] flex items-center justify-center text-[#1F2C4C] mb-1">
                 <Zap className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-semibold text-[#f8fafc]">Weekly Generation Limit Reached</h3>
-              <p className="text-xs text-[#94a3b8] leading-relaxed">
+              <h3 className="text-base font-display font-semibold text-[#1B2733]">Weekly Generation Limit Reached</h3>
+              <p className="text-xs text-[#6C7D8E] leading-relaxed">
                 You've reached your free weekly limit. Upgrade to Pro for unlimited project scaffolds, full source downloads, and AI guides.
               </p>
             </div>
@@ -2089,13 +2089,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   setShowLimitModal(false);
                   router.push("/dashboard/pricing");
                 }}
-                className="w-full py-2.5 rounded-lg bg-white hover:bg-zinc-200 text-zinc-950 font-medium text-xs transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs transition-colors cursor-pointer shadow-xs"
               >
                 Upgrade to Pro
               </button>
               <button
                 onClick={() => setShowLimitModal(false)}
-                className="w-full py-2 rounded-lg border border-white/[0.08] bg-white/[0.04] text-zinc-300 hover:bg-white/[0.08] font-medium text-xs transition-colors cursor-pointer"
+                className="w-full py-2 rounded-[6px] border border-[#D5DBE1] bg-white text-[#6C7D8E] hover:bg-[#F9FAFB] font-medium text-xs transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -2107,14 +2107,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* AI Blueprint Generation Progress Modal */}
       {generationModalOpen && (
         <div className="no-print fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md p-6 rounded-2xl border border-white/[0.1] bg-[#0c1017] shadow-2xl shadow-indigo-950/50 flex flex-col gap-5">
+          <div className="w-full max-w-md p-6 rounded-2xl border border-[#D5DBE1] bg-white shadow-2xl flex flex-col gap-5">
             {/* Modal Header */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
                   generationError 
-                    ? "bg-rose-500/10 border-rose-500/30 text-rose-400" 
-                    : "bg-indigo-500/10 border-indigo-500/30 text-indigo-400"
+                    ? "bg-red-50 border-red-200 text-red-700" 
+                    : "bg-[#EEF1F4] border-[#D5DBE1] text-[#1F2C4C]"
                 }`}>
                   {generationError ? (
                     <AlertCircle className="w-5 h-5" />
@@ -2123,10 +2123,10 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <h3 className="text-base font-semibold text-[#f8fafc]">
+                  <h3 className="text-base font-display font-semibold text-[#1B2733]">
                     {generationError ? "Generation Failed" : "Generating Your Project Blueprint"}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-[#6C7D8E] mt-0.5">
                     {generationError 
                       ? "An issue occurred while communicating with the AI service." 
                       : `Architecting custom specifications for ${domain} (${complexity}).`}
@@ -2169,9 +2169,9 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               /* Steps Progress State */
               <div className="flex flex-col gap-4">
                 {/* Thin progress bar */}
-                <div className="w-full bg-white/[0.06] rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-[#EEF1F4] rounded-full h-1.5 overflow-hidden">
                   <div 
-                    className="bg-gradient-to-r from-indigo-500 via-blue-500 to-indigo-400 h-full transition-all duration-500 ease-out"
+                    className="bg-[#1F2C4C] h-full transition-all duration-500 ease-out"
                     style={{
                       width: `${Math.min(100, Math.max(8, ((generationStep + 0.5) / GENERATION_STEPS.length) * 100))}%`
                     }}
@@ -2190,34 +2190,34 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                         key={idx} 
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg border transition-all duration-300 ${
                           isCompleted
-                            ? "border-emerald-500/20 bg-emerald-500/5 text-slate-200"
+                            ? "border-emerald-200 bg-emerald-50 text-emerald-900"
                             : isInProgress
-                            ? "border-indigo-500/30 bg-indigo-500/10 text-white"
-                            : "border-transparent bg-transparent text-slate-500"
+                            ? "border-[#1F2C4C]/30 bg-[#EEF1F4] text-[#1B2733]"
+                            : "border-transparent bg-transparent text-[#6C7D8E]"
                         }`}
                       >
                         <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0">
                           {isCompleted ? (
-                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
                           ) : isInProgress ? (
-                            <Loader2 className="w-3.5 h-3.5 text-indigo-400 animate-spin" />
+                            <Loader2 className="w-3.5 h-3.5 text-[#1F2C4C] animate-spin" />
                           ) : (
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-600" />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#CBD3DC]" />
                           )}
                         </div>
 
                         <span className={`text-xs ${
                           isCompleted 
-                            ? "text-slate-300 font-medium" 
+                            ? "text-emerald-900 font-medium" 
                             : isInProgress 
-                            ? "text-indigo-200 font-semibold" 
-                            : "text-slate-500 font-normal"
+                            ? "text-[#1B2733] font-semibold" 
+                            : "text-[#6C7D8E] font-normal"
                         }`}>
                           {stepLabel}
                         </span>
 
                         {isInProgress && (
-                          <span className="ml-auto text-[10px] font-mono text-indigo-400 animate-pulse">
+                          <span className="ml-auto text-[10px] font-mono text-[#1F2C4C] animate-pulse">
                             Processing...
                           </span>
                         )}

@@ -109,7 +109,7 @@ export default function PricingPage() {
           email: user.email,
         },
         theme: {
-          color: "#8b5cf6",
+          color: "#1F2C4C",
         },
         modal: {
           ondismiss: function () {
@@ -147,63 +147,64 @@ export default function PricingPage() {
 
   if (!mounted) {
     return (
-      <div className="animate-pulse text-sm text-foreground/40 p-6 border border-border-accent bg-bg-accent/20 backdrop-blur-md rounded-3xl">
+      <div className="animate-pulse text-sm text-[#6C7D8E] p-6 border border-[#D5DBE1] bg-white rounded-xl shadow-xs">
         Loading pricing models...
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-8 pb-16 max-w-5xl mx-auto animate-fade-in">
+    <div className="flex flex-col gap-8 pb-16 max-w-5xl mx-auto font-body">
+      {/* Header */}
       <div className="text-center flex flex-col items-center gap-3">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-          <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+        <div className="inline-flex items-center gap-2 bg-white border border-[#D5DBE1] rounded-full px-3 py-1 text-xs font-semibold text-[#1B2733] shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-[#C7F03C]" />
           <span>Flexible Plans for Students</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-display font-semibold text-[#1B2733] tracking-tight">
           Choose the Perfect Plan for Your Academic Journey
-        </h2>
-        <p className="text-sm md:text-base text-foreground/60 max-w-2xl leading-relaxed">
+        </h1>
+        <p className="text-sm md:text-base text-[#6C7D8E] max-w-2xl leading-relaxed">
           Get expert-level project structures, source boilerplate, and instant PDF formats to ace your curriculum.
         </p>
       </div>
 
       {/* Pricing Cards Grid - Side-by-Side two column layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch mt-4 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch mt-2 w-full">
         {/* Free Plan Card */}
-        <div className="p-8 rounded-3xl border border-border-accent bg-bg-accent/10 flex flex-col justify-between transition-all duration-300">
+        <div className="bg-white border border-[#D5DBE1] rounded-xl p-8 flex flex-col justify-between shadow-xs">
           <div className="flex flex-col gap-6">
             <div>
-              <span className="text-[10px] font-bold text-foreground/45 uppercase tracking-widest block mb-1">
+              <span className="text-[11px] font-semibold tracking-wider text-[#6C7D8E] uppercase block mb-1">
                 Standard Access
               </span>
-              <h3 className="text-xl font-extrabold text-foreground">Free Plan</h3>
-              <p className="text-xs text-foreground/60 mt-1 leading-relaxed">
+              <h2 className="text-xl font-display font-semibold text-[#1B2733]">Free Plan</h2>
+              <p className="text-xs text-[#6C7D8E] mt-1 leading-relaxed">
                 Perfect for testing the AI generation capabilities.
               </p>
             </div>
 
-            <div className="flex items-baseline gap-1 py-2 border-b border-border-accent/30">
-              <span className="text-3xl font-extrabold text-foreground">₹0</span>
-              <span className="text-xs text-foreground/40 font-semibold">/ forever</span>
+            <div className="flex items-baseline gap-1 py-3 border-b border-[#D5DBE1]/60">
+              <span className="text-3xl font-display font-semibold text-[#1B2733]">₹0</span>
+              <span className="text-xs text-[#6C7D8E] font-medium">/ forever</span>
             </div>
 
             {/* Features List */}
             <div className="flex flex-col gap-3">
-              <span className="text-[10px] font-bold text-foreground/40 uppercase tracking-widest mb-1 block">
+              <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider mb-1 block">
                 What's Included:
               </span>
-              <ul className="flex flex-col gap-3 text-xs text-foreground/75">
+              <ul className="flex flex-col gap-3 text-xs text-[#1B2733]">
                 <li className="flex items-center gap-2.5">
-                  <Check className="w-4 h-4 text-primary shrink-0" />
+                  <Check className="w-4 h-4 text-[#1F2C4C] shrink-0" />
                   <span>1 Project Generation per week</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="w-4 h-4 text-primary shrink-0" />
+                  <Check className="w-4 h-4 text-[#1F2C4C] shrink-0" />
                   <span>Basic View Access</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="w-4 h-4 text-primary shrink-0" />
+                  <Check className="w-4 h-4 text-[#1F2C4C] shrink-0" />
                   <span>Community Support</span>
                 </li>
               </ul>
@@ -214,10 +215,10 @@ export default function PricingPage() {
             <button
               onClick={() => router.push("/dashboard")}
               disabled={!isPremium}
-              className={`w-full py-3 rounded-xl border font-bold text-sm text-center transition-all ${
+              className={`w-full py-3 bg-[#F9FAFB] border border-[#D5DBE1] text-[#1B2733] rounded-[6px] font-semibold text-sm text-center transition-all ${
                 !isPremium
-                  ? "border-primary/20 bg-primary/5 text-primary pointer-events-none cursor-default"
-                  : "border-border-accent hover:border-foreground/35 bg-bg-accent/40 text-foreground cursor-pointer"
+                  ? "text-[#6C7D8E] pointer-events-none cursor-default"
+                  : "hover:bg-white cursor-pointer shadow-xs"
               }`}
             >
               {!isPremium ? "Active Plan" : "Go to Dashboard"}
@@ -225,56 +226,56 @@ export default function PricingPage() {
           </div>
         </div>
 
-        {/* Pro Plan Card (Pop visually with border and glow) */}
-        <div className="p-8 rounded-3xl border-2 border-amber-500/80 bg-gradient-to-b from-amber-500/5 to-slate-900 flex flex-col justify-between transition-all duration-300 relative shadow-xl shadow-amber-500/5">
-          {/* Best Value Badge */}
-          <div className="absolute -top-3 right-6 px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-[9px] font-extrabold uppercase tracking-widest select-none">
+        {/* Pro Plan Card (Recommended) */}
+        <div className="bg-white border-2 border-[#1F2C4C] rounded-xl p-8 flex flex-col justify-between shadow-md relative">
+          {/* Badge */}
+          <div className="bg-[#C7F03C] text-[#1B2733] font-bold text-[9px] uppercase tracking-widest px-3 py-1 rounded-full absolute -top-3 right-6 shadow-xs select-none">
             Recommended
           </div>
 
           <div className="flex flex-col gap-6">
             <div>
-              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">
+              <span className="text-[11px] font-semibold tracking-wider text-[#1F2C4C] uppercase block mb-1">
                 Unlimited Access
               </span>
-              <h3 className="text-xl font-extrabold text-foreground">Pro Plan</h3>
-              <p className="text-xs text-foreground/60 mt-1 leading-relaxed">
+              <h2 className="text-xl font-display font-semibold text-[#1B2733]">Pro Plan</h2>
+              <p className="text-xs text-[#6C7D8E] mt-1 leading-relaxed">
                 Designed for active engineering students seeking top-tier blueprints.
               </p>
             </div>
 
-            <div className="flex items-baseline gap-2 py-2 border-b border-border-accent/30">
-              <span className="text-xs text-foreground/45 line-through font-bold">
+            <div className="flex items-baseline gap-2 py-3 border-b border-[#D5DBE1]/60">
+              <span className="text-xs text-[#6C7D8E] line-through font-semibold">
                 ₹99
               </span>
-              <span className="text-3xl font-extrabold text-amber-400">
+              <span className="text-3xl font-display font-semibold text-[#1B2733]">
                 ₹20
               </span>
-              <span className="text-xs text-foreground/40 font-semibold">
+              <span className="text-xs text-[#6C7D8E] font-medium">
                 / per month
               </span>
             </div>
 
             {/* Features List */}
             <div className="flex flex-col gap-3">
-              <span className="text-[10px] font-bold text-amber-400/40 uppercase tracking-widest mb-1 block">
+              <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider mb-1 block">
                 What's Included:
               </span>
-              <ul className="flex flex-col gap-3 text-xs text-foreground/80">
+              <ul className="flex flex-col gap-3 text-xs text-[#1B2733]">
                 <li className="flex items-center gap-2.5">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span className="font-semibold text-foreground">Unlimited Projects</span>
+                  <Check className="w-4 h-4 text-[#1F2C4C] shrink-0" />
+                  <span className="font-semibold text-[#1B2733]">Unlimited Projects</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span className="font-semibold text-foreground">One-Click PDF Export</span>
+                  <Check className="w-4 h-4 text-[#1F2C4C] shrink-0" />
+                  <span className="font-semibold text-[#1B2733]">One-Click PDF Export</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <Check className="w-4 h-4 text-[#1F2C4C] shrink-0" />
                   <span>Project History</span>
                 </li>
                 <li className="flex items-center gap-2.5">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                  <Check className="w-4 h-4 text-[#1F2C4C] shrink-0" />
                   <span>Priority AI Generation</span>
                 </li>
               </ul>
@@ -284,13 +285,13 @@ export default function PricingPage() {
           <div className="mt-8">
             {isPremium ? (
               <div className="flex flex-col gap-2">
-                <div className="w-full py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-sm text-center select-none flex items-center justify-center gap-1.5">
-                  <ShieldCheck className="w-4.5 h-4.5" />
-                  Pro Active
+                <div className="w-full py-3 bg-[#C7F03C]/20 border border-[#C7F03C] text-[#1B2733] font-bold rounded-[6px] text-sm text-center select-none flex items-center justify-center gap-2 shadow-xs">
+                  <ShieldCheck className="w-4.5 h-4.5 text-[#1F2C4C]" />
+                  <span>Pro Active</span>
                 </div>
                 <button
                   onClick={handleDowngradeMock}
-                  className="w-full py-2 text-[10px] uppercase font-bold text-foreground/35 hover:text-red-400 transition-colors cursor-pointer"
+                  className="w-full py-2 text-xs text-[#6C7D8E] hover:text-red-600 font-semibold transition-colors cursor-pointer"
                 >
                   Mock Downgrade (Testing)
                 </button>
@@ -299,17 +300,17 @@ export default function PricingPage() {
               <button
                 onClick={handleUpgradeNow}
                 disabled={loading}
-                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-[0.99] text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/10 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
+                className="w-full py-3 bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.99] text-white font-semibold rounded-[6px] text-sm transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4.5 h-4.5 animate-spin text-slate-950" />
-                    Processing upgrade...
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Processing upgrade...</span>
                   </>
                 ) : (
                   <>
-                    <Award className="w-4.5 h-4.5 text-slate-950" />
-                    Get Premium for ₹20/mo
+                    <Award className="w-4 h-4 text-[#C7F03C]" />
+                    <span>Get Premium for ₹20/mo</span>
                   </>
                 )}
               </button>
@@ -320,9 +321,9 @@ export default function PricingPage() {
 
       {/* Simulated Billing Toast */}
       {loading && (
-        <div className="fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-amber-500/30 bg-amber-950/90 text-amber-400 text-xs font-bold shadow-lg shadow-amber-950/50 animate-fade-in flex items-center gap-2">
-          <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />
-          Verifying transaction...
+        <div className="fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-[#1F2C4C] bg-white text-[#1B2733] text-xs font-semibold shadow-lg flex items-center gap-2.5 animate-fade-in">
+          <Loader2 className="w-4 h-4 text-[#1F2C4C] animate-spin" />
+          <span>Verifying transaction...</span>
         </div>
       )}
     </div>

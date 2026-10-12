@@ -41,10 +41,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${dmSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-background text-foreground relative selection:bg-zinc-800 selection:text-zinc-100">
+      <body className="min-h-full flex flex-col font-sans bg-[#EEF1F4] text-[#1B2733] relative selection:bg-[#C7F03C] selection:text-[#1B2733]">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >

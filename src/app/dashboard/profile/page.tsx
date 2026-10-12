@@ -66,23 +66,22 @@ function ProfileContent() {
   };
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in pb-12">
+    <div className="flex flex-col gap-6 font-body pb-12">
       <div>
-        <h2 className="text-xl font-extrabold tracking-tight flex items-center gap-2">
-          <User className="w-5 h-5 text-primary" />
+        <h2 className="text-xl font-display font-semibold tracking-tight text-[#1B2733] flex items-center gap-2">
+          <User className="w-5 h-5 text-[#1F2C4C]" />
           My Profile
         </h2>
-        <p className="text-sm text-foreground/60">
+        <p className="text-sm text-[#6C7D8E] mt-1">
           Review your student account credentials and learning tracking metrics.
         </p>
       </div>
 
-      <div className="p-6 md:p-8 rounded-3xl border border-border-accent bg-bg-accent/20 backdrop-blur-md shadow-sm flex flex-col md:flex-row gap-6 items-center">
-        {/* Glowing Profile Avatar */}
-        <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-purple-500 p-1 shadow-lg shadow-primary/20 flex items-center justify-center relative select-none">
-          <div className="w-full h-full rounded-full bg-slate-900 flex items-center justify-center text-foreground font-extrabold text-3xl">
-            {getInitials(name)}
-          </div>
+      {/* Main Profile Info Card */}
+      <div className="p-6 md:p-8 rounded-xl border border-[#D5DBE1] bg-white shadow-xs flex flex-col md:flex-row gap-6 items-center">
+        {/* Navy Profile Avatar with Chartreuse Accent Border */}
+        <div className="w-24 h-24 rounded-full bg-[#1F2C4C] border-2 border-[#C7F03C] shadow-xs flex items-center justify-center text-white font-display font-bold text-3xl shrink-0 select-none">
+          {getInitials(name)}
         </div>
 
         {/* User Info details */}
@@ -95,7 +94,7 @@ function ProfileContent() {
                     type="text"
                     value={editNameInput}
                     onChange={(e) => setEditNameInput(e.target.value)}
-                    className="px-3 py-1 rounded-lg border border-primary bg-background text-foreground text-sm font-semibold focus:outline-none"
+                    className="h-9 px-3 rounded-[6px] border border-[#D5DBE1] bg-[#F9FAFB] text-[#1B2733] text-sm font-semibold focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] transition-all"
                     placeholder="Enter name"
                     autoFocus
                     onKeyDown={(e) => {
@@ -105,20 +104,21 @@ function ProfileContent() {
                   />
                   <button
                     onClick={handleSaveName}
-                    className="p-1 rounded bg-primary/10 border border-primary/20 text-primary cursor-pointer hover:bg-primary/20 transition-all"
+                    className="p-2 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white cursor-pointer transition-colors shadow-xs"
+                    title="Save Name"
                   >
                     <Check className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
                 <>
-                  <h3 className="text-lg font-extrabold text-foreground">{name}</h3>
+                  <h3 className="text-lg font-display font-semibold text-[#1B2733]">{name}</h3>
                   <button
                     onClick={() => {
                       setEditNameInput(name);
                       setIsEditingName(true);
                     }}
-                    className="p-1 rounded text-foreground/45 hover:text-foreground hover:bg-bg-accent/40 transition-all cursor-pointer"
+                    className="p-1 rounded-[6px] text-[#6C7D8E] hover:text-[#1B2733] hover:bg-[#1F2C4C]/5 transition-colors cursor-pointer"
                     title="Edit Name"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
@@ -126,25 +126,25 @@ function ProfileContent() {
                 </>
               )}
             </div>
-            <span className="text-xs text-foreground/40 mt-1 block">Account Level: Standard Academic Tier</span>
+            <span className="text-xs text-[#6C7D8E] mt-1 block">Account Level: Standard Academic Tier</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-foreground/70">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#1B2733]">
             <div className="flex items-center gap-2 justify-center md:justify-start flex-wrap">
-              <Mail className="w-4 h-4 text-foreground/40" />
-              <span>{email}</span>
+              <Mail className="w-4 h-4 text-[#6C7D8E]" />
+              <span className="text-[#1B2733]">{email}</span>
               {isVerified ? (
-                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-extrabold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
                   ✅ Verified Account
                 </span>
               ) : (
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 font-extrabold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
+                  <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
                     ⚠️ Unverified Account
                   </span>
                   <button
                     onClick={handleInstantVerify}
-                    className="px-2 py-0.5 rounded-lg border border-primary/20 hover:border-primary bg-primary/5 hover:bg-primary/10 text-primary font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-all select-none"
+                    className="bg-[#1F2C4C] hover:bg-[#151F36] text-white text-[10px] px-2 py-0.5 rounded-[4px] font-semibold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors select-none"
                   >
                     Verify Now
                   </button>
@@ -152,15 +152,15 @@ function ProfileContent() {
               )}
             </div>
             <div className="flex items-center gap-2 justify-center md:justify-start">
-              <GraduationCap className="w-4 h-4 text-foreground/40" />
+              <GraduationCap className="w-4 h-4 text-[#6C7D8E]" />
               <span>Computer Science & Engineering</span>
             </div>
             <div className="flex items-center gap-2 justify-center md:justify-start">
-              <Calendar className="w-4 h-4 text-foreground/40" />
+              <Calendar className="w-4 h-4 text-[#6C7D8E]" />
               <span>Joined July 2026</span>
             </div>
             <div className="flex items-center gap-2 justify-center md:justify-start">
-              <Award className="w-4 h-4 text-foreground/40" />
+              <Award className="w-4 h-4 text-[#6C7D8E]" />
               <span>3 Blueprints Compiled</span>
             </div>
           </div>
@@ -168,14 +168,14 @@ function ProfileContent() {
       </div>
 
       {/* Account Control Actions */}
-      <div className="p-5 rounded-2xl border border-border-accent bg-bg-accent/10 flex flex-col gap-3">
-        <h4 className="text-xs font-bold text-foreground/50 uppercase tracking-wider">Account Operations</h4>
+      <div className="p-6 rounded-xl border border-[#D5DBE1] bg-white shadow-xs flex flex-col gap-3">
+        <h4 className="text-xs font-semibold text-[#6C7D8E] uppercase tracking-wider">Account Operations</h4>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={handleResetPassword}
-            className="px-4 py-2 rounded-xl border border-primary/20 hover:border-primary bg-primary/5 hover:bg-primary/10 text-primary text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
-            <Key className="w-4 h-4" />
+            <Key className="w-4 h-4 text-[#6C7D8E]" />
             Reset Password
           </button>
         </div>
@@ -183,9 +183,9 @@ function ProfileContent() {
 
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="no-print fixed bottom-24 right-6 z-50 px-4 py-3 rounded-xl border border-emerald-500/30 bg-emerald-950/90 text-emerald-400 text-xs font-bold shadow-lg shadow-emerald-950/50 animate-fade-in flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          {toastMessage}
+        <div className="no-print fixed bottom-24 right-6 z-50 px-4 py-3 rounded-[6px] border border-emerald-200 bg-emerald-50 text-emerald-900 text-xs font-semibold shadow-md flex items-center gap-2 transition-all">
+          <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{toastMessage}</span>
         </div>
       )}
     </div>
@@ -194,7 +194,13 @@ function ProfileContent() {
 
 export default function ProfilePage() {
   return (
-    <Suspense fallback={<div className="animate-pulse text-sm text-foreground/40 p-6 border border-border-accent bg-bg-accent/20 backdrop-blur-md rounded-3xl">Loading profile data...</div>}>
+    <Suspense
+      fallback={
+        <div className="animate-pulse text-sm text-[#6C7D8E] p-6 border border-[#D5DBE1] bg-white rounded-xl">
+          Loading profile data...
+        </div>
+      }
+    >
       <ProfileContent />
     </Suspense>
   );

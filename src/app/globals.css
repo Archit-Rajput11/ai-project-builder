@@ -20,24 +20,13 @@
 
 /* Light Theme Variables */
 :root {
-  --background: #ffffff;
-  --foreground: #09090b;
-  --border-accent: #e4e4e7;
-  --bg-accent: #f4f4f5;
-  --bg-elevated: #f4f4f5;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-}
-
-/* Dark Theme Variables (Raycast & Supabase Inspired Dark Developer Palette) */
-.dark {
-  --background: #080b11; /* Deepest canvas */
-  --foreground: #f8fafc; /* Crisp white typography */
-  --border-accent: rgba(255, 255, 255, 0.08); /* Crisp ultra-subtle border */
-  --bg-accent: #0c1017; /* Dark panel surface */
-  --bg-elevated: #111622; /* Elevated container / input surface */
-  --primary: #6366f1; /* Indigo highlight */
-  --primary-hover: #4f46e5;
+  --background: #EEF1F4;
+  --foreground: #1B2733;
+  --border-accent: #D5DBE1;
+  --bg-accent: #F9FAFB;
+  --bg-elevated: #FFFFFF;
+  --primary: #1F2C4C;
+  --primary-hover: #151F36;
 }
 
 /* Global resets and smooth transition effects */
@@ -47,8 +36,8 @@
 
 html, body {
   min-height: 100vh;
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: #EEF1F4;
+  color: #1B2733;
   transition-property: background-color, border-color, color, fill, stroke;
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -65,12 +54,12 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.2);
+  background: rgba(108, 125, 142, 0.25);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
+  background: rgba(108, 125, 142, 0.45);
 }
 
 /* Print Media Stylesheet for PDF Generation */
@@ -164,15 +153,30 @@ html, body {
   animation: lineTravel 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-studio-header,
   .animate-studio-hero,
   .animate-studio-form,
   .animate-photo-settle,
-  .animate-line-travel {
+  .animate-line-travel,
+  .animate-fade-in {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;
   }
 }
-
