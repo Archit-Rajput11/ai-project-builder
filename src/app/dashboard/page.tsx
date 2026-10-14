@@ -894,10 +894,10 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
   if (isProLoading) {
     return (
-      <div className="min-h-[400px] w-full flex items-center justify-center text-[#1B2733] font-body">
+      <div className="min-h-[400px] w-full flex items-center justify-center text-[#172033] dark:text-[#F1F5F9] font-body">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-[#1F2C4C] animate-spin" />
-          <p className="text-sm font-semibold text-[#6C7D8E] animate-pulse">Loading your profile...</p>
+          <Loader2 className="w-8 h-8 text-[#202D50] dark:text-[#C5F52D] animate-spin" />
+          <p className="text-sm font-semibold text-[#475569] dark:text-[#CBD5E1] animate-pulse">Loading your profile...</p>
         </div>
       </div>
     );
@@ -909,15 +909,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Two-Part Structured Dashboard Grid (Hidden during printing via CSS no-print) */}
       <div className="no-print grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Left Column: Configuration Form (lg:col-span-7) */}
-        <section className="lg:col-span-7 p-6 rounded-xl border border-[#D5DBE1] bg-white flex flex-col justify-between gap-5 shadow-xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#D5DBE1]/60">
+        <section className="lg:col-span-7 p-6 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex flex-col justify-between gap-5 shadow-xs transition-colors">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-[#CBD5E1]/60 dark:border-[#344456]">
             <div>
-              <h2 className="text-base sm:text-lg font-display font-semibold tracking-tight flex items-center gap-2 text-[#1B2733]">
-                <Zap className="w-4 h-4 text-[#1F2C4C]" />
+              <h2 className="text-base sm:text-lg font-display font-semibold tracking-tight flex items-center gap-2 text-[#172033] dark:text-[#F1F5F9]">
+                <Zap className="w-4 h-4 text-[#202D50] dark:text-[#C5F52D]" />
                 <span>Create Your Project Blueprint</span>
                 {isPremium && <ProBadge />}
               </h2>
-              <p className="text-xs text-[#6C7D8E] mt-0.5">
+              <p className="text-xs text-[#475569] dark:text-[#CBD5E1] mt-0.5">
                 Define preferences to generate a custom-tailored academic project plan.
               </p>
             </div>
@@ -925,30 +925,30 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* Account Tier Status Badge */}
             <div className="flex items-center select-none shrink-0">
               {isPremium ? (
-                <div className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-md border border-[#C7F03C]/30 bg-[#C7F03C]/10 text-[#1B2733]">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <div className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-md border border-[#C5F52D]/40 bg-[#C5F52D]/20 text-[#172033] dark:border-[#C5F52D]/50 dark:bg-[#C5F52D]/15 dark:text-[#C5F52D] shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_#10B981]" />
                   <span>Pro Plan: Unlimited</span>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] text-[#1B2733] text-xs">
+                <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] text-xs shadow-2xs">
                   <div className="flex flex-col text-left leading-tight">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-[#1B2733]">Free Plan</span>
-                      <span className="text-[11px] text-[#6C7D8E] font-medium">
+                      <span className="font-bold text-[#172033] dark:text-[#F1F5F9]">Free Plan</span>
+                      <span className="text-[11px] text-[#475569] dark:text-[#CBD5E1] font-semibold">
                         • {Math.max(0, 1 - generatedCount)} of 1 blueprint remaining
                       </span>
                     </div>
                     {generatedCount >= 1 && (
-                      <span className="text-[10px] text-amber-600 font-normal">
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">
                         Free generation used — upgrade for unlimited
                       </span>
                     )}
                   </div>
                   <button
                     onClick={() => router.push("/dashboard/pricing")}
-                    className="ml-1 px-2.5 py-1 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.98] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                    className="ml-1 px-2.5 py-1 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] active:scale-[0.98] text-xs font-bold shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0"
                   >
-                    <Sparkles className="w-3 h-3 text-white" />
+                    <Sparkles className="w-3 h-3 text-white dark:text-[#0F1720]" />
                     <span>Upgrade</span>
                   </button>
                 </div>
@@ -960,69 +960,69 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             {/* Domain Dropdown */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-[#1B2733]">
+              <label className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">
                 Domain
               </label>
               <div className="relative">
                 <select
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
-                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#D5DBE1] hover:border-[#CBD3DC] bg-[#F9FAFB] text-[#1B2733] text-xs font-medium focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] focus:outline-none cursor-pointer transition-colors"
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] hover:border-[#94A3B8] dark:hover:border-[#4B5E74] bg-white dark:bg-[#111B27] text-[#172033] dark:text-[#F1F5F9] text-xs font-semibold focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] focus:outline-none cursor-pointer transition-colors shadow-2xs"
                 >
-                  <option value="Web Development">Web Development</option>
-                  <option value="Mobile Apps">Mobile Apps</option>
-                  <option value="AI/ML">AI / Machine Learning</option>
-                  <option value="Blockchain">Blockchain Tech</option>
-                  <option value="Cybersecurity">Cybersecurity</option>
-                  <option value="IoT">Internet of Things (IoT)</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Web Development">Web Development</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Mobile Apps">Mobile Apps</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="AI/ML">AI / Machine Learning</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Blockchain">Blockchain Tech</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Cybersecurity">Cybersecurity</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="IoT">Internet of Things (IoT)</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6C7D8E] pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#52647A] dark:text-[#A7B6C8] pointer-events-none" />
               </div>
-              <p className="text-[11px] text-[#6C7D8E] leading-tight">
+              <p className="text-[11px] text-[#52647A] dark:text-[#A7B6C8] leading-tight">
                 Choose the primary area of your project.
               </p>
             </div>
 
             {/* Complexity Dropdown */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-[#1B2733]">
+              <label className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">
                 Complexity
               </label>
               <div className="relative">
                 <select
                   value={complexity}
                   onChange={(e) => setComplexity(e.target.value)}
-                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#D5DBE1] hover:border-[#CBD3DC] bg-[#F9FAFB] text-[#1B2733] text-xs font-medium focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] focus:outline-none cursor-pointer transition-colors"
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] hover:border-[#94A3B8] dark:hover:border-[#4B5E74] bg-white dark:bg-[#111B27] text-[#172033] dark:text-[#F1F5F9] text-xs font-semibold focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] focus:outline-none cursor-pointer transition-colors shadow-2xs"
                 >
-                  <option value="Basic">Basic (Scaffolding)</option>
-                  <option value="Intermediate">Intermediate (Full-Stack)</option>
-                  <option value="Advanced">Advanced (Scale)</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Basic">Basic (Scaffolding)</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Intermediate">Intermediate (Full-Stack)</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Advanced">Advanced (Scale)</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6C7D8E] pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#52647A] dark:text-[#A7B6C8] pointer-events-none" />
               </div>
-              <p className="text-[11px] text-[#6C7D8E] leading-tight">
+              <p className="text-[11px] text-[#52647A] dark:text-[#A7B6C8] leading-tight">
                 Controls how advanced the generated project architecture will be.
               </p>
             </div>
 
             {/* Skill Level Dropdown */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold text-[#1B2733]">
+              <label className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">
                 Skill Level
               </label>
               <div className="relative">
                 <select
                   value={skillLevel}
                   onChange={(e) => setSkillLevel(e.target.value)}
-                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#D5DBE1] hover:border-[#CBD3DC] bg-[#F9FAFB] text-[#1B2733] text-xs font-medium focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] focus:outline-none cursor-pointer transition-colors"
+                  className="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] hover:border-[#94A3B8] dark:hover:border-[#4B5E74] bg-white dark:bg-[#111B27] text-[#172033] dark:text-[#F1F5F9] text-xs font-semibold focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] focus:outline-none cursor-pointer transition-colors shadow-2xs"
                 >
-                  <option value="Beginner">Beginner (1st/2nd Yr)</option>
-                  <option value="Competent">Competent (3rd Yr)</option>
-                  <option value="Expert">Expert (Capstone)</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Beginner">Beginner (1st/2nd Yr)</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Competent">Competent (3rd Yr)</option>
+                  <option className="bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9]" value="Expert">Expert (Capstone)</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6C7D8E] pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#52647A] dark:text-[#A7B6C8] pointer-events-none" />
               </div>
-              <p className="text-[11px] text-[#6C7D8E] leading-tight">
+              <p className="text-[11px] text-[#52647A] dark:text-[#A7B6C8] leading-tight">
                 Helps tailor the project to your current experience.
               </p>
             </div>
@@ -1030,12 +1030,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
           {/* Custom Keywords / Pro Feature Locked Component */}
           {isPremium ? (
-            <div className="flex flex-col gap-1.5 p-3 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] transition-colors">
+            <div className="flex flex-col gap-1.5 p-3 rounded-lg border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111B27] transition-colors">
               <div className="flex items-center justify-between">
-                <label htmlFor="customKeywords" className="text-xs font-semibold text-[#1B2733]">
-                  Project Focus & Keywords <span className="text-[#6C7D8E] font-normal">(Optional)</span>
+                <label htmlFor="customKeywords" className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">
+                  Project Focus & Keywords <span className="text-[#52647A] dark:text-[#A7B6C8] font-normal">(Optional)</span>
                 </label>
-                <span className="text-[10px] font-semibold text-[#1B2733] bg-[#C7F03C]/20 border border-[#C7F03C]/30 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-[#172033] dark:text-[#C5F52D] bg-[#C5F52D]/20 dark:bg-[#C5F52D]/15 border border-[#C5F52D]/40 dark:border-[#C5F52D]/50 px-2 py-0.5 rounded shadow-2xs">
                   Pro Unlocked
                 </span>
               </div>
@@ -1045,36 +1045,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 placeholder="e.g., E-commerce, Healthcare, Fitness tracker, Real-time telemetry..."
                 value={customKeywords}
                 onChange={(e) => setCustomKeywords(e.target.value)}
-                className="px-3.5 py-2 rounded-[6px] border border-[#D5DBE1] bg-white text-[#1B2733] text-xs placeholder:text-[#6C7D8E]/50 focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] transition-colors"
+                className="px-3.5 py-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] text-xs placeholder:text-[#64748B] dark:placeholder:text-[#94A3B8] focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] transition-colors shadow-2xs font-normal"
               />
             </div>
           ) : (
-            <div className="p-3.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
+            <div className="p-3.5 rounded-lg border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111B27] flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors">
               <div className="flex flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-semibold text-[#1B2733]">
+                  <span className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">
                     Project Focus & Keywords
                   </span>
-                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white border border-[#D5DBE1] text-[#1B2733] text-[10px] font-medium">
-                    <Lock className="w-3 h-3 text-[#1F2C4C] shrink-0" />
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] text-[#172033] dark:text-[#F1F5F9] text-[10px] font-semibold">
+                    <Lock className="w-3 h-3 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
                     <span>Custom project keywords</span>
                   </div>
                 </div>
-                <p className="text-[11px] text-[#6C7D8E] leading-snug">
+                <p className="text-[11px] text-[#52647A] dark:text-[#A7B6C8] leading-snug">
                   Define specific technologies, features, or requirements for your project.
                 </p>
               </div>
 
               <div className="flex items-center gap-2.5 shrink-0 self-start sm:self-center">
-                <span className="text-[11px] font-medium text-[#6C7D8E]">
+                <span className="text-[11px] font-semibold text-[#52647A] dark:text-[#CBD5E1]">
                   Available with Pro
                 </span>
                 <button
                   type="button"
                   onClick={() => router.push("/dashboard/pricing")}
-                  className="px-2.5 py-1 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.98] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] active:scale-[0.98] text-xs font-bold shadow-xs transition-all cursor-pointer flex items-center gap-1"
                 >
-                  <Sparkles className="w-3 h-3 text-white" />
+                  <Sparkles className="w-3 h-3 text-white dark:text-[#0F1720]" />
                   <span>Upgrade</span>
                 </button>
               </div>
@@ -1086,7 +1086,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <button
               onClick={() => handleGenerate(false)}
               disabled={loading}
-              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs sm:text-sm shadow-xs active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-bold text-xs sm:text-sm shadow-xs active:scale-[0.99] disabled:opacity-40 disabled:pointer-events-none transition-all cursor-pointer"
             >
               {loading ? (
                 <>
@@ -1104,7 +1104,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {plan && (
               <button
                 onClick={handlePremiumPdfClick}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold text-xs sm:text-sm shadow-xs transition-colors cursor-pointer"
               >
                 {isPremium ? (
                   <>
@@ -1123,67 +1123,67 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </section>
 
         {/* Right Column: Live Blueprint Preview / Recent Specs (lg:col-span-5) */}
-        <aside className="lg:col-span-5 p-6 rounded-xl border border-[#D5DBE1] bg-white flex flex-col justify-between gap-4 shadow-xs">
-          <div className="flex items-center justify-between pb-3 border-b border-[#D5DBE1]/60">
+        <aside className="lg:col-span-5 p-6 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex flex-col justify-between gap-4 shadow-xs transition-colors">
+          <div className="flex items-center justify-between pb-3 border-b border-[#CBD5E1]/60 dark:border-[#344456]">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#1F2C4C]" />
-              <h3 className="text-sm font-display font-semibold text-[#1B2733]">Live Blueprint Specs</h3>
+              <Sparkles className="w-4 h-4 text-[#202D50] dark:text-[#C5F52D]" />
+              <h3 className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">Live Blueprint Specs</h3>
             </div>
-            <span className="text-[10px] font-mono text-[#1B2733] bg-[#EEF1F4] border border-[#D5DBE1] px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono text-[#172033] dark:text-[#C5F52D] bg-[#EEF1F5] dark:bg-[#202D3B] border border-[#CBD5E1] dark:border-[#344456] px-2 py-0.5 rounded font-bold">
               Active Parameters
             </span>
           </div>
 
           {/* Dynamic Wireframe / Specs Card */}
-          <div className="p-3.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] flex flex-col gap-2.5">
+          <div className="p-3.5 rounded-lg border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111B27] flex flex-col gap-2.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#6C7D8E]">Project Domain</span>
-              <span className="text-[#1B2733] font-semibold">{domain}</span>
+              <span className="text-[#52647A] dark:text-[#A7B6C8] font-medium">Project Domain</span>
+              <span className="text-[#172033] dark:text-[#F1F5F9] font-bold">{domain}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#6C7D8E]">Project Complexity</span>
-              <span className="text-[#1F2C4C] font-semibold">{complexity}</span>
+              <span className="text-[#52647A] dark:text-[#A7B6C8] font-medium">Project Complexity</span>
+              <span className="text-[#202D50] dark:text-[#C5F52D] font-bold">{complexity}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="text-[#6C7D8E]">Your Skill Level</span>
-              <span className="text-[#1B2733] font-medium">{skillLevel}</span>
+              <span className="text-[#52647A] dark:text-[#A7B6C8] font-medium">Your Skill Level</span>
+              <span className="text-[#172033] dark:text-[#F1F5F9] font-semibold">{skillLevel}</span>
             </div>
             {customKeywords && (
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[#6C7D8E]">Custom Keywords</span>
-                <span className="text-[#1B2733] font-mono text-[11px] truncate max-w-[150px]">{customKeywords}</span>
+                <span className="text-[#52647A] dark:text-[#A7B6C8] font-medium">Custom Keywords</span>
+                <span className="text-[#172033] dark:text-[#F1F5F9] font-mono text-[11px] truncate max-w-[150px] font-semibold">{customKeywords}</span>
               </div>
             )}
           </div>
 
           {/* Deliverables Overview Checklist */}
           <div className="flex flex-col gap-2 pt-1">
-            <span className="text-[11px] font-semibold text-[#6C7D8E] uppercase tracking-wider">
+            <span className="text-[11px] font-bold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider">
               Included with your blueprint:
             </span>
-            <div className="grid grid-cols-2 gap-2 text-xs text-[#1B2733]">
-              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
-                <span>Full Repo Tree</span>
+            <div className="grid grid-cols-2 gap-2 text-xs text-[#172033] dark:text-[#F1F5F9]">
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
+                <span className="font-medium">Full Repo Tree</span>
               </div>
-              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
-                <span>6-Wk Kanban</span>
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
+                <span className="font-medium">6-Wk Kanban</span>
               </div>
-              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
-                <span>IEEE Report Doc</span>
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
+                <span className="font-medium">IEEE Report Doc</span>
               </div>
-              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white border border-[#D5DBE1] shadow-xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#1F2C4C] shrink-0" />
-                <span>Viva Q&A Prep</span>
+              <div className="flex items-center gap-2 p-2 rounded-[6px] bg-white dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] shadow-xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
+                <span className="font-medium">Viva Q&A Prep</span>
               </div>
             </div>
           </div>
 
           {/* Quick Tip / Dev note */}
-          <div className="p-3 rounded-lg border border-[#D5DBE1] bg-[#EEF1F4] text-[11px] text-[#6C7D8E] leading-relaxed">
-            <span className="text-[#1F2C4C] font-semibold">Pro tip: </span>
+          <div className="p-3 rounded-lg border border-[#CBD5E1] dark:border-[#344456] bg-[#EEF1F5] dark:bg-[#202D3B] text-[11px] text-[#475569] dark:text-[#CBD5E1] leading-relaxed">
+            <span className="text-[#202D50] dark:text-[#C5F52D] font-bold">Pro tip: </span>
             All blueprints include starter boilerplate downloads and personalized AI Copilot master prompts.
           </div>
         </aside>
@@ -1191,7 +1191,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
 
       {/* Error Card */}
       {error && (
-        <div className="no-print p-4 rounded-[6px] border border-red-200 bg-red-50 text-red-900 text-sm font-medium animate-fade-in flex items-center gap-2 shadow-xs">
+        <div className="no-print p-4 rounded-[6px] border border-red-200 dark:border-red-900/40 bg-red-50 dark:bg-red-950/20 text-red-900 dark:text-red-300 text-sm font-semibold animate-fade-in flex items-center gap-2 shadow-xs">
           <span>{error}</span>
         </div>
       )}
@@ -1209,7 +1209,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           </div>
 
           {/* Tab Switcher Controls (Hidden during printing via CSS no-print) */}
-          <div className="no-print flex items-center justify-between border-b border-[#D5DBE1] gap-2 overflow-x-auto select-none">
+          <div className="no-print flex items-center justify-between border-b border-[#CBD5E1] dark:border-[#344456] gap-2 overflow-x-auto select-none">
             <div className="flex gap-1 md:gap-2">
               {[
                 { id: "overview", label: "Overview", icon: Award },
@@ -1226,11 +1226,11 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                     onClick={() => setActiveTab(tab.id as any)}
                     className={`flex items-center gap-2 px-3.5 py-2.5 text-xs font-medium border-b-2 cursor-pointer transition-colors ${
                       isActive
-                        ? "border-[#1F2C4C] text-[#1F2C4C] font-semibold"
-                        : "border-transparent text-[#6C7D8E] hover:text-[#1B2733]"
+                        ? "border-[#202D50] dark:border-[#C5F52D] text-[#202D50] dark:text-[#C5F52D] font-bold"
+                        : "border-transparent text-[#52647A] dark:text-[#A7B6C8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium"
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#1F2C4C]" : "text-[#6C7D8E]"}`} />
+                    <Icon className={`w-3.5 h-3.5 ${isActive ? "text-[#202D50] dark:text-[#C5F52D]" : "text-[#52647A] dark:text-[#A7B6C8]"}`} />
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -1242,7 +1242,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Share Project Button */}
               <button
                 onClick={handleShareProject}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
               >
                 Share
               </button>
@@ -1250,7 +1250,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Premium PDF Download */}
               <button
                 onClick={handlePremiumPdfClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
               >
                 <Award className="w-3.5 h-3.5 text-amber-400" />
                 <span>PDF Blueprint</span>
@@ -1260,7 +1260,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {isPremium && (
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Download</span>
@@ -1270,7 +1270,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* Sign Out Button */}
               <button
                 onClick={handleSignOut}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-transparent hover:border-red-200 text-[#6C7D8E] hover:text-red-600 hover:bg-red-50 font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-transparent hover:border-red-200 dark:hover:border-red-900/40 text-[#475569] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 font-semibold text-xs transition-colors cursor-pointer"
               >
                 Sign Out
               </button>
@@ -1283,12 +1283,12 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 1: OVERVIEW PANEL (Always visible in prints) */}
             <div className={`${activeTab === "overview" ? "block" : "hidden print:block"} flex flex-col gap-4 animate-fade-in`}>
               <div className="flex items-start justify-between gap-4">
-                <h3 className="text-xl font-display font-semibold tracking-tight text-[#1B2733]">{plan.projectTitle}</h3>
-                <span className="shrink-0 px-2.5 py-0.5 rounded-full text-xs font-semibold border border-[#D5DBE1] bg-[#EEF1F4] text-[#1B2733]">
+                <h3 className="text-xl font-display font-semibold tracking-tight text-[#172033] dark:text-[#F1F5F9]">{plan.projectTitle}</h3>
+                <span className="shrink-0 px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#CBD5E1] dark:border-[#344456] bg-[#EEF1F5] dark:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9]">
                   {plan.difficultyRating}
                 </span>
               </div>
-              <p className="text-sm text-[#6C7D8E] leading-relaxed border-l-2 border-[#1F2C4C] pl-4 py-1">
+              <p className="text-sm text-[#475569] dark:text-[#CBD5E1] leading-relaxed border-l-2 border-[#202D50] dark:border-[#C5F52D] pl-4 py-1 font-normal">
                 {plan.description}
               </p>
             </div>
@@ -1296,35 +1296,35 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 2: TECH STACK & GITHUB PANEL (Always visible in prints) */}
             <div className={`${activeTab === "tech" ? "block" : "hidden print:block"} flex flex-col gap-6 animate-fade-in`}>
               <div>
-                <h4 className="text-xs font-semibold mb-3 uppercase tracking-wider text-[#6C7D8E] print:text-black">
+                <h4 className="text-xs font-bold mb-3 uppercase tracking-wider text-[#52647A] dark:text-[#A7B6C8] print:text-black">
                   Recommended Tech Stack
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {/* Frontend Card */}
-                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
-                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Frontend</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
+                  <div className="p-4 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] shadow-xs transition-colors">
+                    <span className="text-xs font-bold text-[#202D50] dark:text-[#C5F52D] uppercase tracking-wider">Frontend</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#475569] dark:text-[#CBD5E1]">
                       {plan.techStack.frontend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Backend Card */}
-                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
-                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Backend</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
+                  <div className="p-4 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] shadow-xs transition-colors">
+                    <span className="text-xs font-bold text-[#202D50] dark:text-[#C5F52D] uppercase tracking-wider">Backend</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#475569] dark:text-[#CBD5E1]">
                       {plan.techStack.backend.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Database Card */}
-                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
-                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Database</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
+                  <div className="p-4 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] shadow-xs transition-colors">
+                    <span className="text-xs font-bold text-[#202D50] dark:text-[#C5F52D] uppercase tracking-wider">Database</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#475569] dark:text-[#CBD5E1]">
                       {plan.techStack.database.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
                   {/* Hosting & Tools Card */}
-                  <div className="p-4 rounded-xl border border-[#D5DBE1] bg-white text-[#1B2733] shadow-xs">
-                    <span className="text-xs font-bold text-[#1F2C4C] uppercase tracking-wider">Hosting & Tools</span>
-                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#6C7D8E]">
+                  <div className="p-4 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] shadow-xs transition-colors">
+                    <span className="text-xs font-bold text-[#202D50] dark:text-[#C5F52D] uppercase tracking-wider">Hosting & Tools</span>
+                    <ul className="mt-2 text-xs space-y-1.5 list-disc list-inside text-[#475569] dark:text-[#CBD5E1]">
                       {plan.techStack.hostingAndTools.map((item, idx) => <li key={idx}>{item}</li>)}
                     </ul>
                   </div>
@@ -1334,24 +1334,24 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               {/* GitHub Structure Terminal */}
               <div className="page-break">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#6C7D8E] print:text-black">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#52647A] dark:text-[#A7B6C8] print:text-black">
                     Repository Directory Tree
                   </h4>
                   <button
                     onClick={handleDownloadBoilerplate}
-                    className="no-print self-start flex items-center gap-2 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+                    className="no-print self-start flex items-center gap-2 px-3 py-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
                   >
                     {isPremium ? "📦 Download Starter Boilerplate" : "🔒 Unlock Starter Boilerplate"}
                   </button>
                 </div>
-                <div className="rounded-xl overflow-hidden border border-[#D5DBE1] bg-[#1F2C4C] text-white shadow-sm">
-                  <div className="flex items-center gap-2 px-4 py-2.5 bg-[#151F36] border-b border-[#1F2C4C] no-print">
+                <div className="rounded-xl overflow-hidden border border-[#CBD5E1] dark:border-[#344456] bg-[#0F1720] text-[#F1F5F9] shadow-sm">
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-[#111A25] border-b border-[#344456] no-print">
                     <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
                     <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
                     <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
-                    <span className="text-xs text-white/70 font-mono ml-2">repository-structure.txt</span>
+                    <span className="text-xs text-[#A7B6C8] font-mono ml-2">repository-structure.txt</span>
                   </div>
-                  <pre className="p-4 overflow-x-auto text-xs text-white/90 font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200">
+                  <pre className="p-4 overflow-x-auto text-xs text-[#F1F5F9] font-mono leading-relaxed max-h-[350px] print:max-h-none print:text-black print:bg-white print:border print:border-slate-200">
                     <code>{plan.githubStructure}</code>
                   </pre>
                 </div>
@@ -1362,10 +1362,10 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             <div className={`${activeTab === "roadmap" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in`}>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-wider text-[#6C7D8E]">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#52647A] dark:text-[#A7B6C8]">
                     Interactive Roadmap Kanban Board
                   </h4>
-                  <p className="text-xs text-[#6C7D8E] mt-0.5">
+                  <p className="text-xs text-[#52647A] dark:text-[#A7B6C8] mt-0.5">
                     Drag and drop cards between status columns to update your implementation progress.
                   </p>
                 </div>
@@ -1389,14 +1389,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                       const columnTasks = kanbanTasks[columnKey] || [];
 
                       return (
-                        <div key={columnKey} className="flex flex-col rounded-xl border border-[#D5DBE1] bg-[#F9FAFB] p-4 h-[600px] overflow-hidden shadow-xs">
+                        <div key={columnKey} className="flex flex-col rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111A25] p-4 h-[600px] overflow-hidden shadow-xs transition-colors">
                           {/* Column Header */}
-                          <div className="flex items-center justify-between border-b border-[#D5DBE1] pb-3 mb-3">
+                          <div className="flex items-center justify-between border-b border-[#CBD5E1] dark:border-[#344456] pb-3 mb-3">
                             <div className="flex items-center gap-2">
-                              <span className="px-2 py-0.5 rounded-[4px] text-xs font-semibold border border-[#D5DBE1] bg-white text-[#1B2733]">
+                              <span className="px-2.5 py-1 rounded-[4px] text-xs font-bold border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] shadow-2xs">
                                 {columnTitle}
                               </span>
-                              <span className="text-xs font-mono text-[#6C7D8E]">
+                              <span className="text-xs font-mono font-semibold text-[#52647A] dark:text-[#A7B6C8]">
                                 {columnTasks.length}
                               </span>
                             </div>
@@ -1419,36 +1419,36 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                                         ref={draggableProvided.innerRef}
                                         {...draggableProvided.draggableProps}
                                         {...draggableProvided.dragHandleProps}
-                                        className={`p-3.5 rounded-lg border bg-white cursor-grab active:cursor-grabbing hover:border-[#1F2C4C]/40 transition-colors select-none shadow-xs ${
+                                        className={`p-3.5 rounded-lg border bg-white dark:bg-[#182330] cursor-grab active:cursor-grabbing hover:border-[#202D50]/40 dark:hover:border-[#C5F52D]/40 transition-colors select-none shadow-xs ${
                                           draggableSnapshot.isDragging 
-                                            ? "border-[#1F2C4C] shadow-xl" 
-                                            : "border-[#D5DBE1]"
+                                            ? "border-[#202D50] dark:border-[#C5F52D] shadow-xl" 
+                                            : "border-[#CBD5E1] dark:border-[#344456]"
                                         }`}
                                       >
                                         <div className="flex items-center justify-between gap-2 mb-2">
-                                          <span className="text-[10px] font-semibold text-[#1F2C4C] bg-[#EEF1F4] px-1.5 py-0.5 rounded border border-[#D5DBE1] uppercase tracking-wider">
+                                          <span className="text-[10px] font-bold text-[#202D50] dark:text-[#C5F52D] bg-[#EEF1F5] dark:bg-[#202D3B] px-1.5 py-0.5 rounded border border-[#CBD5E1] dark:border-[#344456] uppercase tracking-wider">
                                             Week {task.week}
                                           </span>
                                           {getToolForTask(task) && (
-                                            <span className="text-[9px] font-medium text-[#6C7D8E] bg-[#F9FAFB] px-1.5 py-0.5 rounded border border-[#D5DBE1] uppercase tracking-wider">
+                                            <span className="text-[9px] font-semibold text-[#52647A] dark:text-[#A7B6C8] bg-[#F8FAFC] dark:bg-[#111B27] px-1.5 py-0.5 rounded border border-[#CBD5E1] dark:border-[#344456] uppercase tracking-wider">
                                               {getToolForTask(task)}
                                             </span>
                                           )}
                                         </div>
-                                        <h5 className="text-xs font-semibold text-[#1B2733] leading-tight mb-1">
+                                        <h5 className="text-xs font-bold text-[#172033] dark:text-[#F1F5F9] leading-tight mb-1">
                                           {task.title}
                                         </h5>
-                                        <p className="text-[11px] text-[#6C7D8E] leading-normal line-clamp-2">
+                                        <p className="text-[11px] text-[#475569] dark:text-[#CBD5E1] leading-normal line-clamp-2">
                                           {task.description}
                                         </p>
-                                        <div className="mt-3 pt-2 border-t border-[#D5DBE1]/60 flex items-center justify-between">
-                                          <span className="text-[9px] text-[#6C7D8E] font-mono">ID: {task.id}</span>
+                                        <div className="mt-3 pt-2 border-t border-[#CBD5E1]/60 dark:border-[#344456] flex items-center justify-between">
+                                          <span className="text-[9px] text-[#52647A] dark:text-[#A7B6C8] font-mono">ID: {task.id}</span>
                                           <button
                                             onClick={(e) => {
                                               e.stopPropagation();
                                               handleDebugClick(task);
                                             }}
-                                            className="px-2 py-0.5 rounded border border-[#D5DBE1] bg-[#F9FAFB] hover:bg-[#EEF1F4] text-[#1B2733] font-medium text-[10px] transition-colors cursor-pointer"
+                                            className="px-2 py-0.5 rounded border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111B27] hover:bg-[#EEF1F5] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold text-[10px] transition-colors cursor-pointer"
                                           >
                                             Debug
                                           </button>
@@ -1481,7 +1481,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 <h4 className="text-xs font-medium mb-3 uppercase tracking-wider text-[#94a3b8] print:text-black">
                   Report Abstract Skeleton
                 </h4>
-                <p className="text-xs sm:text-sm text-[#6C7D8E] leading-relaxed bg-white p-4 rounded-xl border border-[#D5DBE1] shadow-xs">
+                <p className="text-xs sm:text-sm text-[#475569] dark:text-[#CBD5E1] leading-relaxed bg-white dark:bg-[#182330] p-4 rounded-xl border border-[#CBD5E1] dark:border-[#344456] shadow-xs transition-colors">
                   {plan.reportOutline.abstract}
                 </p>
               </div>
@@ -1495,19 +1495,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   {plan.reportOutline.chapters.map((chapter, idx) => (
                     <details
                       key={idx}
-                      className="group p-3.5 rounded-xl border border-[#D5DBE1] bg-white open:bg-[#F9FAFB] transition-colors shadow-xs"
+                      className="group p-3.5 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] open:bg-[#F8FAFC] dark:open:bg-[#111B27] transition-colors shadow-xs"
                     >
-                      <summary className="flex items-center justify-between text-xs sm:text-sm font-semibold text-[#1B2733] cursor-pointer select-none outline-none">
+                      <summary className="flex items-center justify-between text-xs sm:text-sm font-bold text-[#172033] dark:text-[#F1F5F9] cursor-pointer select-none outline-none">
                         <span className="flex items-center gap-2">
-                          <span className="text-[#6C7D8E] font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
+                          <span className="text-[#52647A] dark:text-[#A7B6C8] font-mono text-xs">Chapter {chapter.chapterNumber}.</span>
                           {chapter.title}
                         </span>
-                        <ChevronRight className="w-3.5 h-3.5 text-[#6C7D8E] group-open:rotate-90 transition-transform duration-150 no-print" />
+                        <ChevronRight className="w-3.5 h-3.5 text-[#52647A] dark:text-[#A7B6C8] group-open:rotate-90 transition-transform duration-150 no-print" />
                       </summary>
                       
-                      <div className="mt-2.5 pl-4 border-l border-[#D5DBE1] space-y-1">
+                      <div className="mt-2.5 pl-4 border-l border-[#CBD5E1] dark:border-[#344456] space-y-1">
                         {chapter.subsections.map((sub, sidx) => (
-                          <div key={sidx} className="text-xs text-[#6C7D8E] py-0.5">
+                          <div key={sidx} className="text-xs text-[#475569] dark:text-[#CBD5E1] py-0.5">
                             {chapter.chapterNumber}.{sidx + 1} {sub}
                           </div>
                         ))}
@@ -1524,13 +1524,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 </h4>
                 <div className="grid grid-cols-1 gap-3">
                   {plan.vivaQuestions.map((q, idx) => (
-                    <div key={idx} className="p-4 rounded-xl border border-[#D5DBE1] bg-white shadow-xs">
+                    <div key={idx} className="p-4 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] shadow-xs transition-colors">
                       <div className="flex gap-2.5 items-start">
-                        <span className="text-xs font-bold text-[#1F2C4C] shrink-0 font-mono">Q{idx + 1}.</span>
-                        <h6 className="text-xs sm:text-sm font-semibold text-[#1B2733]">{q.question}</h6>
+                        <span className="text-xs font-bold text-[#202D50] dark:text-[#C5F52D] shrink-0 font-mono">Q{idx + 1}.</span>
+                        <h6 className="text-xs sm:text-sm font-bold text-[#172033] dark:text-[#F1F5F9]">{q.question}</h6>
                       </div>
-                      <div className="mt-2.5 pl-5 text-xs text-[#6C7D8E] print:text-gray-900 leading-relaxed border-t border-[#D5DBE1]/60 pt-2">
-                        <span className="font-semibold text-[#1F2C4C] print:text-zinc-900 uppercase mr-1 text-[10px]">Ideal Answer:</span>
+                      <div className="mt-2.5 pl-5 text-xs text-[#475569] dark:text-[#CBD5E1] print:text-gray-900 leading-relaxed border-t border-[#CBD5E1]/60 dark:border-[#344456] pt-2">
+                        <span className="font-bold text-[#202D50] dark:text-[#C5F52D] print:text-zinc-900 uppercase mr-1 text-[10px]">Ideal Answer:</span>
                         {q.idealAnswer}
                       </div>
                     </div>
@@ -1542,7 +1542,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               <div className="no-print flex items-center justify-end pt-3 border-t border-white/[0.08]">
                 <button
                   onClick={handleDownloadPDF}
-                  className="flex items-center gap-2 px-4 py-2 rounded-[6px] bg-[#1F2C4C] text-white hover:bg-[#151F36] font-semibold text-xs sm:text-sm transition-colors cursor-pointer shadow-xs"
+                  className="flex items-center gap-2 px-4 py-2 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-bold text-xs sm:text-sm transition-colors cursor-pointer shadow-xs"
                 >
                   <Download className="w-4 h-4" />
                   <span>Save Report Blueprint as PDF</span>
@@ -1554,26 +1554,26 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* TAB 5: AI COPILOT GUIDES PANEL */}
             <div className={`${activeTab === "copilot" ? "block" : "hidden"} flex flex-col gap-6 animate-fade-in no-print`}>
               {/* Hero Header */}
-              <div className="p-5 rounded-xl border border-[#D5DBE1] bg-white flex flex-col gap-1.5 shadow-xs">
-                <h4 className="text-sm font-display font-semibold text-[#1B2733] flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-[#1F2C4C]" />
+              <div className="p-5 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex flex-col gap-1.5 shadow-xs transition-colors">
+                <h4 className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-[#202D50] dark:text-[#C5F52D]" />
                   Select a week below for tool recommendations and development prompts.
                 </h4>
-                <p className="text-xs text-[#6C7D8E] leading-relaxed">
+                <p className="text-xs text-[#475569] dark:text-[#CBD5E1] leading-relaxed">
                   These guides matching your generated blueprint week objectives are custom compiled by our academic AI engine.
                 </p>
               </div>
 
               {/* Horizontal Row of Clickable Week Buttons */}
-              <div className="flex gap-2 border-b border-[#D5DBE1] pb-3 overflow-x-auto select-none">
+              <div className="flex gap-2 border-b border-[#CBD5E1] dark:border-[#344456] pb-3 overflow-x-auto select-none">
                 {plan.roadmapWeeks?.map((week) => (
                   <button
                     key={week.weekNumber}
                     onClick={() => setSelectedCopilotWeek(week.weekNumber)}
                     className={`px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
                       selectedCopilotWeek === week.weekNumber
-                        ? "bg-[#1F2C4C] text-white border-[#1F2C4C]"
-                        : "border-[#D5DBE1] bg-white text-[#6C7D8E] hover:text-[#1B2733] hover:border-[#1F2C4C]/30"
+                        ? "bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] border-transparent font-bold"
+                        : "border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#52647A] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:border-[#202D50]/30 font-medium"
                     }`}
                   >
                     Week {week.weekNumber}
@@ -1590,25 +1590,25 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                 const prompt = currentWeekObj.aiToolGuide?.masterPrompt || "";
 
                 return (
-                  <div className="p-6 rounded-xl border border-[#D5DBE1] bg-white flex flex-col gap-4 shadow-xs">
+                  <div className="p-6 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex flex-col gap-4 shadow-xs transition-colors">
                     {/* Tool Badge & Goal */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#D5DBE1]/60 pb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#CBD5E1]/60 dark:border-[#344456] pb-3">
                       <div>
-                        <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider">Phase {selectedCopilotWeek} Focus</span>
-                        <h4 className="text-sm sm:text-base font-display font-semibold text-[#1B2733] mt-0.5">
+                        <span className="text-[10px] font-bold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider">Phase {selectedCopilotWeek} Focus</span>
+                        <h4 className="text-sm sm:text-base font-display font-bold text-[#172033] dark:text-[#F1F5F9] mt-0.5">
                           {currentWeekObj.focusGoal}
                         </h4>
                       </div>
                       
-                      <span className="px-2.5 py-1 rounded-md border border-[#D5DBE1] bg-[#F9FAFB] text-[#1B2733] text-xs font-semibold">
+                      <span className="px-2.5 py-1 rounded-md border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111B27] text-[#172033] dark:text-[#F1F5F9] text-xs font-bold">
                         {tool}
                       </span>
                     </div>
 
                     {/* Why this tool? */}
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider">Why this tool?</span>
-                      <p className="text-xs text-[#6C7D8E] leading-relaxed bg-[#F9FAFB] p-3.5 rounded-lg border border-[#D5DBE1]">
+                      <span className="text-[10px] font-bold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider">Why this tool?</span>
+                      <p className="text-xs text-[#475569] dark:text-[#CBD5E1] leading-relaxed bg-[#F8FAFC] dark:bg-[#111B27] p-3.5 rounded-lg border border-[#CBD5E1] dark:border-[#344456]">
                         {justification}
                       </p>
                     </div>
@@ -1616,14 +1616,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                     {/* Master Prompt */}
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-semibold text-[#6C7D8E] uppercase tracking-wider">AI Master Prompt</span>
+                        <span className="text-[10px] font-bold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider">AI Master Prompt</span>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(prompt);
                             setCopiedWeek(selectedCopilotWeek);
                             setTimeout(() => setCopiedWeek(null), 2000);
                           }}
-                          className="px-3 py-1 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                          className="px-3 py-1 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] text-xs font-bold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
                         >
                           {copiedWeek === selectedCopilotWeek ? "✓ Copied!" : "Copy Master Prompt"}
                         </button>
@@ -1631,7 +1631,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                       <textarea
                         readOnly
                         value={prompt}
-                        className="w-full h-56 p-3.5 bg-[#F9FAFB] border border-[#D5DBE1] rounded-lg text-xs font-mono leading-relaxed text-[#1B2733] focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] resize-none"
+                        className="w-full h-56 p-3.5 bg-[#F8FAFC] dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] rounded-lg text-xs font-mono leading-relaxed text-[#172033] dark:text-[#F1F5F9] focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] resize-none"
                       />
                     </div>
                   </div>
@@ -1779,14 +1779,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       <section className="no-print flex flex-col gap-4 mt-2 mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-7 h-7 rounded-[6px] bg-[#1F2C4C] text-white shadow-xs">
+            <div className="flex items-center justify-center w-7 h-7 rounded-[6px] bg-[#202D50] dark:bg-[#C5F52D] text-white dark:text-[#0F1720] shadow-xs transition-colors">
               <FolderGit2 className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-display font-semibold tracking-tight text-[#1B2733]">
+              <h2 className="text-base font-display font-semibold tracking-tight text-[#172033] dark:text-[#F1F5F9]">
                 Recent Projects
               </h2>
-              <p className="text-xs text-[#6C7D8E]">
+              <p className="text-xs text-[#475569] dark:text-[#CBD5E1]">
                 Your saved project architectures and academic blueprint records
               </p>
             </div>
@@ -1795,7 +1795,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           {recentProjects.length > 0 && (
             <button
               onClick={() => router.push("/dashboard/projects")}
-              className="text-xs font-semibold text-[#1F2C4C] hover:text-[#151F36] flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-xs font-bold text-[#202D50] hover:text-[#15203C] dark:text-[#C5F52D] dark:hover:text-[#B3E325] flex items-center gap-1 transition-colors cursor-pointer"
             >
               <span>View all</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -1804,24 +1804,24 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
         </div>
 
         {loadingRecent ? (
-          <div className="p-8 rounded-xl border border-[#D5DBE1] bg-white flex items-center justify-center gap-3 text-xs text-[#6C7D8E] shadow-xs">
-            <Loader2 className="w-4 h-4 animate-spin text-[#1F2C4C]" />
+          <div className="p-8 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex items-center justify-center gap-3 text-xs text-[#52647A] dark:text-[#A7B6C8] shadow-xs transition-colors">
+            <Loader2 className="w-4 h-4 animate-spin text-[#202D50] dark:text-[#C5F52D]" />
             <span>Loading projects from database...</span>
           </div>
         ) : recentProjects.length === 0 ? (
-          <div className="p-8 sm:p-10 rounded-xl border border-dashed border-[#D5DBE1] bg-white text-center flex flex-col items-center justify-center gap-3.5 shadow-xs">
-            <div className="w-10 h-10 rounded-[6px] bg-[#1F2C4C] flex items-center justify-center text-white shadow-xs">
+          <div className="p-8 sm:p-10 rounded-xl border border-dashed border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-center flex flex-col items-center justify-center gap-3.5 shadow-xs transition-colors">
+            <div className="w-10 h-10 rounded-[6px] bg-[#202D50] dark:bg-[#C5F52D] flex items-center justify-center text-white dark:text-[#0F1720] shadow-xs">
               <FolderGit2 className="w-5 h-5" />
             </div>
             <div className="flex flex-col gap-1 max-w-sm">
-              <h3 className="text-sm font-display font-semibold text-[#1B2733]">No projects yet</h3>
-              <p className="text-xs text-[#6C7D8E] leading-relaxed">
+              <h3 className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">No projects yet</h3>
+              <p className="text-xs text-[#52647A] dark:text-[#A7B6C8] leading-relaxed">
                 Your generated project blueprints will appear here.
               </p>
             </div>
             <button
               onClick={handleScrollToConfig}
-              className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] active:scale-[0.99] text-white font-semibold text-xs shadow-xs transition-all cursor-pointer"
+              className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] active:scale-[0.99] font-bold text-xs shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Your First Project</span>
@@ -1832,19 +1832,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {recentProjects.map((project) => (
               <div
                 key={project.id}
-                className="p-5 rounded-xl border border-[#D5DBE1] bg-white hover:border-[#1F2C4C]/40 transition-all duration-150 flex flex-col justify-between gap-4 group shadow-xs"
+                className="p-5 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:border-[#202D50]/40 dark:hover:border-[#C5F52D]/40 transition-all duration-150 flex flex-col justify-between gap-4 group shadow-xs"
               >
                 <div className="flex flex-col gap-3">
                   {/* Top Badges: Domain, Complexity, Status */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[10px] font-semibold text-[#1F2C4C] bg-[#EEF1F4] border border-[#D5DBE1] px-2 py-0.5 rounded tracking-wide uppercase">
+                    <span className="text-[10px] font-bold text-[#202D50] dark:text-[#C5F52D] bg-[#EEF1F5] dark:bg-[#202D3B] border border-[#CBD5E1] dark:border-[#344456] px-2 py-0.5 rounded tracking-wide uppercase">
                       {project.domain || "Web Development"}
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-medium text-[#6C7D8E] bg-[#F9FAFB] border border-[#D5DBE1] px-2 py-0.5 rounded">
+                      <span className="text-[10px] font-semibold text-[#52647A] dark:text-[#A7B6C8] bg-[#F8FAFC] dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] px-2 py-0.5 rounded">
                         {project.complexity || "Intermediate"}
                       </span>
-                      <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 px-2 py-0.5 rounded">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         {project.status || "Ready"}
                       </span>
@@ -1852,26 +1852,26 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   </div>
 
                   {/* Project Title */}
-                  <h3 className="text-sm font-display font-semibold text-[#1B2733] group-hover:text-[#1F2C4C] transition-colors line-clamp-1">
+                  <h3 className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9] group-hover:text-[#202D50] dark:group-hover:text-[#C5F52D] transition-colors line-clamp-1">
                     {project.title || "Untitled Project"}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs text-[#6C7D8E] line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#475569] dark:text-[#CBD5E1] line-clamp-2 leading-relaxed">
                     {project.description || "Production-grade academic software specification."}
                   </p>
                 </div>
 
                 {/* Footer: Date and Small Action Button (Open) */}
-                <div className="pt-3 border-t border-[#D5DBE1]/60 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-[11px] text-[#6C7D8E] font-medium">
-                    <Calendar className="w-3.5 h-3.5 text-[#6C7D8E]" />
+                <div className="pt-3 border-t border-[#CBD5E1]/60 dark:border-[#344456] flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#52647A] dark:text-[#A7B6C8] font-medium">
+                    <Calendar className="w-3.5 h-3.5 text-[#52647A] dark:text-[#A7B6C8]" />
                     <span>{project.date || "Recently saved"}</span>
                   </div>
 
                   <button
                     onClick={() => handleOpenProject(project)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#D5DBE1] bg-[#F9FAFB] hover:bg-[#1F2C4C] hover:text-white hover:border-[#1F2C4C] text-[#1B2733] text-xs font-semibold transition-all cursor-pointer shadow-xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111B27] hover:bg-[#202D50] hover:text-white dark:hover:bg-[#C5F52D] dark:hover:text-[#0F1720] hover:border-[#202D50] dark:hover:border-[#C5F52D] text-[#172033] dark:text-[#F1F5F9] text-xs font-semibold transition-all cursor-pointer shadow-xs"
                   >
                     <span>Open</span>
                     <ArrowUpRight className="w-3.5 h-3.5" />
@@ -1889,8 +1889,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           onClick={handleChatOpen}
           className={`no-print fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3.5 rounded-full font-bold text-sm shadow-xl transition-all duration-200 hover:scale-[1.04] active:scale-[0.98] cursor-pointer animate-fade-in ${
             isPremium
-              ? "bg-[#1F2C4C] hover:bg-[#151F36] text-white shadow-lg"
-              : "border border-[#D5DBE1] bg-white hover:bg-[#F9FAFB] text-[#1B2733] shadow-md"
+              ? "bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] shadow-lg"
+              : "border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] shadow-md"
           }`}
         >
           <span className="relative flex h-2.5 w-2.5">
@@ -1904,19 +1904,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Slide-out Tutor Chat Sidebar */}
       {plan && (
         <div
-          className={`no-print fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white border-l border-[#D5DBE1] shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
+          className={`no-print fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white dark:bg-[#111A25] border-l border-[#CBD5E1] dark:border-[#344456] shadow-2xl flex flex-col transition-transform duration-300 ease-out ${
             isChatOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between px-6 py-5 border-b border-[#D5DBE1] bg-[#F9FAFB]">
+          <div className="flex items-center justify-between px-6 py-5 border-b border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#182330]">
             <div className="flex items-center gap-2.5">
               <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <h4 className="text-sm font-display font-semibold tracking-wide uppercase text-[#1B2733]">Project Tutor</h4>
+              <h4 className="text-sm font-display font-semibold tracking-wide uppercase text-[#172033] dark:text-[#F1F5F9]">Project Tutor</h4>
             </div>
             <button
               onClick={() => setIsChatOpen(false)}
-              className="p-1.5 rounded-[6px] border border-[#D5DBE1] text-[#6C7D8E] hover:text-[#1B2733] text-xs font-semibold transition-all cursor-pointer"
+              className="p-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] text-[#52647A] dark:text-[#A7B6C8] hover:text-[#172033] dark:hover:text-[#F1F5F9] text-xs font-semibold transition-all cursor-pointer"
             >
               Close
             </button>
@@ -1934,8 +1934,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   <div
                     className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
                       isUser
-                        ? "bg-[#1F2C4C] text-white font-medium rounded-br-none shadow-xs"
-                        : "bg-[#F9FAFB] text-[#1B2733] border border-[#D5DBE1] rounded-bl-none"
+                        ? "bg-[#202D50] text-white dark:bg-[#C5F52D] dark:text-[#0F1720] font-medium rounded-br-none shadow-xs"
+                        : "bg-[#F8FAFC] dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] border border-[#CBD5E1] dark:border-[#344456] rounded-bl-none"
                     }`}
                   >
                     <p className="whitespace-pre-wrap font-sans leading-relaxed">
@@ -1965,19 +1965,19 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
           </div>
 
           {/* Input Bar Form */}
-          <form onSubmit={handleSendChatMessage} className="p-4 border-t border-[#D5DBE1] bg-[#F9FAFB] flex gap-2">
+          <form onSubmit={handleSendChatMessage} className="p-4 border-t border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#182330] flex gap-2">
             <input
               type="text"
               placeholder="Ask Tutor a question..."
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               disabled={chatLoading}
-              className="flex-1 px-4 py-2.5 rounded-[6px] border border-[#D5DBE1] bg-white text-[#1B2733] text-xs font-medium focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] placeholder:text-[#6C7D8E]/60 disabled:opacity-50 transition-all duration-200"
+              className="flex-1 px-4 py-2.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#111B27] text-[#172033] dark:text-[#F1F5F9] text-xs font-semibold focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] placeholder:text-[#64748B] dark:placeholder:text-[#94A3B8] disabled:opacity-50 transition-all duration-200"
             />
             <button
               type="submit"
               disabled={!chatInput.trim() || chatLoading}
-              className="px-4 py-2.5 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer shadow-xs"
+              className="px-4 py-2.5 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-bold text-xs active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 cursor-pointer shadow-xs"
             >
               Send
             </button>
@@ -1988,15 +1988,15 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Debugger Get Help Modal */}
       {debugTask && (
         <div className="no-print fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="w-full max-w-2xl bg-white rounded-xl border border-[#D5DBE1] shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#182330] rounded-xl border border-[#CBD5E1] dark:border-[#344456] shadow-2xl overflow-hidden flex flex-col max-h-[85vh] transition-colors">
             {/* Modal Header */}
-            <div className="p-5 border-b border-[#D5DBE1] bg-[#F9FAFB] flex items-center justify-between">
+            <div className="p-5 border-b border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111A25] flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-display font-semibold text-[#1B2733] flex items-center gap-2">
+                <h3 className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
                   Tutor Debugger: Task Support
                 </h3>
-                <span className="text-xs text-[#6C7D8E] mt-0.5 block">
-                  Task: <span className="font-semibold text-[#1B2733]">"{debugTask.title}"</span>
+                <span className="text-xs text-[#52647A] dark:text-[#A7B6C8] mt-0.5 block">
+                  Task: <span className="font-bold text-[#172033] dark:text-[#F1F5F9]">"{debugTask.title}"</span>
                 </span>
               </div>
               <button
@@ -2005,7 +2005,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   setDebugErrorInput("");
                   setDebugResult("");
                 }}
-                className="p-1.5 rounded-[6px] border border-[#D5DBE1] text-[#6C7D8E] hover:text-[#1B2733] text-xs font-medium transition-colors cursor-pointer"
+                className="p-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] text-[#52647A] dark:text-[#A7B6C8] hover:text-[#172033] dark:hover:text-[#F1F5F9] text-xs font-semibold transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -2014,7 +2014,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
             {/* Modal Body */}
             <div className="p-5 overflow-y-auto flex flex-col gap-4 flex-1">
               <form onSubmit={handleFixCode} className="flex flex-col gap-3">
-                <label className="text-xs font-semibold text-[#1B2733]">
+                <label className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">
                   Paste Broken Code or Console Error
                 </label>
                 <textarea
@@ -2048,8 +2048,8 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                       <span className="text-xs text-[#94a3b8]">Tutor is analyzing your stack trace...</span>
                     </div>
                   ) : (
-                    <div className="p-3.5 rounded-lg border border-[#D5DBE1] bg-[#F9FAFB] overflow-x-auto max-h-[300px]">
-                      <pre className="text-xs text-[#1B2733] font-mono leading-relaxed whitespace-pre-wrap">
+                    <div className="p-3.5 rounded-lg border border-[#CBD5E1] dark:border-[#344456] bg-[#F8FAFC] dark:bg-[#111B27] overflow-x-auto max-h-[300px]">
+                      <pre className="text-xs text-[#172033] dark:text-[#F1F5F9] font-mono leading-relaxed whitespace-pre-wrap">
                         {debugResult}
                       </pre>
                     </div>
@@ -2072,13 +2072,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* Limit Reached Modal */}
       {showLimitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in no-print">
-          <div className="w-full max-w-md p-6 rounded-xl border border-[#D5DBE1] bg-white shadow-2xl flex flex-col gap-5 text-center">
+          <div className="w-full max-w-md p-6 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] shadow-2xl flex flex-col gap-5 text-center transition-colors">
             <div className="flex flex-col items-center gap-2">
-              <div className="w-10 h-10 rounded-[6px] bg-[#EEF1F4] border border-[#D5DBE1] flex items-center justify-center text-[#1F2C4C] mb-1">
+              <div className="w-10 h-10 rounded-[6px] bg-[#EEF1F5] dark:bg-[#202D3B] border border-[#CBD5E1] dark:border-[#344456] flex items-center justify-center text-[#202D50] dark:text-[#C5F52D] mb-1">
                 <Zap className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-display font-semibold text-[#1B2733]">Weekly Generation Limit Reached</h3>
-              <p className="text-xs text-[#6C7D8E] leading-relaxed">
+              <h3 className="text-base font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">Weekly Generation Limit Reached</h3>
+              <p className="text-xs text-[#52647A] dark:text-[#A7B6C8] leading-relaxed">
                 You've reached your free weekly limit. Upgrade to Pro for unlimited project scaffolds, full source downloads, and AI guides.
               </p>
             </div>
@@ -2089,13 +2089,13 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   setShowLimitModal(false);
                   router.push("/dashboard/pricing");
                 }}
-                className="w-full py-2.5 rounded-[6px] bg-[#1F2C4C] hover:bg-[#151F36] text-white font-semibold text-xs transition-colors cursor-pointer shadow-xs"
+                className="w-full py-2.5 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-bold text-xs transition-colors cursor-pointer shadow-xs"
               >
                 Upgrade to Pro
               </button>
               <button
                 onClick={() => setShowLimitModal(false)}
-                className="w-full py-2 rounded-[6px] border border-[#D5DBE1] bg-white text-[#6C7D8E] hover:bg-[#F9FAFB] font-medium text-xs transition-colors cursor-pointer"
+                className="w-full py-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#52647A] dark:text-[#A7B6C8] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] font-semibold text-xs transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -2107,14 +2107,14 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
       {/* AI Blueprint Generation Progress Modal */}
       {generationModalOpen && (
         <div className="no-print fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-md p-6 rounded-2xl border border-[#D5DBE1] bg-white shadow-2xl flex flex-col gap-5">
+          <div className="w-full max-w-md p-6 rounded-2xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] shadow-2xl flex flex-col gap-5 transition-colors">
             {/* Modal Header */}
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
                   generationError 
-                    ? "bg-red-50 border-red-200 text-red-700" 
-                    : "bg-[#EEF1F4] border-[#D5DBE1] text-[#1F2C4C]"
+                    ? "bg-red-50 dark:bg-red-950/40 border-red-200 dark:border-red-800/40 text-red-700 dark:text-red-400" 
+                    : "bg-[#EEF1F5] dark:bg-[#202D3B] border-[#CBD5E1] dark:border-[#344456] text-[#202D50] dark:text-[#C5F52D]"
                 }`}>
                   {generationError ? (
                     <AlertCircle className="w-5 h-5" />
@@ -2123,10 +2123,10 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <h3 className="text-base font-display font-semibold text-[#1B2733]">
+                  <h3 className="text-base font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">
                     {generationError ? "Generation Failed" : "Generating Your Project Blueprint"}
                   </h3>
-                  <p className="text-xs text-[#6C7D8E] mt-0.5">
+                  <p className="text-xs text-[#475569] dark:text-[#CBD5E1] mt-0.5">
                     {generationError 
                       ? "An issue occurred while communicating with the AI service." 
                       : `Architecting custom specifications for ${domain} (${complexity}).`}
@@ -2169,9 +2169,9 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               /* Steps Progress State */
               <div className="flex flex-col gap-4">
                 {/* Thin progress bar */}
-                <div className="w-full bg-[#EEF1F4] rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-[#EEF1F5] dark:bg-[#202D3B] rounded-full h-1.5 overflow-hidden">
                   <div 
-                    className="bg-[#1F2C4C] h-full transition-all duration-500 ease-out"
+                    className="bg-[#202D50] dark:bg-[#C5F52D] h-full transition-all duration-500 ease-out"
                     style={{
                       width: `${Math.min(100, Math.max(8, ((generationStep + 0.5) / GENERATION_STEPS.length) * 100))}%`
                     }}
@@ -2190,17 +2190,17 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                         key={idx} 
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg border transition-all duration-300 ${
                           isCompleted
-                            ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+                            ? "border-emerald-200 dark:border-emerald-800/40 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-300 font-semibold"
                             : isInProgress
-                            ? "border-[#1F2C4C]/30 bg-[#EEF1F4] text-[#1B2733]"
-                            : "border-transparent bg-transparent text-[#6C7D8E]"
+                            ? "border-[#202D50]/40 dark:border-[#C5F52D]/40 bg-[#EEF1F5] dark:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-bold"
+                            : "border-transparent bg-transparent text-[#52647A] dark:text-[#A7B6C8]"
                         }`}
                       >
                         <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0">
                           {isCompleted ? (
                             <Check className="w-3.5 h-3.5 text-emerald-600" />
                           ) : isInProgress ? (
-                            <Loader2 className="w-3.5 h-3.5 text-[#1F2C4C] animate-spin" />
+                            <Loader2 className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D] animate-spin" />
                           ) : (
                             <span className="w-1.5 h-1.5 rounded-full bg-[#CBD3DC]" />
                           )}
@@ -2217,7 +2217,7 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
                         </span>
 
                         {isInProgress && (
-                          <span className="ml-auto text-[10px] font-mono text-[#1F2C4C] animate-pulse">
+                          <span className="ml-auto text-[10px] font-mono font-bold text-[#202D50] dark:text-[#C5F52D] animate-pulse">
                             Processing...
                           </span>
                         )}

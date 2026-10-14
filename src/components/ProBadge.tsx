@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ProBadge() {
   return (
-    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border border-[#C7F03C]/30 bg-[#C7F03C]/10 text-[#1B2733]">
+    <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold tracking-wide border border-[#C5F52D]/40 bg-[#C5F52D]/20 text-[#172033] dark:border-[#C5F52D]/50 dark:bg-[#C5F52D]/15 dark:text-[#C5F52D] select-none shadow-2xs">
       PRO
     </span>
   );

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 import { supabase } from "@/lib/supabase";
+import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 export default function DashboardLayout({
   children,
@@ -63,34 +64,37 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col md:flex-row bg-[#EEF1F4] text-[#1B2733] font-body gap-0">
+    <div className="w-full min-h-screen flex flex-col md:flex-row bg-[#EEF1F5] dark:bg-[#0F1720] text-[#172033] dark:text-[#F1F5F9] font-body gap-0 transition-colors">
       {/* Mobile Top Header */}
-      <div className="md:hidden no-print flex items-center justify-between p-4 border-b border-[#D5DBE1] bg-white/90 backdrop-blur-md w-full">
+      <div className="md:hidden no-print flex items-center justify-between p-4 border-b border-[#CBD5E1] dark:border-[#344456] bg-white/95 dark:bg-[#111A25]/95 backdrop-blur-md w-full transition-colors">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-[6px] bg-[#1F2C4C] flex items-center justify-center text-white shadow-xs">
-            <Layers className="w-4 h-4 text-white stroke-[2.2]" />
+          <div className="w-7 h-7 rounded-[6px] bg-[#202D50] dark:bg-[#C5F52D] flex items-center justify-center text-white dark:text-[#0F1720] shadow-xs transition-colors">
+            <Layers className="w-4 h-4 stroke-[2.2]" />
           </div>
-          <span className="text-sm font-display font-semibold text-[#1B2733]">project<span className="text-[#6C7D8E]/70 font-normal">/</span>builder</span>
+          <span className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">project<span className="text-[#52647A] dark:text-[#A7B6C8] font-normal px-[1px]">/</span>builder</span>
         </div>
-        <button
-          onClick={() => setIsMobileOpen(true)}
-          className="p-2 rounded-[6px] border border-[#D5DBE1] bg-white text-[#6C7D8E] hover:text-[#1B2733] transition-colors cursor-pointer"
-          aria-label="Open navigation menu"
-        >
-          <Menu className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeSwitcher />
+          <button
+            onClick={() => setIsMobileOpen(true)}
+            className="p-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#334155] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] transition-colors cursor-pointer shadow-2xs"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Desktop Sidebar */}
       <aside 
-        className={`hidden md:flex no-print flex-col shrink-0 border-r border-[#D5DBE1] bg-white p-4 transition-all duration-150 ease-out ${
+        className={`hidden md:flex no-print flex-col shrink-0 border-r border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#111A25] p-4 transition-all duration-150 ease-out ${
           isExpanded ? "w-60" : "w-18"
         } relative min-h-screen`}
       >
         {/* Toggle Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="absolute -right-3 top-5 w-6 h-6 rounded-full border border-[#D5DBE1] bg-white flex items-center justify-center text-[#6C7D8E] hover:text-[#1B2733] hover:border-[#1F2C4C]/30 transition-colors cursor-pointer z-10 shadow-xs"
+          className="absolute -right-3 top-5 w-6 h-6 rounded-full border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex items-center justify-center text-[#52647A] dark:text-[#A7B6C8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:border-[#202D50]/40 dark:hover:border-[#C5F52D]/40 transition-colors cursor-pointer z-10 shadow-xs"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         >
           {isExpanded ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
@@ -98,17 +102,17 @@ export default function DashboardLayout({
 
         {/* Brand Header */}
         <div className="flex items-center gap-2.5 px-2 py-1 mb-6">
-          <div className="w-8 h-8 rounded-[6px] bg-[#1F2C4C] flex items-center justify-center text-white shadow-xs shrink-0">
-            <Layers className="w-4 h-4 text-white stroke-[2.2]" />
+          <div className="w-8 h-8 rounded-[6px] bg-[#202D50] dark:bg-[#C5F52D] flex items-center justify-center text-white dark:text-[#0F1720] shadow-xs shrink-0 transition-colors">
+            <Layers className="w-4 h-4 stroke-[2.2]" />
           </div>
           {isExpanded && (
             <div className="flex flex-col overflow-hidden">
-              <div className="flex items-center text-sm font-display font-semibold tracking-tight text-[#1B2733]">
+              <div className="flex items-center text-sm font-display font-semibold tracking-tight text-[#172033] dark:text-[#F1F5F9]">
                 <span>project</span>
-                <span className="text-[#6C7D8E]/70 font-normal px-[1px]">/</span>
+                <span className="text-[#52647A] dark:text-[#A7B6C8] font-normal px-[1px]">/</span>
                 <span>builder</span>
               </div>
-              <span className="text-[10px] font-medium text-[#6C7D8E] uppercase tracking-wider">
+              <span className="text-[10px] font-semibold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider">
                 Workspace
               </span>
             </div>
@@ -126,11 +130,11 @@ export default function DashboardLayout({
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2 text-xs transition-colors rounded-r-md ${
                   isActive 
-                    ? "bg-[#1F2C4C]/8 text-[#1F2C4C] border-l-2 border-[#C7F03C] font-semibold" 
-                    : "border-l-2 border-transparent text-[#6C7D8E] hover:text-[#1B2733] hover:bg-[#1F2C4C]/5"
+                    ? "bg-[#F1F5F9] dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] border-l-2 border-[#C5F52D] font-bold shadow-2xs" 
+                    : "border-l-2 border-transparent text-[#334155] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#182330]/60 font-medium"
                 }`}
               >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#1F2C4C]" : "text-[#6C7D8E]"}`} />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#202D50] dark:text-[#C5F52D]" : "text-[#52647A] dark:text-[#A7B6C8]"}`} />
                 {isExpanded && <span className="truncate">{item.name}</span>}
               </Link>
             );
@@ -138,10 +142,10 @@ export default function DashboardLayout({
         </nav>
 
         {/* Footer Logout */}
-        <div className="border-t border-[#D5DBE1]/60 pt-3 mt-auto">
+        <div className="border-t border-[#CBD5E1]/80 dark:border-[#344456] pt-3 mt-auto">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 text-[#6C7D8E] hover:text-red-600 hover:bg-red-50 text-xs font-medium transition-colors cursor-pointer"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 dark:hover:border-red-500/30 text-[#475569] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-semibold transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4 shrink-0" />
             {isExpanded && <span className="truncate">Sign Out</span>}
@@ -154,20 +158,20 @@ export default function DashboardLayout({
         <div className="fixed inset-0 z-50 md:hidden no-print flex">
           <div 
             onClick={() => setIsMobileOpen(false)}
-            className="fixed inset-0 bg-[#1B2733]/40 backdrop-blur-sm transition-opacity"
+            className="fixed inset-0 bg-[#0F1720]/60 backdrop-blur-sm transition-opacity"
           />
 
-          <div className="relative flex flex-col w-64 bg-white border-r border-[#D5DBE1] p-5 gap-6 h-full shadow-2xl">
+          <div className="relative flex flex-col w-64 bg-white dark:bg-[#111A25] border-r border-[#CBD5E1] dark:border-[#344456] p-5 gap-6 h-full shadow-2xl transition-colors">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-[6px] bg-[#1F2C4C] flex items-center justify-center text-white">
-                  <Layers className="w-4 h-4 text-white stroke-[2.2]" />
+                <div className="w-7 h-7 rounded-[6px] bg-[#202D50] dark:bg-[#C5F52D] flex items-center justify-center text-white dark:text-[#0F1720]">
+                  <Layers className="w-4 h-4 stroke-[2.2]" />
                 </div>
-                <span className="text-sm font-display font-semibold text-[#1B2733]">Navigation</span>
+                <span className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">Navigation</span>
               </div>
               <button
                 onClick={() => setIsMobileOpen(false)}
-                className="p-1.5 rounded-[6px] border border-[#D5DBE1] text-[#6C7D8E] hover:text-[#1B2733] transition-colors cursor-pointer"
+                className="p-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] text-[#52647A] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] transition-colors cursor-pointer"
                 aria-label="Close menu"
               >
                 <X className="w-4 h-4" />
@@ -185,8 +189,8 @@ export default function DashboardLayout({
                     onClick={() => setIsMobileOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2 text-xs transition-colors rounded-r-md ${
                       isActive 
-                        ? "bg-[#1F2C4C]/8 text-[#1F2C4C] border-l-2 border-[#C7F03C] font-semibold" 
-                        : "border-l-2 border-transparent text-[#6C7D8E] hover:text-[#1B2733] hover:bg-[#1F2C4C]/5"
+                        ? "bg-[#F1F5F9] dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] border-l-2 border-[#C5F52D] font-bold" 
+                        : "border-l-2 border-transparent text-[#334155] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#182330]/60 font-medium"
                     }`}
                   >
                     <Icon className="w-4 h-4 shrink-0" />
@@ -196,13 +200,13 @@ export default function DashboardLayout({
               })}
             </nav>
 
-            <div className="border-t border-[#D5DBE1]/60 pt-3 mt-auto">
+            <div className="border-t border-[#CBD5E1]/80 dark:border-[#344456] pt-3 mt-auto">
               <button
                 onClick={() => {
                   setIsMobileOpen(false);
                   handleSignOut();
                 }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 text-[#6C7D8E] hover:text-red-600 hover:bg-red-50 text-xs font-medium transition-colors cursor-pointer"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 dark:hover:border-red-500/30 text-[#475569] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-semibold transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4 shrink-0" />
                 <span>Sign Out</span>
@@ -215,50 +219,53 @@ export default function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 no-print w-full border-b border-[#D5DBE1]/60 bg-white/90 backdrop-blur-md px-6 py-3 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-30 no-print w-full border-b border-[#CBD5E1] dark:border-[#344456] bg-white/95 dark:bg-[#111A25]/95 backdrop-blur-md px-6 py-3 flex items-center justify-between gap-4 transition-colors">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs font-medium">
-            <span className="text-[#6C7D8E]">Projects</span>
-            <span className="text-[#D5DBE1]">/</span>
-            <span className="text-[#1B2733] font-semibold">{getBreadcrumbTitle()}</span>
+            <span className="text-[#475569] dark:text-[#A7B6C8]">Projects</span>
+            <span className="text-[#CBD5E1] dark:text-[#344456]">/</span>
+            <span className="text-[#172033] dark:text-[#F1F5F9] font-bold">{getBreadcrumbTitle()}</span>
           </div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
             {/* Search */}
             <div className="relative hidden sm:flex items-center">
-              <Search className="absolute left-2.5 w-3.5 h-3.5 text-[#6C7D8E] pointer-events-none" />
+              <Search className="absolute left-2.5 w-3.5 h-3.5 text-[#64748B] dark:text-[#94A3B8] pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search templates or stacks..."
-                className="pl-8 pr-3 py-1.5 rounded-[6px] bg-[#F9FAFB] border border-[#D5DBE1] text-xs text-[#1B2733] placeholder-[#6C7D8E]/60 focus:outline-none focus:border-[#1F2C4C] focus:ring-1 focus:ring-[#1F2C4C] w-52 transition-all"
+                className="pl-8 pr-3 py-1.5 rounded-[6px] bg-white dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] text-xs text-[#172033] dark:text-[#F1F5F9] placeholder-[#64748B] dark:placeholder-[#94A3B8] focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] w-52 transition-all shadow-2xs font-normal"
               />
             </div>
 
             {/* Pro Status */}
             {isPro ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold border border-[#C7F03C]/30 bg-[#C7F03C]/10 text-[#1B2733]">
-                <Sparkles className="w-3 h-3 text-[#1F2C4C]" />
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold tracking-wide border border-[#C5F52D]/40 bg-[#C5F52D]/20 text-[#172033] dark:border-[#C5F52D]/50 dark:bg-[#C5F52D]/15 dark:text-[#C5F52D] select-none shadow-2xs">
+                <Sparkles className="w-3 h-3 text-[#202D50] dark:text-[#C5F52D]" />
                 <span>Pro Member</span>
               </span>
             ) : (
               <Link
                 href="/dashboard/pricing"
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[11px] font-semibold border border-[#1F2C4C]/20 bg-[#1F2C4C]/5 text-[#1F2C4C] hover:bg-[#1F2C4C]/10 transition-colors"
+                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] transition-colors shadow-2xs"
               >
                 <span>Free Plan</span>
-                <span className="underline ml-0.5">Upgrade</span>
+                <span className="text-[#202D50] dark:text-[#C5F52D] underline ml-0.5">Upgrade</span>
               </Link>
             )}
 
-            {/* Avatar */}
-            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#1F2C4C] text-white text-xs font-bold">
+            {/* Theme Switcher Button */}
+            <ThemeSwitcher />
+
+            {/* User Avatar */}
+            <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#202D50] dark:bg-[#C5F52D] text-white dark:text-[#0F1720] text-xs font-bold shadow-xs select-none">
               ST
             </div>
           </div>
         </header>
 
-        {/* Content */}
+        {/* Content Pane */}
         <div className="flex-1 w-full px-6 md:px-8 py-6">
           {children}
         </div>

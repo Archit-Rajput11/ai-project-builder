@@ -7,10 +7,21 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-border-accent: var(--border-accent);
-  --color-bg-accent: var(--bg-accent);
+  --color-bg-card: var(--bg-card);
   --color-bg-elevated: var(--bg-elevated);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
+  --color-bg-sidebar: var(--bg-sidebar);
+  --color-bg-header: var(--bg-header);
+  --color-bg-input: var(--bg-input);
+  --color-border-input: var(--border-input);
+  --color-text-primary: var(--foreground);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-helper: var(--text-helper);
+  --color-text-placeholder: var(--text-placeholder);
+  --color-primary-btn: var(--primary-btn);
+  --color-primary-btn-text: var(--primary-btn-text);
+  --color-primary-btn-hover: var(--primary-btn-hover);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
   
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Roboto Mono, monospace;
@@ -20,13 +31,46 @@
 
 /* Light Theme Variables */
 :root {
-  --background: #EEF1F4;
-  --foreground: #1B2733;
-  --border-accent: #D5DBE1;
-  --bg-accent: #F9FAFB;
-  --bg-elevated: #FFFFFF;
-  --primary: #1F2C4C;
-  --primary-hover: #151F36;
+  --background: #EEF1F5;
+  --foreground: #172033;
+  --text-secondary: #475569;
+  --text-helper: #52647A;
+  --text-placeholder: #64748B;
+  --border-accent: #CBD5E1;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #F8FAFC;
+  --bg-sidebar: #FFFFFF;
+  --bg-header: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --border-input: #CBD5E1;
+  --primary-btn: #202D50;
+  --primary-btn-text: #FFFFFF;
+  --primary-btn-hover: #15203C;
+  --accent: #C5F52D;
+  --accent-text: #172033;
+  --link: #202D50;
+}
+
+/* Dark Theme Variables */
+.dark {
+  --background: #0F1720;
+  --foreground: #F1F5F9;
+  --text-secondary: #CBD5E1;
+  --text-helper: #A7B6C8;
+  --text-placeholder: #94A3B8;
+  --border-accent: #344456;
+  --bg-card: #182330;
+  --bg-elevated: #202D3B;
+  --bg-sidebar: #111A25;
+  --bg-header: #111A25;
+  --bg-input: #111B27;
+  --border-input: #344456;
+  --primary-btn: #C5F52D;
+  --primary-btn-text: #0F1720;
+  --primary-btn-hover: #B3E325;
+  --accent: #C5F52D;
+  --accent-text: #0F1720;
+  --link: #D6F77A;
 }
 
 /* Global resets and smooth transition effects */
@@ -36,8 +80,8 @@
 
 html, body {
   min-height: 100vh;
-  background-color: #EEF1F4;
-  color: #1B2733;
+  background-color: var(--background);
+  color: var(--foreground);
   transition-property: background-color, border-color, color, fill, stroke;
   transition-duration: 150ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -54,12 +98,31 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(108, 125, 142, 0.25);
+  background: rgba(100, 116, 139, 0.3);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(108, 125, 142, 0.45);
+  background: rgba(100, 116, 139, 0.55);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(167, 182, 200, 0.25);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(167, 182, 200, 0.45);
+}
+
+/* Form Dropdown Options styling for cross-browser contrast */
+select option {
+  background-color: #FFFFFF;
+  color: #172033;
+}
+
+.dark select option {
+  background-color: #182330;
+  color: #F1F5F9;
 }
 
 /* Print Media Stylesheet for PDF Generation */
@@ -100,7 +163,7 @@ html, body {
   }
 }
 
-/* Editorial Studio Auth Page Animations */
+/* Animations */
 @keyframes studioRise {
   from {
     opacity: 0;
@@ -154,18 +217,12 @@ html, body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out both;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

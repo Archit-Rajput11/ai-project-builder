@@ -41,12 +41,15 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${dmSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-[#EEF1F4] text-[#1B2733] relative selection:bg-[#C7F03C] selection:text-[#1B2733]">
+      <body 
+        className="min-h-full flex flex-col font-sans bg-[#EEF1F5] dark:bg-[#0F1720] text-[#172033] dark:text-[#F1F5F9] relative selection:bg-[#C5F52D] selection:text-[#172033] transition-colors duration-150"
+        suppressHydrationWarning
+      >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange={false}
         >
           <div className="relative z-10 flex flex-col min-h-screen">
             {children}
