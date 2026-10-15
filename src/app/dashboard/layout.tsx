@@ -16,7 +16,8 @@ import {
   Layers,
   Zap,
   Search,
-  Sparkles
+  Sparkles,
+  Compass
 } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 import { supabase } from "@/lib/supabase";
@@ -36,6 +37,7 @@ export default function DashboardLayout({
   const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "My Projects", href: "/dashboard/projects", icon: FolderGit2 },
+    { name: "AI Mentor", href: "/dashboard/mentor", icon: Compass },
     { name: "Profile", href: "/dashboard/profile", icon: User },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
     { name: isPro ? "Subscription" : "Upgrade to Pro", href: "/dashboard/pricing", icon: Zap },
@@ -57,6 +59,7 @@ export default function DashboardLayout({
 
   const getBreadcrumbTitle = () => {
     if (pathname === "/dashboard/projects") return "My Projects";
+    if (pathname === "/dashboard/mentor") return "AI Project Mentor";
     if (pathname === "/dashboard/profile") return "User Profile";
     if (pathname === "/dashboard/settings") return "Workspace Settings";
     if (pathname === "/dashboard/pricing") return "Subscription & Plans";
