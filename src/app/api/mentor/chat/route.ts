@@ -59,6 +59,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
     }
 
+    if (project.user_id !== lookupKey && project.user_id !== userId && project.user_id !== userEmail) {
+      return NextResponse.json({ error: "Forbidden: You do not own this project." }, { status: 403 });
+    }
+
     const bp = project.blueprint_data || {};
     const roadmap = await getProjectMentorRoadmap(projectId, lookupKey);
 

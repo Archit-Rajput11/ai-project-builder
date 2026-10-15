@@ -315,29 +315,44 @@ Existing Weekly Focus Goals: ${(bp.roadmapWeeks || []).map((w: any) => `Week ${w
       if (responseText) {
         const parsed = JSON.parse(responseText);
         if (parsed.phases && Array.isArray(parsed.phases) && parsed.phases.length > 0) {
+          const mergedProgress: Record<string, TaskProgressEntry> = { ...(existingProgress || {}) };
+
+          const normalizedPhases: MentorPhase[] = parsed.phases.map((p: any, pIdx: number) => {
+            const phaseId = `phase-${pIdx + 1}`;
+            return {
+              id: phaseId,
+              phaseNumber: pIdx + 1,
+              title: p.title || `Phase ${pIdx + 1}`,
+              description: p.description || "",
+              tasks: (p.tasks || []).map((t: any, tIdx: number) => {
+                const taskId = `task-${pIdx + 1}-${tIdx + 1}`;
+                // If progress was saved under Gemini's raw t.id, bridge it to deterministic taskId
+                if (t.id && mergedProgress[t.id] && !mergedProgress[taskId]) {
+                  mergedProgress[taskId] = mergedProgress[t.id];
+                }
+                const effortStr = typeof t.estimatedEffort === "string" ? t.estimatedEffort : "1 - 2 hours";
+                return {
+                  id: taskId,
+                  title: t.title || `Task ${tIdx + 1}`,
+                  explanation: t.explanation || "",
+                  whyItMatters: t.whyItMatters || "",
+                  whatToLearn: t.whatToLearn || "",
+                  prerequisites: Array.isArray(t.prerequisites) ? t.prerequisites : [],
+                  estimatedEffort: effortStr.startsWith("Est.") ? effortStr : `Est. ${effortStr}`,
+                  learningResources: Array.isArray(t.learningResources) && t.learningResources.length > 0
+                    ? t.learningResources
+                    : resolveTechResources(allTechs),
+                };
+              }),
+            };
+          });
+
           const newRoadmap: MentorRoadmap = {
             projectId: String(project.id),
             projectTitle: parsed.projectTitle || projectTitle,
             summary: parsed.summary || `Personalized implementation roadmap for ${projectTitle}.`,
-            phases: parsed.phases.map((p: any, pIdx: number) => ({
-              id: p.id || `phase-${pIdx + 1}`,
-              phaseNumber: p.phaseNumber || pIdx + 1,
-              title: p.title,
-              description: p.description,
-              tasks: (p.tasks || []).map((t: any, tIdx: number) => ({
-                id: t.id || `task-${pIdx + 1}-${tIdx + 1}`,
-                title: t.title,
-                explanation: t.explanation,
-                whyItMatters: t.whyItMatters,
-                whatToLearn: t.whatToLearn,
-                prerequisites: Array.isArray(t.prerequisites) ? t.prerequisites : [],
-                estimatedEffort: t.estimatedEffort.startsWith("Est.") ? t.estimatedEffort : `Est. ${t.estimatedEffort}`,
-                learningResources: Array.isArray(t.learningResources) && t.learningResources.length > 0
-                  ? t.learningResources
-                  : resolveTechResources(allTechs),
-              })),
-            })),
-            taskProgress: existingProgress || {},
+            phases: normalizedPhases,
+            taskProgress: mergedProgress,
           };
 
           await saveProjectMentorRoadmap(newRoadmap, userId);

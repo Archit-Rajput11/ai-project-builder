@@ -201,6 +201,13 @@ function MentorPageContent() {
         const data = await res.json();
         if (data.roadmap) {
           setRoadmap(data.roadmap);
+          const notesMap: Record<string, string> = {};
+          if (data.roadmap.taskProgress) {
+            Object.entries(data.roadmap.taskProgress).forEach(([tid, entry]: [string, any]) => {
+              if (entry.notes) notesMap[tid] = entry.notes;
+            });
+          }
+          setTaskNotes(notesMap);
           setRefineModalOpen(false);
           setRefineInput("");
         }
