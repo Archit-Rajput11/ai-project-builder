@@ -72,7 +72,7 @@ function ProfileContent() {
           <User className="w-5 h-5 text-[#202D50] dark:text-[#C5F52D]" />
           My Profile
         </h2>
-        <p className="text-sm text-[#475569] dark:text-[#CBD5E1] mt-1">
+        <p className="text-sm text-[#334155] dark:text-[#CBD5E1] mt-1">
           Review your student account credentials and learning tracking metrics.
         </p>
       </div>
@@ -94,7 +94,7 @@ function ProfileContent() {
                     type="text"
                     value={editNameInput}
                     onChange={(e) => setEditNameInput(e.target.value)}
-                    className="h-9 px-3 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#111B27] text-[#172033] dark:text-[#F1F5F9] text-sm font-semibold focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] transition-all"
+                    className="h-9 px-3 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#111B27] text-[#172033] dark:text-[#F1F5F9] placeholder-[#566880] dark:placeholder-[#A3B3C7] text-sm font-semibold focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] transition-all"
                     placeholder="Enter name"
                     autoFocus
                     onKeyDown={(e) => {
@@ -112,13 +112,13 @@ function ProfileContent() {
                 </div>
               ) : (
                 <>
-                  <h3 className="text-lg font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">{name}</h3>
+                  <h3 className="text-lg font-display font-bold text-[#172033] dark:text-[#F1F5F9]">{name}</h3>
                   <button
                     onClick={() => {
                       setEditNameInput(name);
                       setIsEditingName(true);
                     }}
-                    className="p-1 rounded-[6px] text-[#52647A] dark:text-[#A7B6C8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#EEF1F5] dark:hover:bg-[#202D3B] transition-colors cursor-pointer"
+                    className="p-1 rounded-[6px] text-[#405169] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#EEF1F5] dark:hover:bg-[#202D3B] transition-colors cursor-pointer"
                     title="Edit Name"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
@@ -126,13 +126,13 @@ function ProfileContent() {
                 </>
               )}
             </div>
-            <span className="text-xs text-[#52647A] dark:text-[#A7B6C8] mt-1 block">Account Level: Standard Academic Tier</span>
+            <span className="text-xs text-[#405169] dark:text-[#CBD5E1] font-semibold mt-1 block">Account Level: Standard Academic Tier</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#172033] dark:text-[#F1F5F9]">
             <div className="flex items-center gap-2 justify-center md:justify-start flex-wrap">
-              <Mail className="w-4 h-4 text-[#52647A] dark:text-[#A7B6C8]" />
-              <span className="text-[#172033] dark:text-[#F1F5F9] font-medium">{email}</span>
+              <Mail className="w-4 h-4 text-[#405169] dark:text-[#CBD5E1]" />
+              <span className="text-[#172033] dark:text-[#F1F5F9] font-semibold">{email}</span>
               {isVerified ? (
                 <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40 font-bold text-[9px] uppercase tracking-wider flex items-center gap-1 select-none">
                   ✅ Verified Account
@@ -144,7 +144,7 @@ function ProfileContent() {
                   </span>
                   <button
                     onClick={handleInstantVerify}
-                    className="bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] text-[10px] px-2 py-0.5 rounded-[4px] font-semibold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors select-none"
+                    className="bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] text-[10px] px-2 py-0.5 rounded-[4px] font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer transition-colors select-none"
                   >
                     Verify Now
                   </button>
@@ -152,16 +152,16 @@ function ProfileContent() {
               )}
             </div>
             <div className="flex items-center gap-2 justify-center md:justify-start">
-              <GraduationCap className="w-4 h-4 text-[#52647A] dark:text-[#A7B6C8]" />
-              <span>Computer Science & Engineering</span>
+              <GraduationCap className="w-4 h-4 text-[#405169] dark:text-[#CBD5E1]" />
+              <span className="font-medium text-[#172033] dark:text-[#F1F5F9]">Computer Science & Engineering</span>
             </div>
             <div className="flex items-center gap-2 justify-center md:justify-start">
-              <Calendar className="w-4 h-4 text-[#52647A] dark:text-[#A7B6C8]" />
-              <span>Joined July 2026</span>
+              <Calendar className="w-4 h-4 text-[#405169] dark:text-[#CBD5E1]" />
+              <span className="font-medium text-[#172033] dark:text-[#F1F5F9]">Joined July 2026</span>
             </div>
             <div className="flex items-center gap-2 justify-center md:justify-start">
-              <Award className="w-4 h-4 text-[#52647A] dark:text-[#A7B6C8]" />
-              <span>3 Blueprints Compiled</span>
+              <Award className="w-4 h-4 text-[#405169] dark:text-[#CBD5E1]" />
+              <span className="font-medium text-[#172033] dark:text-[#F1F5F9]">3 Blueprints Compiled</span>
             </div>
           </div>
         </div>
@@ -169,13 +169,13 @@ function ProfileContent() {
 
       {/* Account Control Actions */}
       <div className="p-6 rounded-xl border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] shadow-xs flex flex-col gap-3 transition-colors">
-        <h4 className="text-xs font-semibold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider">Account Operations</h4>
+        <h4 className="text-xs font-bold text-[#405169] dark:text-[#CBD5E1] uppercase tracking-wider">Account Operations</h4>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={handleResetPassword}
-            className="px-4 py-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#111B27] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+            className="px-4 py-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#111B27] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
           >
-            <Key className="w-4 h-4 text-[#52647A] dark:text-[#A7B6C8]" />
+            <Key className="w-4 h-4 text-[#405169] dark:text-[#CBD5E1]" />
             Reset Password
           </button>
         </div>
@@ -196,7 +196,7 @@ export default function ProfilePage() {
   return (
     <Suspense
       fallback={
-        <div className="animate-pulse text-sm text-[#52647A] dark:text-[#A7B6C8] p-6 border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] rounded-xl">
+        <div className="animate-pulse text-sm text-[#405169] dark:text-[#CBD5E1] p-6 border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] rounded-xl">
           Loading profile data...
         </div>
       }

@@ -33,9 +33,9 @@
 :root {
   --background: #EEF1F5;
   --foreground: #172033;
-  --text-secondary: #475569;
-  --text-helper: #52647A;
-  --text-placeholder: #64748B;
+  --text-secondary: #334155;
+  --text-helper: #405169;
+  --text-placeholder: #566880;
   --border-accent: #CBD5E1;
   --bg-card: #FFFFFF;
   --bg-elevated: #F8FAFC;
@@ -55,9 +55,9 @@
 .dark {
   --background: #0F1720;
   --foreground: #F1F5F9;
-  --text-secondary: #CBD5E1;
-  --text-helper: #A7B6C8;
-  --text-placeholder: #94A3B8;
+  --text-secondary: #E2E8F0;
+  --text-helper: #CBD5E1;
+  --text-placeholder: #A3B3C7;
   --border-accent: #344456;
   --bg-card: #182330;
   --bg-elevated: #202D3B;
@@ -71,6 +71,17 @@
   --accent: #C5F52D;
   --accent-text: #0F1720;
   --link: #D6F77A;
+}
+
+/* Crisp Input Placeholder Styling */
+::placeholder {
+  color: #566880;
+  opacity: 1;
+}
+
+.dark ::placeholder {
+  color: #A3B3C7;
+  opacity: 1;
 }
 
 /* Global resets and smooth transition effects */

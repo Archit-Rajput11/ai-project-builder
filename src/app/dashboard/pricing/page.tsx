@@ -144,7 +144,7 @@ export default function PricingPage() {
 
   if (!mounted) {
     return (
-      <div className="animate-pulse text-sm text-[#52647A] dark:text-[#A7B6C8] p-6 border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] rounded-xl shadow-xs">
+      <div className="animate-pulse text-sm text-[#405169] dark:text-[#CBD5E1] p-6 border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] rounded-xl shadow-xs">
         Loading pricing models...
       </div>
     );
@@ -154,14 +154,14 @@ export default function PricingPage() {
     <div className="flex flex-col gap-8 pb-16 max-w-5xl mx-auto font-body text-[#172033] dark:text-[#F1F5F9] transition-colors">
       {/* Header */}
       <div className="text-center flex flex-col items-center gap-3">
-        <div className="inline-flex items-center gap-2 bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] rounded-full px-3.5 py-1.5 text-xs font-semibold text-[#172033] dark:text-[#F1F5F9] shadow-xs">
+        <div className="inline-flex items-center gap-2 bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] rounded-full px-3.5 py-1.5 text-xs font-bold text-[#172033] dark:text-[#F1F5F9] shadow-xs">
           <span className="w-2 h-2 rounded-full bg-[#C5F52D] shadow-[0_0_8px_#C5F52D]" />
           <span>Flexible Plans for Students</span>
         </div>
         <h1 className="text-3xl md:text-4xl font-display font-semibold text-[#172033] dark:text-[#F1F5F9] tracking-tight">
           Choose the Perfect Plan for Your Academic Journey
         </h1>
-        <p className="text-sm md:text-base text-[#475569] dark:text-[#CBD5E1] max-w-2xl leading-relaxed">
+        <p className="text-sm md:text-base text-[#334155] dark:text-[#CBD5E1] max-w-2xl leading-relaxed">
           Get expert-level project structures, source boilerplate, and instant PDF formats to ace your curriculum.
         </p>
       </div>
@@ -172,23 +172,23 @@ export default function PricingPage() {
         <div className="bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] rounded-xl p-8 flex flex-col justify-between shadow-xs transition-colors">
           <div className="flex flex-col gap-6">
             <div>
-              <span className="text-[11px] font-bold tracking-wider text-[#52647A] dark:text-[#A7B6C8] uppercase block mb-1">
+              <span className="text-[11px] font-bold tracking-wider text-[#405169] dark:text-[#CBD5E1] uppercase block mb-1">
                 Standard Access
               </span>
               <h2 className="text-xl font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">Free Plan</h2>
-              <p className="text-xs text-[#475569] dark:text-[#CBD5E1] mt-1 leading-relaxed">
+              <p className="text-xs text-[#405169] dark:text-[#CBD5E1] mt-1 leading-relaxed">
                 Perfect for testing the AI generation capabilities.
               </p>
             </div>
 
-            <div className="flex items-baseline gap-1 py-3 border-b border-[#CBD5E1]/60 dark:border-[#344456]">
+            <div className="flex items-baseline gap-1 py-3 border-b border-[#CBD5E1] dark:border-[#344456]">
               <span className="text-3xl font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">₹0</span>
-              <span className="text-xs text-[#52647A] dark:text-[#A7B6C8] font-medium">/ forever</span>
+              <span className="text-xs text-[#405169] dark:text-[#CBD5E1] font-semibold">/ forever</span>
             </div>
 
             {/* Features List */}
             <div className="flex flex-col gap-3">
-              <span className="text-[10px] font-bold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider mb-1 block">
+              <span className="text-[10px] font-bold text-[#405169] dark:text-[#CBD5E1] uppercase tracking-wider mb-1 block">
                 What's Included:
               </span>
               <ul className="flex flex-col gap-3 text-xs text-[#172033] dark:text-[#F1F5F9]">
@@ -212,9 +212,9 @@ export default function PricingPage() {
             <button
               onClick={() => router.push("/dashboard")}
               disabled={!isPremium}
-              className={`w-full py-3 bg-[#F8FAFC] dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] text-[#172033] dark:text-[#F1F5F9] rounded-[6px] font-semibold text-sm text-center transition-all ${
+              className={`w-full py-3 bg-[#F8FAFC] dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] text-[#172033] dark:text-[#F1F5F9] rounded-[6px] font-bold text-sm text-center transition-all ${
                 !isPremium
-                  ? "text-[#52647A] dark:text-[#A7B6C8] pointer-events-none cursor-default"
+                  ? "text-[#405169] dark:text-[#CBD5E1] pointer-events-none cursor-default"
                   : "hover:bg-white dark:hover:bg-[#202D3B] cursor-pointer shadow-xs"
               }`}
             >
@@ -236,36 +236,36 @@ export default function PricingPage() {
                 Unlimited Access
               </span>
               <h2 className="text-xl font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">Pro Plan</h2>
-              <p className="text-xs text-[#475569] dark:text-[#CBD5E1] mt-1 leading-relaxed">
+              <p className="text-xs text-[#405169] dark:text-[#CBD5E1] mt-1 leading-relaxed">
                 Designed for active engineering students seeking top-tier blueprints.
               </p>
             </div>
 
-            <div className="flex items-baseline gap-2 py-3 border-b border-[#CBD5E1]/60 dark:border-[#344456]">
-              <span className="text-xs text-[#52647A] dark:text-[#A7B6C8] line-through font-semibold">
+            <div className="flex items-baseline gap-2 py-3 border-b border-[#CBD5E1] dark:border-[#344456]">
+              <span className="text-xs text-[#405169] dark:text-[#CBD5E1] line-through font-bold">
                 ₹99
               </span>
               <span className="text-3xl font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">
                 ₹20
               </span>
-              <span className="text-xs text-[#52647A] dark:text-[#A7B6C8] font-medium">
+              <span className="text-xs text-[#405169] dark:text-[#CBD5E1] font-semibold">
                 / per month
               </span>
             </div>
 
             {/* Features List */}
             <div className="flex flex-col gap-3">
-              <span className="text-[10px] font-bold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider mb-1 block">
+              <span className="text-[10px] font-bold text-[#405169] dark:text-[#CBD5E1] uppercase tracking-wider mb-1 block">
                 What's Included:
               </span>
               <ul className="flex flex-col gap-3 text-xs text-[#172033] dark:text-[#F1F5F9]">
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
-                  <span className="font-semibold text-[#172033] dark:text-[#F1F5F9]">Unlimited Projects</span>
+                  <span className="font-bold text-[#172033] dark:text-[#F1F5F9]">Unlimited Projects</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
-                  <span className="font-semibold text-[#172033] dark:text-[#F1F5F9]">One-Click PDF Export</span>
+                  <span className="font-bold text-[#172033] dark:text-[#F1F5F9]">One-Click PDF Export</span>
                 </li>
                 <li className="flex items-center gap-2.5">
                   <Check className="w-4 h-4 text-[#202D50] dark:text-[#C5F52D] shrink-0" />
@@ -288,7 +288,7 @@ export default function PricingPage() {
                 </div>
                 <button
                   onClick={handleDowngradeMock}
-                  className="w-full py-2 text-xs text-[#52647A] dark:text-[#A7B6C8] hover:text-red-600 dark:hover:text-red-400 font-semibold transition-colors cursor-pointer"
+                  className="w-full py-2 text-xs text-[#405169] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 font-semibold transition-colors cursor-pointer"
                 >
                   Mock Downgrade (Testing)
                 </button>
@@ -297,7 +297,7 @@ export default function PricingPage() {
               <button
                 onClick={handleUpgradeNow}
                 disabled={loading}
-                className="w-full py-3 bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] active:scale-[0.99] font-semibold rounded-[6px] text-sm transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
+                className="w-full py-3 bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] active:scale-[0.99] font-bold rounded-[6px] text-sm transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50 disabled:pointer-events-none"
               >
                 {loading ? (
                   <>

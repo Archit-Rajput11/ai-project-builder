@@ -71,13 +71,13 @@ export default function DashboardLayout({
           <div className="w-7 h-7 rounded-[6px] bg-[#202D50] dark:bg-[#C5F52D] flex items-center justify-center text-white dark:text-[#0F1720] shadow-xs transition-colors">
             <Layers className="w-4 h-4 stroke-[2.2]" />
           </div>
-          <span className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">project<span className="text-[#52647A] dark:text-[#A7B6C8] font-normal px-[1px]">/</span>builder</span>
+          <span className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">project<span className="text-[#405169] dark:text-[#CBD5E1] font-normal px-[1px]">/</span>builder</span>
         </div>
         <div className="flex items-center gap-2">
           <ThemeSwitcher />
           <button
             onClick={() => setIsMobileOpen(true)}
-            className="p-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#334155] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] transition-colors cursor-pointer shadow-2xs"
+            className="p-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] transition-colors cursor-pointer shadow-2xs"
             aria-label="Open navigation menu"
           >
             <Menu className="w-4 h-4" />
@@ -94,7 +94,7 @@ export default function DashboardLayout({
         {/* Toggle Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="absolute -right-3 top-5 w-6 h-6 rounded-full border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex items-center justify-center text-[#52647A] dark:text-[#A7B6C8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:border-[#202D50]/40 dark:hover:border-[#C5F52D]/40 transition-colors cursor-pointer z-10 shadow-xs"
+          className="absolute -right-3 top-5 w-6 h-6 rounded-full border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] flex items-center justify-center text-[#405169] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:border-[#202D50]/50 dark:hover:border-[#C5F52D]/60 transition-colors cursor-pointer z-10 shadow-xs"
           aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         >
           {isExpanded ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
@@ -109,10 +109,10 @@ export default function DashboardLayout({
             <div className="flex flex-col overflow-hidden">
               <div className="flex items-center text-sm font-display font-semibold tracking-tight text-[#172033] dark:text-[#F1F5F9]">
                 <span>project</span>
-                <span className="text-[#52647A] dark:text-[#A7B6C8] font-normal px-[1px]">/</span>
+                <span className="text-[#405169] dark:text-[#CBD5E1] font-normal px-[1px]">/</span>
                 <span>builder</span>
               </div>
-              <span className="text-[10px] font-semibold text-[#52647A] dark:text-[#A7B6C8] uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-[#405169] dark:text-[#CBD5E1] uppercase tracking-wider">
                 Workspace
               </span>
             </div>
@@ -131,10 +131,10 @@ export default function DashboardLayout({
                 className={`flex items-center gap-3 px-3 py-2 text-xs transition-colors rounded-r-md ${
                   isActive 
                     ? "bg-[#F1F5F9] dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] border-l-2 border-[#C5F52D] font-bold shadow-2xs" 
-                    : "border-l-2 border-transparent text-[#334155] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#182330]/60 font-medium"
+                    : "border-l-2 border-transparent text-[#334155] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#182330]/70 font-semibold"
                 }`}
               >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#202D50] dark:text-[#C5F52D]" : "text-[#52647A] dark:text-[#A7B6C8]"}`} />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-[#202D50] dark:text-[#C5F52D]" : "text-[#405169] dark:text-[#CBD5E1]"}`} />
                 {isExpanded && <span className="truncate">{item.name}</span>}
               </Link>
             );
@@ -142,10 +142,10 @@ export default function DashboardLayout({
         </nav>
 
         {/* Footer Logout */}
-        <div className="border-t border-[#CBD5E1]/80 dark:border-[#344456] pt-3 mt-auto">
+        <div className="border-t border-[#CBD5E1] dark:border-[#344456] pt-3 mt-auto">
           <button
             onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 dark:hover:border-red-500/30 text-[#475569] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-semibold transition-colors cursor-pointer"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 dark:hover:border-red-500/30 text-[#405169] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-semibold transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4 shrink-0" />
             {isExpanded && <span className="truncate">Sign Out</span>}
@@ -171,7 +171,7 @@ export default function DashboardLayout({
               </div>
               <button
                 onClick={() => setIsMobileOpen(false)}
-                className="p-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] text-[#52647A] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] transition-colors cursor-pointer"
+                className="p-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] text-[#405169] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9] transition-colors cursor-pointer"
                 aria-label="Close menu"
               >
                 <X className="w-4 h-4" />
@@ -200,13 +200,13 @@ export default function DashboardLayout({
               })}
             </nav>
 
-            <div className="border-t border-[#CBD5E1]/80 dark:border-[#344456] pt-3 mt-auto">
+            <div className="border-t border-[#CBD5E1] dark:border-[#344456] pt-3 mt-auto">
               <button
                 onClick={() => {
                   setIsMobileOpen(false);
                   handleSignOut();
                 }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 dark:hover:border-red-500/30 text-[#475569] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-semibold transition-colors cursor-pointer"
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-[6px] border border-transparent hover:border-red-200 dark:hover:border-red-500/30 text-[#405169] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 text-xs font-semibold transition-colors cursor-pointer"
               >
                 <LogOut className="w-4 h-4 shrink-0" />
                 <span>Sign Out</span>
@@ -221,9 +221,9 @@ export default function DashboardLayout({
         {/* Top Header Bar */}
         <header className="sticky top-0 z-30 no-print w-full border-b border-[#CBD5E1] dark:border-[#344456] bg-white/95 dark:bg-[#111A25]/95 backdrop-blur-md px-6 py-3 flex items-center justify-between gap-4 transition-colors">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs font-medium">
-            <span className="text-[#475569] dark:text-[#A7B6C8]">Projects</span>
-            <span className="text-[#CBD5E1] dark:text-[#344456]">/</span>
+          <div className="flex items-center gap-2 text-xs font-semibold">
+            <span className="text-[#334155] dark:text-[#CBD5E1]">Projects</span>
+            <span className="text-[#94A3B8] dark:text-[#4B5E76]">/</span>
             <span className="text-[#172033] dark:text-[#F1F5F9] font-bold">{getBreadcrumbTitle()}</span>
           </div>
 
@@ -231,24 +231,24 @@ export default function DashboardLayout({
           <div className="flex items-center gap-3">
             {/* Search */}
             <div className="relative hidden sm:flex items-center">
-              <Search className="absolute left-2.5 w-3.5 h-3.5 text-[#64748B] dark:text-[#94A3B8] pointer-events-none" />
+              <Search className="absolute left-2.5 w-3.5 h-3.5 text-[#566880] dark:text-[#A3B3C7] pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search templates or stacks..."
-                className="pl-8 pr-3 py-1.5 rounded-[6px] bg-white dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] text-xs text-[#172033] dark:text-[#F1F5F9] placeholder-[#64748B] dark:placeholder-[#94A3B8] focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] w-52 transition-all shadow-2xs font-normal"
+                className="pl-8 pr-3 py-1.5 rounded-[6px] bg-white dark:bg-[#111B27] border border-[#CBD5E1] dark:border-[#344456] text-xs text-[#172033] dark:text-[#F1F5F9] placeholder-[#566880] dark:placeholder-[#A3B3C7] focus:outline-none focus:border-[#202D50] dark:focus:border-[#C5F52D] focus:ring-1 focus:ring-[#202D50] dark:focus:ring-[#C5F52D] w-52 transition-all shadow-2xs font-normal"
               />
             </div>
 
             {/* Pro Status */}
             {isPro ? (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold tracking-wide border border-[#C5F52D]/40 bg-[#C5F52D]/20 text-[#172033] dark:border-[#C5F52D]/50 dark:bg-[#C5F52D]/15 dark:text-[#C5F52D] select-none shadow-2xs">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold tracking-wide border border-[#C5F52D]/40 bg-[#C5F52D]/20 text-[#172033] dark:border-[#C5F52D]/50 dark:bg-[#C5F52D]/15 dark:text-[#C5F52D] select-none shadow-2xs">
                 <Sparkles className="w-3 h-3 text-[#202D50] dark:text-[#C5F52D]" />
                 <span>Pro Member</span>
               </span>
             ) : (
               <Link
                 href="/dashboard/pricing"
-                className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-bold border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] transition-colors shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] text-[#172033] dark:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] transition-colors shadow-2xs"
               >
                 <span>Free Plan</span>
                 <span className="text-[#202D50] dark:text-[#C5F52D] underline ml-0.5">Upgrade</span>

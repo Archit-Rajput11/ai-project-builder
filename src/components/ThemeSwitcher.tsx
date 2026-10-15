@@ -64,7 +64,7 @@ export function ThemeSwitcher({ variant = "dropdown", className = "" }: ThemeSwi
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer select-none ${
                 isSelected
                   ? "bg-white dark:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] shadow-xs border border-[#CBD5E1] dark:border-[#344456]"
-                  : "text-[#52647A] dark:text-[#A7B6C8] hover:text-[#172033] dark:hover:text-[#F1F5F9]"
+                  : "text-[#405169] dark:text-[#CBD5E1] hover:text-[#172033] dark:hover:text-[#F1F5F9]"
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -85,7 +85,7 @@ export function ThemeSwitcher({ variant = "dropdown", className = "" }: ThemeSwi
 
   const currentIcon = () => {
     if (theme === "system") {
-      return <Laptop className="w-4 h-4 text-[#475569] dark:text-[#CBD5E1]" />;
+      return <Laptop className="w-4 h-4 text-[#334155] dark:text-[#CBD5E1]" />;
     }
     if (resolvedTheme === "dark") {
       return <Moon className="w-4 h-4 text-[#C5F52D]" />;
@@ -129,7 +129,7 @@ export function ThemeSwitcher({ variant = "dropdown", className = "" }: ThemeSwi
             className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
               theme === "light"
                 ? "bg-[#F1F5F9] dark:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold"
-                : "text-[#52647A] dark:text-[#CBD5E1] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B]/60 hover:text-[#172033] dark:hover:text-[#F1F5F9]"
+                : "text-[#405169] dark:text-[#CBD5E1] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B]/60 hover:text-[#172033] dark:hover:text-[#F1F5F9]"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export function ThemeSwitcher({ variant = "dropdown", className = "" }: ThemeSwi
             className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
               theme === "dark"
                 ? "bg-[#F1F5F9] dark:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold"
-                : "text-[#52647A] dark:text-[#CBD5E1] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B]/60 hover:text-[#172033] dark:hover:text-[#F1F5F9]"
+                : "text-[#405169] dark:text-[#CBD5E1] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B]/60 hover:text-[#172033] dark:hover:text-[#F1F5F9]"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -166,14 +166,14 @@ export function ThemeSwitcher({ variant = "dropdown", className = "" }: ThemeSwi
               setTheme("system");
               setIsOpen(false);
             }}
-            className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer border-t border-[#E2E8F0] dark:border-[#344456]/60 mt-1 pt-1.5 ${
+            className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer border-t border-[#CBD5E1] dark:border-[#344456] mt-1 pt-1.5 ${
               theme === "system"
                 ? "bg-[#F1F5F9] dark:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] font-semibold"
-                : "text-[#52647A] dark:text-[#CBD5E1] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B]/60 hover:text-[#172033] dark:hover:text-[#F1F5F9]"
+                : "text-[#405169] dark:text-[#CBD5E1] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B]/60 hover:text-[#172033] dark:hover:text-[#F1F5F9]"
             }`}
           >
             <div className="flex items-center gap-2">
-              <Laptop className="w-3.5 h-3.5 text-[#475569] dark:text-[#A7B6C8]" />
+              <Laptop className="w-3.5 h-3.5 text-[#405169] dark:text-[#CBD5E1]" />
               <span>System</span>
             </div>
             {theme === "system" && <Check className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />}

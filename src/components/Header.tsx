@@ -7,7 +7,7 @@ import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-[#CBD5E1]/80 dark:border-[#344456] bg-[#EEF1F5]/90 dark:bg-[#111A25]/90 backdrop-blur-md px-6 py-3.5 select-none transition-colors">
+    <header className="sticky top-0 z-50 w-full border-b border-[#CBD5E1] dark:border-[#344456] bg-[#EEF1F5]/90 dark:bg-[#111A25]/90 backdrop-blur-md px-6 py-3.5 select-none transition-colors">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
@@ -16,7 +16,7 @@ export function Header() {
           </div>
           <div className="flex items-center text-base font-display font-semibold tracking-tight text-[#172033] dark:text-[#F1F5F9]">
             <span>project</span>
-            <span className="text-[#475569] dark:text-[#A7B6C8] font-normal px-[1px]">/</span>
+            <span className="text-[#405169] dark:text-[#CBD5E1] font-normal px-[1px]">/</span>
             <span>builder</span>
           </div>
         </Link>
@@ -25,7 +25,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <Link
             href="/auth"
-            className="text-xs font-semibold text-[#475569] hover:text-[#172033] dark:text-[#CBD5E1] dark:hover:text-[#F1F5F9] transition-colors hidden sm:block"
+            className="text-xs font-semibold text-[#334155] hover:text-[#172033] dark:text-[#CBD5E1] dark:hover:text-[#F1F5F9] transition-colors hidden sm:block"
           >
             Sign In
           </Link>

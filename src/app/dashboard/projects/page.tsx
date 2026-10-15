@@ -91,7 +91,7 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] rounded-xl p-8 shadow-xs flex items-center justify-center gap-3 text-xs text-[#52647A] dark:text-[#A7B6C8] transition-colors">
+      <div className="bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] rounded-xl p-8 shadow-xs flex items-center justify-center gap-3 text-xs text-[#405169] dark:text-[#CBD5E1] transition-colors">
         <Loader2 className="w-4 h-4 animate-spin text-[#202D50] dark:text-[#C5F52D]" />
         <span>Checking premium credentials...</span>
       </div>
@@ -113,13 +113,13 @@ export default function ProjectsPage() {
             <h2 className="text-xl font-display font-semibold tracking-tight text-[#172033] dark:text-[#F1F5F9]">
               Project History & Save
             </h2>
-            <p className="text-xs text-[#52647A] dark:text-[#A7B6C8] leading-relaxed">
+            <p className="text-xs text-[#405169] dark:text-[#CBD5E1] leading-relaxed">
               Save your generated blueprints, track timeline milestones, and review your historical project builds anytime with the Pro Plan.
             </p>
           </div>
           <button
             onClick={() => router.push("/dashboard/pricing")}
-            className="w-full py-2.5 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+            className="w-full py-2.5 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-bold text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs"
           >
             Upgrade to Pro for ₹20/mo
           </button>
@@ -136,14 +136,14 @@ export default function ProjectsPage() {
             <FolderGit2 className="w-5 h-5 text-[#202D50] dark:text-[#C5F52D]" />
             My Generated Blueprints
           </h1>
-          <p className="text-xs sm:text-sm text-[#475569] dark:text-[#CBD5E1] mt-1">
+          <p className="text-xs sm:text-sm text-[#334155] dark:text-[#CBD5E1] mt-1">
             Access, manage, and load your previously compiled academic project plans.
           </p>
         </div>
         {projects.length > 0 && !loadingHistory && (
           <button
             onClick={() => router.push("/dashboard")}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] text-xs font-bold shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>New Blueprint</span>
@@ -152,7 +152,7 @@ export default function ProjectsPage() {
       </div>
 
       {loadingHistory ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#52647A] dark:text-[#A7B6C8] text-xs bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] rounded-xl shadow-xs transition-colors">
+        <div className="flex flex-col items-center justify-center py-16 gap-3 text-[#405169] dark:text-[#CBD5E1] text-xs bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] rounded-xl shadow-xs transition-colors">
           <Loader2 className="w-6 h-6 animate-spin text-[#202D50] dark:text-[#C5F52D]" />
           <span>Loading your projects list...</span>
         </div>
@@ -168,13 +168,13 @@ export default function ProjectsPage() {
           </div>
           <div className="flex flex-col gap-1 max-w-sm">
             <h3 className="text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">No projects yet</h3>
-            <p className="text-xs text-[#52647A] dark:text-[#A7B6C8] leading-relaxed">
+            <p className="text-xs text-[#405169] dark:text-[#CBD5E1] leading-relaxed">
               Your generated project blueprints will appear here.
             </p>
           </div>
           <button
             onClick={() => router.push("/dashboard")}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] font-bold text-xs shadow-xs transition-colors cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create Your First Project</span>
@@ -185,12 +185,12 @@ export default function ProjectsPage() {
           {projects.map((project) => (
             <div 
               key={project.id} 
-              className="bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] hover:border-[#202D50]/40 dark:hover:border-[#C5F52D]/40 rounded-xl p-5 shadow-xs transition-all flex flex-col justify-between group relative"
+              className="bg-white dark:bg-[#182330] border border-[#CBD5E1] dark:border-[#344456] hover:border-[#202D50]/50 dark:hover:border-[#C5F52D]/60 hover:shadow-md rounded-xl p-5 shadow-xs transition-all flex flex-col justify-between group relative"
             >
               {/* Delete button */}
               <button
                 onClick={(e) => handleDeleteBlueprint(e, project.id)}
-                className="absolute top-4 right-4 text-[#52647A] dark:text-[#A7B6C8] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-[4px] p-1.5 transition-colors cursor-pointer"
+                className="absolute top-4 right-4 text-[#405169] dark:text-[#CBD5E1] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-[4px] p-1.5 transition-colors cursor-pointer"
                 title="Delete blueprint"
                 aria-label="Delete blueprint"
               >
@@ -199,28 +199,28 @@ export default function ProjectsPage() {
 
               <div>
                 {/* Tags */}
-                <div className="flex items-center gap-2 border-b border-[#CBD5E1]/60 dark:border-[#344456] pb-3 pr-8">
-                  <span className="bg-[#EEF1F5] dark:bg-[#202D3B] text-[#202D50] dark:text-[#C5F52D] border border-[#CBD5E1] dark:border-[#344456] rounded-[4px] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                <div className="flex items-center gap-2 border-b border-[#CBD5E1] dark:border-[#344456] pb-3 pr-8">
+                  <span className="bg-[#EEF1F5] dark:bg-[#202D3B] text-[#202D50] dark:text-[#C5F52D] border border-[#CBD5E1] dark:border-[#344456] rounded-[4px] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">
                     {project.domain || "General"}
                   </span>
-                  <span className="bg-[#EEF1F5] dark:bg-[#202D3B] text-[#202D50] dark:text-[#C5F52D] border border-[#CBD5E1] dark:border-[#344456] rounded-[4px] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+                  <span className="bg-[#EEF1F5] dark:bg-[#202D3B] text-[#202D50] dark:text-[#C5F52D] border border-[#CBD5E1] dark:border-[#344456] rounded-[4px] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide">
                     {project.complexity || "Standard"}
                   </span>
                 </div>
 
-                {/* Title */}
-                <h3 className="mt-3 text-sm font-display font-semibold text-[#172033] dark:text-[#F1F5F9] group-hover:text-[#202D50] dark:group-hover:text-[#C5F52D] transition-colors pr-8">
+                {/* Title - High Readability */}
+                <h3 className="mt-3 text-base font-display font-bold text-[#172033] dark:text-[#F8FAFC] group-hover:text-[#202D50] dark:group-hover:text-[#C5F52D] transition-colors leading-snug tracking-tight pr-8">
                   {project.title}
                 </h3>
 
                 {/* Description */}
-                <p className="mt-1.5 text-[#52647A] dark:text-[#CBD5E1] text-xs leading-relaxed line-clamp-3">
+                <p className="mt-2 text-[#334155] dark:text-[#CBD5E1] text-xs leading-relaxed line-clamp-3">
                   {project.description}
                 </p>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-[#CBD5E1]/60 dark:border-[#344456] flex flex-col gap-3">
-                <div className="flex items-center justify-between text-[11px] text-[#52647A] dark:text-[#A7B6C8] font-medium">
+              <div className="mt-4 pt-3 border-t border-[#CBD5E1] dark:border-[#344456] flex flex-col gap-3">
+                <div className="flex items-center justify-between text-[11px] text-[#405169] dark:text-[#CBD5E1] font-semibold">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
                     <span>{project.weeks ? `${project.weeks} Weeks` : "Flexible"}</span>
@@ -230,7 +230,7 @@ export default function ProjectsPage() {
 
                 <button
                   onClick={() => handleLoadBlueprint(project)}
-                  className="w-full bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] rounded-[6px] py-2 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                  className="w-full bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] rounded-[6px] py-2 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   <span>Load Blueprint</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -248,7 +248,7 @@ export default function ProjectsPage() {
         </div>
         <div className="flex flex-col gap-0.5">
           <span className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">Supabase Storage Active</span>
-          <p className="text-xs text-[#52647A] dark:text-[#A7B6C8] leading-relaxed">
+          <p className="text-xs text-[#405169] dark:text-[#CBD5E1] leading-relaxed">
             Your premium project blueprints are fully synced and persisted securely inside your Supabase serverless database tables.
           </p>
         </div>
