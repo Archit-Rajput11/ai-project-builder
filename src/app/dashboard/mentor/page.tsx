@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   Compass,
@@ -26,6 +27,7 @@ import {
   Check,
   AlertCircle,
   ListTodo,
+  Activity,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { MentorRoadmap, MentorPhase, MentorTask, TaskStatus, TaskProgressEntry, MentorChatMessage } from "@/types/mentor";
@@ -526,6 +528,18 @@ function MentorPageContent() {
             <MessageSquare className="w-3.5 h-3.5" />
             <span>{chatOpen ? "Close Mentor Chat" : "Ask Mentor"}</span>
           </button>
+
+          {/* Feasibility Analyzer Link */}
+          {selectedProjectId && (
+            <Link
+              href={`/dashboard/feasibility?projectId=${selectedProjectId}`}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-[#172033] dark:text-[#F1F5F9] text-xs font-bold transition-all cursor-pointer shadow-2xs"
+              title="Open AI Feasibility Analyzer for this project"
+            >
+              <Activity className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
+              <span>Feasibility</span>
+            </Link>
+          )}
 
           {/* Refine / Regenerate Button (if roadmap exists) */}
           {roadmap && (

@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import LZString from "lz-string";
-import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, ChevronDown, Lock, CheckCircle2, Award, Zap, Loader2, FolderGit2, Plus, ArrowUpRight, Check, AlertCircle, Compass } from "lucide-react";
+import { Sparkles, Terminal, Calendar, FileText, Download, ChevronRight, ChevronDown, Lock, CheckCircle2, Award, Zap, Loader2, FolderGit2, Plus, ArrowUpRight, Check, AlertCircle, Compass, Activity } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 import { supabase } from "@/lib/supabase";
 import ProBadge from "@/components/ProBadge";
@@ -1247,6 +1247,16 @@ For detailed viva questions, chapter thesis blueprints, and week-by-week checkpo
               >
                 <Compass className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
                 <span>AI Mentor</span>
+              </button>
+
+              {/* Feasibility Analyzer Button */}
+              <button
+                onClick={() => router.push("/dashboard/feasibility")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-[#EEF1F5] dark:bg-[#202D3B] hover:bg-[#E2E8F0] dark:hover:bg-[#29394A] text-[#172033] dark:text-[#F1F5F9] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
+                title="Open AI Feasibility Analyzer"
+              >
+                <Activity className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
+                <span>Feasibility</span>
               </button>
 
               {/* Share Project Button */}
