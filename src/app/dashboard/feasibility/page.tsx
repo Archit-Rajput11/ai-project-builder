@@ -46,6 +46,7 @@ function FeasibilityPageContent() {
   const [projects, setProjects] = React.useState<any[]>([]);
   const [selectedProjectId, setSelectedProjectId] = React.useState<string>("");
   const [loadingProjects, setLoadingProjects] = React.useState(true);
+  const [projectsError, setProjectsError] = React.useState<string | null>(null);
 
   // Analysis states
   const [analysis, setAnalysis] = React.useState<FeasibilityAnalysis | null>(null);
@@ -63,39 +64,44 @@ function FeasibilityPageContent() {
   const [customNotes, setCustomNotes] = React.useState("");
 
   // Load user's projects
-  React.useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setLoadingProjects(true);
-        const { data: sessionData } = await supabase.auth.getSession();
-        const token = sessionData?.session?.access_token || "";
+  const fetchProjects = React.useCallback(async () => {
+    try {
+      setLoadingProjects(true);
+      setProjectsError(null);
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token || "";
 
-        const res = await fetch("/api/projects", {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
+      const res = await fetch("/api/projects", {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
 
-        if (res.ok) {
-          const data = await res.json();
-          const list = data.projects || [];
-          setProjects(list);
+      if (res.ok) {
+        const data = await res.json();
+        const list: any[] = Array.isArray(data) ? data : (data?.projects || []);
+        setProjects(list);
 
-          // Select project from query param if provided
-          const queryProjId = searchParams.get("projectId");
-          if (queryProjId && list.some((p: any) => String(p.id) === queryProjId)) {
-            setSelectedProjectId(queryProjId);
-          } else if (list.length > 0) {
-            setSelectedProjectId(String(list[0].id));
-          }
+        // Select project from query param if provided
+        const queryProjId = searchParams.get("projectId");
+        if (queryProjId && list.some((p: any) => String(p.id) === queryProjId)) {
+          setSelectedProjectId(queryProjId);
+        } else if (list.length > 0) {
+          setSelectedProjectId(String(list[0].id));
         }
-      } catch (err) {
-        console.error("Failed to load projects:", err);
-      } finally {
-        setLoadingProjects(false);
+      } else {
+        const errJson = await res.json().catch(() => ({}));
+        setProjectsError(errJson.error || "Failed to load saved projects. Please verify your connection.");
       }
-    };
-
-    fetchProjects();
+    } catch (err: any) {
+      console.error("Failed to load projects:", err);
+      setProjectsError(err.message || "Network error loading saved projects.");
+    } finally {
+      setLoadingProjects(false);
+    }
   }, [searchParams]);
+
+  React.useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
 
   // Load analysis for selected project
   const fetchAnalysis = React.useCallback(async (projId: string) => {
@@ -224,6 +230,31 @@ function FeasibilityPageContent() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
         <Loader2 className="w-6 h-6 animate-spin text-[#202D50] dark:text-[#C5F52D]" />
         <span className="text-xs text-[#405169] dark:text-[#CBD5E1]">Loading your saved projects...</span>
+      </div>
+    );
+  }
+
+  if (projectsError) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] max-w-md mx-auto text-center gap-4 p-6 bg-white dark:bg-[#111A25] border border-rose-300 dark:border-rose-900/40 rounded-xl shadow-xs">
+        <div className="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/30 flex items-center justify-center text-rose-600 dark:text-rose-400">
+          <AlertTriangle className="w-6 h-6" />
+        </div>
+        <div>
+          <h2 className="text-lg font-display font-semibold text-[#172033] dark:text-[#F1F5F9]">
+            Unable to Load Projects
+          </h2>
+          <p className="text-xs text-[#405169] dark:text-[#CBD5E1] mt-1 leading-relaxed">
+            {projectsError}
+          </p>
+        </div>
+        <button
+          onClick={() => fetchProjects()}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[6px] bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] text-xs font-bold transition-all cursor-pointer shadow-xs"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          <span>Try Again</span>
+        </button>
       </div>
     );
   }

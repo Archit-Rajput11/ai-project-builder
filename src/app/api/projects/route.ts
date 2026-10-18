@@ -43,8 +43,9 @@ export async function GET(request: NextRequest) {
     }
 
     const lookupKey = userId || userEmail;
+    const userKeys = Array.from(new Set([userId, userEmail, lookupKey].filter(Boolean) as string[]));
 
-    if (!lookupKey || !isSupabaseConfigured) {
+    if (userKeys.length === 0 || !isSupabaseConfigured) {
       // Gracefully return empty array if unauthenticated or DB not configured
       return NextResponse.json([]);
     }
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
     const { data: dbProjects, error } = await supabaseAdmin
       .from("projects")
       .select("*")
-      .eq("user_id", lookupKey)
+      .in("user_id", userKeys)
       .order("created_at", { ascending: false });
 
     if (error) {

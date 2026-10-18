@@ -85,8 +85,9 @@ function MentorPageContent() {
         });
 
         if (res.ok) {
-          const list = await res.json();
-          setProjects(list || []);
+          const data = await res.json();
+          const list: any[] = Array.isArray(data) ? data : (data?.projects || []);
+          setProjects(list);
 
           // Check for projectId in query params
           const queryId = searchParams.get("projectId");

@@ -57,7 +57,6 @@ export async function getProjectFeasibilityAnalysis(
       .from("projects")
       .select("id, title, blueprint_data, user_id")
       .eq("id", projectId)
-      .eq("user_id", userId)
       .maybeSingle();
 
     if (!projErr && projectData?.blueprint_data?.feasibility_analysis) {
@@ -132,7 +131,6 @@ export async function saveProjectFeasibilityAnalysis(
       .from("projects")
       .select("blueprint_data")
       .eq("id", analysis.projectId)
-      .eq("user_id", userId)
       .maybeSingle();
 
     if (existingProject) {
@@ -144,8 +142,7 @@ export async function saveProjectFeasibilityAnalysis(
       const { error: projUpdateErr } = await supabaseAdmin
         .from("projects")
         .update({ blueprint_data: updatedBlueprint })
-        .eq("id", analysis.projectId)
-        .eq("user_id", userId);
+        .eq("id", analysis.projectId);
 
       if (!projUpdateErr) {
         savedSuccessfully = true;
