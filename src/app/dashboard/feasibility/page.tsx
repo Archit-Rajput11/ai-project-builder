@@ -24,7 +24,8 @@ import {
   Check,
   Info,
   X,
-  Plus
+  Plus,
+  ListTodo
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import {
@@ -475,6 +476,15 @@ function FeasibilityPageContent() {
               >
                 <Compass className="w-3.5 h-3.5" />
                 <span>Open in AI Mentor</span>
+              </Link>
+
+              <Link
+                href={`/dashboard/tasks?projectId=${selectedProjectId}`}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] border border-[#CBD5E1] dark:border-[#344456] bg-white dark:bg-[#182330] hover:bg-[#F8FAFC] dark:hover:bg-[#202D3B] text-xs font-bold text-[#172033] dark:text-[#F1F5F9] transition-all cursor-pointer shadow-2xs"
+                title="View Task Board"
+              >
+                <ListTodo className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
+                <span>Task Tracker</span>
               </Link>
             </div>
           </div>

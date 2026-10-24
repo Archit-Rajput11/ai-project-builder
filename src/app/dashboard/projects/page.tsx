@@ -14,7 +14,8 @@ import {
   AlertCircle, 
   Plus,
   Compass,
-  Activity
+  Activity,
+  ListTodo
 } from "lucide-react";
 import { useProStatus } from "@/hooks/useProStatus";
 import { supabase } from "@/lib/supabase";
@@ -230,10 +231,10 @@ export default function ProjectsPage() {
                   {project.date && <span>Saved {project.date}</span>}
                 </div>
 
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                   <button
                     onClick={() => handleLoadBlueprint(project)}
-                    className="w-full bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] rounded-[6px] py-2 text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-xs"
+                    className="w-full bg-[#202D50] hover:bg-[#15203C] text-white dark:bg-[#C5F52D] dark:hover:bg-[#B3E325] dark:text-[#0F1720] rounded-[6px] py-1.5 text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-xs"
                     title="Load Blueprint"
                   >
                     <span>Load</span>
@@ -241,7 +242,7 @@ export default function ProjectsPage() {
                   </button>
                   <button
                     onClick={() => router.push(`/dashboard/mentor?projectId=${project.id}`)}
-                    className="w-full bg-[#EEF1F5] hover:bg-[#E2E8F0] text-[#172033] dark:bg-[#202D3B] dark:hover:bg-[#29394A] dark:text-[#F1F5F9] border border-[#CBD5E1] dark:border-[#344456] rounded-[6px] py-2 text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                    className="w-full bg-[#EEF1F5] hover:bg-[#E2E8F0] text-[#172033] dark:bg-[#202D3B] dark:hover:bg-[#29394A] dark:text-[#F1F5F9] border border-[#CBD5E1] dark:border-[#344456] rounded-[6px] py-1.5 text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
                     title="AI Project Mentor"
                   >
                     <Compass className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
@@ -249,11 +250,19 @@ export default function ProjectsPage() {
                   </button>
                   <button
                     onClick={() => router.push(`/dashboard/feasibility?projectId=${project.id}`)}
-                    className="w-full bg-[#EEF1F5] hover:bg-[#E2E8F0] text-[#172033] dark:bg-[#202D3B] dark:hover:bg-[#29394A] dark:text-[#F1F5F9] border border-[#CBD5E1] dark:border-[#344456] rounded-[6px] py-2 text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                    className="w-full bg-[#EEF1F5] hover:bg-[#E2E8F0] text-[#172033] dark:bg-[#202D3B] dark:hover:bg-[#29394A] dark:text-[#F1F5F9] border border-[#CBD5E1] dark:border-[#344456] rounded-[6px] py-1.5 text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
                     title="Feasibility Analysis"
                   >
                     <Activity className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
-                    <span>Analyze</span>
+                    <span>Feasibility</span>
+                  </button>
+                  <button
+                    onClick={() => router.push(`/dashboard/tasks?projectId=${project.id}`)}
+                    className="w-full bg-[#EEF1F5] hover:bg-[#E2E8F0] text-[#172033] dark:bg-[#202D3B] dark:hover:bg-[#29394A] dark:text-[#F1F5F9] border border-[#CBD5E1] dark:border-[#344456] rounded-[6px] py-1.5 text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                    title="Task Tracker Board"
+                  >
+                    <ListTodo className="w-3.5 h-3.5 text-[#202D50] dark:text-[#C5F52D]" />
+                    <span>Tasks</span>
                   </button>
                 </div>
               </div>
